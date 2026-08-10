@@ -1,0 +1,25 @@
+Two young men have admitted mounting a cyber attack on Transport for London (TfL), which cost tens of millions of pounds in losses and inconvenienced thousands of customers.
+
+The National Crime Agency and City of London Police investigated Thalha Jubair, 20, from East London, and Owen Flowers, 18, from Walsall, West Midlands, after TfL’s network was infiltrated between 31 August and 3 September 2024.
+
+Jubair and Flowers, who were arrested at their home addresses on 16 September last year by the NCA and COLP, were both members of the online criminal collective known as Scattered Spider.
+
+The pair compromised TfL’s network, forcing all 28,000 employees to attend a TfL office for a password reset. The organisation suffered a reported £29 million in loss and recovery costs.
+
+Data from TfL’s Oyster refunds system was accessed and the incident also affected TfL’s customer refund system, leaving some out of pocket for much longer than usual. It also closed down the application system for Oyster photocards for children and young people.
+
+Flowers was initially arrested for the TfL attack on 6 September 2024, at which point NCA officers identified further evidence that the networks of US healthcare companies SSM Health Care Corporation and Sutter Health had been infiltrated and damaged.
+
+Investigators found a number of devices at his home including laptops, tower computers, hard drives and USB sticks.
+
+One Acer laptop contained a screen shot of showing network connectivity to TfL infrastructure.
+
+Flowers had also accessed an online tool selling breached credentials.
+
+The laptop also contained a number of videos that Flowers had recorded, showing Jubair accessing TfL systems during the attack. The pair were messaging each other over Telegram at the same time and also communicated via an online tool where multiple participants can work remotely on a common workspace.
+
+Flowers was bailed with strict conditions, which he breached on two occasions in March 2025 and May 2025.
+
+Both individuals were due to stand trial at Woolwich Crown Court today (22 June) but changed their pleas to guilty on the first day of proceedings.
+
+They are due to be sentenced at the same court on 16 July.

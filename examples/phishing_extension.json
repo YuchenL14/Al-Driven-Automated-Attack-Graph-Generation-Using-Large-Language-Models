@@ -1,0 +1,55 @@
+{
+  "title": "Phishing to browser-extension install (multi-path)",
+  "preconditions": [
+    { "id": "p_reviews", "label": "Superb fake app reviews", "code": "R" },
+    { "id": "p_certs",   "label": "EGIS or THAWTE stolen certificates", "code": "CA" },
+
+    { "id": "pc_ext_store",      "label": "Font Manager extension on app store", "code": "RS", "parents": ["e_create_ext"] },
+    { "id": "pc_weaponised_pdf", "label": "Weaponised PDF requesting extension",  "code": "RS", "parents": ["e_create_pdf"] },
+    { "id": "pc_email_list",     "label": "Email list",                           "code": "R",  "parents": ["e_gather"] },
+    { "id": "pc_site_ready",     "label": "Malicious website configured",         "code": "RS", "parents": ["e_config_site"] },
+
+    { "id": "pc_pdf_opened",    "label": "PDF opened",                 "code": "EX", "parents": ["e_send_pdf"] },
+    { "id": "pc_site_accessed", "label": "Malicious website accessed", "code": "EX", "parents": ["e_send_url"] },
+
+    { "id": "pc_installed", "label": "Font Manager extension installed", "code": "PS", "parents": ["e_install"] }
+  ],
+  "events": [
+    {
+      "id": "e_create_ext", "label": "Create Font Manager extension",
+      "tactic": "RS", "likelihood": 9.9, "parents": ["p_reviews"]
+    },
+    {
+      "id": "e_create_pdf", "label": "Create fake PDF requesting extension",
+      "tactic": "RS", "likelihood": 9.9, "parents": []
+    },
+    {
+      "id": "e_gather", "label": "Gather names and email addresses",
+      "tactic": "RE", "technique": "T1589.002", "likelihood": 4.0,
+      "mitigations": ["M1056", "M1017"], "parents": []
+    },
+    {
+      "id": "e_config_site", "label": "Configure malicious website with benign PDF",
+      "tactic": "RS", "technique": "T1608.005", "likelihood": 5.0,
+      "mitigations": ["M1040", "M1017", "M1021"], "parents": ["p_certs"]
+    },
+    {
+      "id": "e_send_pdf", "label": "Send email with PDF attachment",
+      "tactic": "IA", "technique": "T1566.001", "likelihood": 5.0,
+      "mitigations": ["M1017", "M1041"],
+      "parents": ["pc_weaponised_pdf", "pc_email_list", "pc_ext_store"], "join": "AND"
+    },
+    {
+      "id": "e_send_url", "label": "Send email with URL to paper",
+      "tactic": "IA", "technique": "T1566.002", "likelihood": 5.0,
+      "mitigations": ["M1017", "M1041"],
+      "parents": ["pc_email_list", "pc_site_ready"], "join": "AND"
+    },
+    {
+      "id": "e_install", "label": "Request permission to install Font Manager extension",
+      "tactic": "PS", "technique": "T1176", "likelihood": 4.0,
+      "mitigations": ["M1021", "M1017", "M1041"],
+      "parents": ["pc_pdf_opened", "pc_site_accessed"], "join": "OR"
+    }
+  ]
+}

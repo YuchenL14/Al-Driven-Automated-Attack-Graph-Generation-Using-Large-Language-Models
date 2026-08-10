@@ -1,0 +1,61 @@
+{
+  "page_count": 3,
+  "warning_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 2,
+      "page_width_px": 674,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.9466666666666667,
+      "page_aspect_ratio": 0.42136498516320475,
+      "occupied_width_fraction": 0.5866666666666667,
+      "occupied_height_fraction": 0.676056338028169,
+      "node_area_density": 0.3222535211267606,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0,
+      "bend_count": 0,
+      "has_parallel_structure": false,
+      "warnings": [
+        "graph content leaves excessive vertical whitespace"
+      ]
+    },
+    {
+      "page": 2,
+      "node_count": 19,
+      "page_width_px": 1054,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.114705882352941,
+      "page_aspect_ratio": 1.364326375711575,
+      "occupied_width_fraction": 0.9294117647058824,
+      "occupied_height_fraction": 0.9360222531293463,
+      "node_area_density": 0.2717827047369713,
+      "median_horizontal_drift_fraction": 0.1676470588235294,
+      "mean_route_detour": 1.1390052454809616,
+      "bend_count": 15,
+      "has_parallel_structure": true,
+      "warnings": []
+    },
+    {
+      "page": 3,
+      "node_count": 23,
+      "page_width_px": 1738,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.7932551319648093,
+      "page_aspect_ratio": 0.622554660529344,
+      "occupied_width_fraction": 0.9648093841642229,
+      "occupied_height_fraction": 0.9149722735674677,
+      "node_area_density": 0.21394073102379108,
+      "median_horizontal_drift_fraction": 0.08357771260997067,
+      "mean_route_detour": 1.0556141781978652,
+      "bend_count": 43,
+      "has_parallel_structure": true,
+      "warnings": [
+        "one page is 1738px wide against a 1240px budget; its labels print at about 5.7pt across a landscape page, below the 8pt figure-text floor"
+      ]
+    }
+  ]
+}

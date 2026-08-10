@@ -1,0 +1,274 @@
+{
+  "title": "DPP Ransomware and Data Exfiltration Incident",
+  "preconditions": [
+    {
+      "id": "p2",
+      "label": "sqluser lacks MFA, has unrestricted admin access",
+      "code": "V",
+      "parents": []
+    },
+    {
+      "id": "p3",
+      "label": "End-user laptop compromised",
+      "code": "R",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p4",
+      "label": "Access to sqluser account obtained",
+      "code": "R",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Cobalt Strike deployed on network",
+      "code": "R",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Windows Defender disabled",
+      "code": "R",
+      "parents": [
+        "e6"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "VM backup service stopped",
+      "code": "R",
+      "parents": [
+        "e7"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "MegaSync and Rclone installed",
+      "code": "R",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Files corrupted, systems inoperative ~1 week",
+      "code": "OUT",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "Email server down, staff lost network access",
+      "code": "OUT",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p11",
+      "label": "DPP data published on dark web",
+      "code": "OUT",
+      "parents": [
+        "e10"
+      ]
+    },
+    {
+      "id": "p12",
+      "label": "Investigation made more difficult",
+      "code": "OUT",
+      "parents": [
+        "e11"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e2",
+      "label": "Compromise end-user laptop and authenticate to network",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "a threat actor likely compromised an end-user laptop and used it to authenticate to DPP's network",
+      "evidence_status": "possible",
+      "evidence_confidence": 55,
+      "actor": "adversary",
+      "action_evidence": "compromised an end-user laptop and used it to authenticate",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e3",
+      "label": "Access sqluser account",
+      "tactic": "CA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "The compromise allowed the threat actor to access the sqluser account",
+      "evidence_status": "reported",
+      "evidence_confidence": 65,
+      "actor": "adversary",
+      "action_evidence": "access the sqluser account",
+      "parents": [
+        "p3",
+        "p2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Run PowerShell commands",
+      "tactic": "EX",
+      "technique": "T1059.001",
+      "mitigations": [
+        "M1038",
+        "M1049"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "After gaining access, the threat actor ran PowerShell commands",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "ran PowerShell commands",
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Move laterally using sqluser account",
+      "tactic": "LM",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "The threat actor used the compromised sqluser account to move laterally across DPP's network",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "move laterally",
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Disable Windows Defender",
+      "tactic": "DE",
+      "technique": "T1685",
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "logs showed that Windows Defender was disabled and a virtual-machine backup service was stopped",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 75,
+      "actor": "adversary",
+      "action_evidence": "was disabled",
+      "parents": [
+        "p5"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e7",
+      "label": "Stop virtual-machine backup service",
+      "tactic": "IM",
+      "technique": "T1489",
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "logs showed that Windows Defender was disabled and a virtual-machine backup service was stopped",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 75,
+      "actor": "adversary",
+      "action_evidence": "was stopped",
+      "parents": [
+        "p5"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e8",
+      "label": "Deploy ransomware",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": [
+        "M1053"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": "Forensic investigators believed that the threat actor then deployed ransomware",
+      "evidence_status": "alleged",
+      "evidence_confidence": 60,
+      "actor": "adversary",
+      "action_evidence": "deployed ransomware",
+      "parents": [
+        "p6",
+        "p7"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e9",
+      "label": "Install MegaSync and Rclone tools",
+      "tactic": "C2",
+      "technique": "T1105",
+      "mitigations": [
+        "M1037"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "MegaSync and Rclone were installed during the incident",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 70,
+      "actor": "adversary",
+      "action_evidence": "were installed",
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Exfiltrate data using tools",
+      "tactic": "EF",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "The threat actor used tools to exfiltrate data from DPP's network",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "used tools to exfiltrate data",
+      "parents": [
+        "p8"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e11",
+      "label": "Download and run antivirus software as clean-up",
+      "tactic": "DE",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "the threat actor used the sqluser account to download and run antivirus software as a clean-up action, making the investigation more difficult",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 75,
+      "actor": "adversary",
+      "action_evidence": "download and run antivirus software",
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    }
+  ]
+}

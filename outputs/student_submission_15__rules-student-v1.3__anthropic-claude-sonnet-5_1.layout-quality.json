@@ -1,0 +1,22 @@
+{
+  "page_count": 1,
+  "warning_count": 0,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 11,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.20837696335078534,
+      "page_aspect_ratio": 0.16541978387364922,
+      "occupied_width_fraction": 0.9643979057591623,
+      "occupied_height_fraction": 0.7688442211055276,
+      "node_area_density": 0.19864768870530664,
+      "median_horizontal_drift_fraction": 0.17905759162303664,
+      "mean_route_detour": 1.0106666666666668,
+      "bend_count": 16,
+      "has_parallel_structure": true,
+      "warnings": []
+    }
+  ]
+}

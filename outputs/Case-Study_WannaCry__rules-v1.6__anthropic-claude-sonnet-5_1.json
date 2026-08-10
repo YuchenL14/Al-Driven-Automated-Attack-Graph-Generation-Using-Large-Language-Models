@@ -1,0 +1,548 @@
+{
+  "title": "WannaCry Ransomware Attack on Renault-Nissan 2017",
+  "preconditions": [
+    {
+      "id": "p_eternalblue_leak",
+      "label": "EternalBlue exploit publicly leaked",
+      "code": "EXT-EB",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_smb_vuln",
+      "label": "Unpatched SMBv1 vulnerability MS17-010 present",
+      "code": "VULN-SMB",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_initial_access",
+      "label": "Initial access to host via SMB obtained",
+      "code": "ACCESS-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_exploit_smb_initial"
+      ]
+    },
+    {
+      "id": "p_c2_backdoor",
+      "label": "Backdoor and TOR C2 channel established",
+      "code": "C2-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_c2_standard"
+      ]
+    },
+    {
+      "id": "p_killswitch_check",
+      "label": "Kill switch domain unreachable, propagation continues",
+      "code": "KS-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_malware_running",
+      "label": "WannaCry service running on host",
+      "code": "RUN-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_exec_api_1"
+      ]
+    },
+    {
+      "id": "p_network_enum",
+      "label": "Local network hosts and RDP sessions enumerated",
+      "code": "ENUM-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_net_enum"
+      ]
+    },
+    {
+      "id": "p_lateral_access_smb",
+      "label": "Additional host compromised via SMB exploit",
+      "code": "LM-SMB",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_lateral_smb"
+      ]
+    },
+    {
+      "id": "p_lateral_access_ext",
+      "label": "External network host compromised via remote services",
+      "code": "LM-EXT",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_remote_services"
+      ]
+    },
+    {
+      "id": "p_tool_transferred",
+      "label": "Malware copy transferred to new hosts",
+      "code": "LTT-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_lateral_transfer"
+      ]
+    },
+    {
+      "id": "p_encryption_running",
+      "label": "Encryption component executing on host",
+      "code": "ENC-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_exec_api_2"
+      ]
+    },
+    {
+      "id": "p_persistence",
+      "label": "Persistence established via registry run keys",
+      "code": "PERSIST-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_modify_program"
+      ]
+    },
+    {
+      "id": "p_services_stopped",
+      "label": "Critical database and mail services stopped",
+      "code": "SVCSTOP-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_service_stop"
+      ]
+    },
+    {
+      "id": "p_files_encrypted",
+      "label": "Files and shares encrypted, systems unavailable",
+      "code": "IMPACT-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_loss_availability"
+      ]
+    },
+    {
+      "id": "p_plants_shutdown",
+      "label": "Manufacturing plants shut down, revenue lost",
+      "code": "IMPACT-2",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_loss_productivity"
+      ]
+    },
+    {
+      "id": "p_c2_proxy_active",
+      "label": "C2 maintained via TOR proxy for ransom payment",
+      "code": "C2-2",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_c2_proxy"
+      ]
+    },
+    {
+      "id": "p_shadow_copies_deleted",
+      "label": "Backup shadow copies deleted, recovery denied",
+      "code": "DESTROY-1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_data_destruction"
+      ]
+    },
+    {
+      "id": "ann_perceivable_smb",
+      "label": "SMB anomalies highly perceivable by staff",
+      "code": "OBS-1",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_exploit_smb_initial"
+      ]
+    },
+    {
+      "id": "ann_backup_impact",
+      "label": "Backups after infection would be impaired",
+      "code": "OBS-2",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_lateral_transfer"
+      ]
+    },
+    {
+      "id": "ann_response_late",
+      "label": "Late-stage response unlikely to reduce impact",
+      "code": "OBS-3",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_data_destruction"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_exploit_smb_initial",
+      "label": "Exploit SMBv1 (EternalBlue) for initial access",
+      "tactic": "IA",
+      "techniques": [
+        "T1190"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1026",
+        "M1030",
+        "M1035",
+        "M1037",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_eternalblue_leak",
+        "p_smb_vuln"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_c2_standard",
+      "label": "Establish C2 backdoor via DoublePulsar/TOR",
+      "tactic": "C2",
+      "techniques": [
+        "T1071.001",
+        "T1090.003"
+      ],
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_initial_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_exec_api_1",
+      "label": "Execute malware as Windows service via API",
+      "tactic": "EX",
+      "techniques": [
+        "T1569.002"
+      ],
+      "mitigations": [
+        "M1022",
+        "M1026",
+        "M1040"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_initial_access",
+        "p_c2_backdoor",
+        "p_killswitch_check"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_net_enum",
+      "label": "Enumerate network connections and RDP sessions",
+      "tactic": "DS",
+      "techniques": [
+        "T1049",
+        "T1018"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_malware_running"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_lateral_smb",
+      "label": "Exploit remote SMB service on discovered hosts",
+      "tactic": "LM",
+      "techniques": [
+        "T1210"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1019",
+        "M1026",
+        "M1030",
+        "M1042",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_network_enum"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_remote_services",
+      "label": "Propagate to external hosts via SMB/RDP remote services",
+      "tactic": "LM",
+      "techniques": [
+        "T1021.002",
+        "T1021.001"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1035",
+        "M1037",
+        "M1018",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_network_enum"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_lateral_transfer",
+      "label": "Transfer malware copy to new hosts via SMB/RDP",
+      "tactic": "LM",
+      "techniques": [
+        "T1570"
+      ],
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access_smb",
+        "p_lateral_access_ext"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_exec_api_2",
+      "label": "Execute encryption component via CreateProcess API",
+      "tactic": "EX",
+      "techniques": [
+        "T1106"
+      ],
+      "mitigations": [
+        "M1038",
+        "M1040"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_tool_transferred"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_modify_program",
+      "label": "Add registry run keys for persistence",
+      "tactic": "PS",
+      "techniques": [
+        "T1547.001"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_encryption_running"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_service_stop",
+      "label": "Stop Exchange and SQL services",
+      "tactic": "IM",
+      "techniques": [
+        "T1489"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1030",
+        "M1060"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_persistence"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_loss_availability",
+      "label": "Encrypt files/shares causing loss of availability",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_services_stopped"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_loss_productivity",
+      "label": "Halt plant operations, lose productivity/revenue",
+      "tactic": "IM",
+      "techniques": [
+        "T1499.001"
+      ],
+      "mitigations": [
+        "M1037"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_files_encrypted"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_c2_proxy",
+      "label": "Maintain TOR proxy C2 for ransom key delivery",
+      "tactic": "C2",
+      "techniques": [
+        "T1090.003"
+      ],
+      "mitigations": [
+        "M1037"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_files_encrypted"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_data_destruction",
+      "label": "Delete volume shadow copies to block recovery",
+      "tactic": "IM",
+      "techniques": [
+        "T1490"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1028",
+        "M1038",
+        "M1053"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_files_encrypted"
+      ],
+      "join": "AND"
+    }
+  ]
+}

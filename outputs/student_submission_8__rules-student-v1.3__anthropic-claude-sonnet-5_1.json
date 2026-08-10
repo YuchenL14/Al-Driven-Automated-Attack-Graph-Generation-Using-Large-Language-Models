@@ -1,0 +1,101 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "P2",
+      "label": "Attackers infiltrated TfL network",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "Access to Oyster refunds system data",
+      "code": "CL",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P4",
+      "label": "Customer refunds delayed",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P5",
+      "label": "Oyster photocard application system closed",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P6",
+      "label": "Employees required to reset passwords in person",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P7",
+      "label": "GBP 29 million loss and recovery costs",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E2",
+      "label": "Infiltrate Transport for London network",
+      "tactic": "IA",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "Two attackers infiltrated the Transport for London network between 31 August and 3 September 2024",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "infiltrated",
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Access data held in Oyster refunds system",
+      "tactic": "CL",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "The attackers accessed data held in Transport for London's Oyster refunds system",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "accessed",
+      "style": "solid",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    }
+  ]
+}

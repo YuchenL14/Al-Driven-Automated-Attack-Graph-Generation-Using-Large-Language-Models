@@ -1,0 +1,511 @@
+{
+  "title": "Scattered Spider Attack on Marks & Spencer (April 2025)",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Employee LinkedIn/PII info available for pretexting",
+      "code": "RE",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "Attacker impersonation persona and phishing infrastructure prepared",
+      "code": "RS",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p3",
+      "label": "Help desk trusts caller as legitimate employee/IT staff",
+      "code": "IA",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p4",
+      "label": "Employee credentials obtained via social engineering",
+      "code": "CA",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "MFA bypassed or reset for compromised account",
+      "code": "CA",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Valid authenticated access to M&S network",
+      "code": "IA",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Foothold access with ability to run tools/persist",
+      "code": "PS",
+      "parents": [
+        "e6"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Elevated/administrative privileges within domain",
+      "code": "PE",
+      "parents": [
+        "e7"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Security tools disabled or evaded",
+      "code": "DE",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "Domain controllers and AD infrastructure located",
+      "code": "DS",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p11",
+      "label": "NTDS.dit file obtained",
+      "code": "CL",
+      "parents": [
+        "e10"
+      ]
+    },
+    {
+      "id": "p12",
+      "label": "Cracked credentials for widespread accounts",
+      "code": "CA",
+      "parents": [
+        "e11"
+      ]
+    },
+    {
+      "id": "p13",
+      "label": "Ability to move across network with valid credentials",
+      "code": "LM",
+      "parents": [
+        "e12"
+      ]
+    },
+    {
+      "id": "p14",
+      "label": "VMware ESXi hosts identified as high-value targets",
+      "code": "DS",
+      "parents": [
+        "e13"
+      ]
+    },
+    {
+      "id": "p15",
+      "label": "DragonForce ransomware payload staged on ESXi hosts",
+      "code": "C2",
+      "parents": [
+        "e14"
+      ]
+    },
+    {
+      "id": "p16",
+      "label": "Backup systems located and accessible",
+      "code": "DS",
+      "parents": [
+        "e13"
+      ]
+    },
+    {
+      "id": "p17",
+      "label": "Files/servers across network encrypted",
+      "code": "IM",
+      "parents": [
+        "e15"
+      ]
+    },
+    {
+      "id": "p18",
+      "label": "Backup files deleted, hindering recovery",
+      "code": "IM",
+      "parents": [
+        "e16"
+      ]
+    },
+    {
+      "id": "p19",
+      "label": "Widespread operational disruption and ransom leverage achieved",
+      "code": "IM",
+      "parents": [
+        "e17"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Gather employee/organizational recon via LinkedIn and OSINT",
+      "tactic": "RE",
+      "technique": "T1593",
+      "mitigations": [
+        "M1013",
+        "M1047"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p1"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e2",
+      "label": "Craft phishing/vishing pretext and infrastructure (fake domains, IT persona)",
+      "tactic": "RS",
+      "technique": "T1583.001",
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e3",
+      "label": "Vishing call to help desk impersonating employee to obtain credentials",
+      "tactic": "IA",
+      "technique": "T1566.004",
+      "mitigations": [
+        "M1017"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Trick help desk into resetting MFA / register attacker MFA device",
+      "tactic": "CA",
+      "technique": "T1621",
+      "mitigations": [
+        "M1017",
+        "M1032",
+        "M1036"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Authenticate to network using compromised credentials and bypassed MFA",
+      "tactic": "IA",
+      "technique": "T1078",
+      "mitigations": [
+        "M1013",
+        "M1015",
+        "M1017",
+        "M1018",
+        "M1026",
+        "M1027",
+        "M1032",
+        "M1036"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p5"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Install/use legitimate RMM tools for persistent access",
+      "tactic": "C2",
+      "technique": "T1219",
+      "mitigations": [
+        "M1031",
+        "M1034",
+        "M1037",
+        "M1038",
+        "M1042"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p6"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e7",
+      "label": "Escalate privileges via token manipulation or abuse of EDR remote shell",
+      "tactic": "PE",
+      "technique": "T1134",
+      "mitigations": [
+        "M1018",
+        "M1026"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p7"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e8",
+      "label": "Disable or evade security tools (AV/EDR/firewall)",
+      "tactic": "DE",
+      "technique": "T1685",
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1038",
+        "M1042",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p8"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e9",
+      "label": "Discover domain controllers and Active Directory infrastructure",
+      "tactic": "DS",
+      "technique": "T1018",
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p9"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Extract NTDS.dit file from domain controller",
+      "tactic": "CA",
+      "technique": "T1003.003",
+      "mitigations": [
+        "M1017",
+        "M1026",
+        "M1027",
+        "M1041"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p10"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e11",
+      "label": "Crack password hashes from stolen NTDS.dit offline",
+      "tactic": "CA",
+      "technique": "T1110.002",
+      "mitigations": [
+        "M1027",
+        "M1032"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p11"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e12",
+      "label": "Move laterally using cracked/valid credentials across network",
+      "tactic": "LM",
+      "technique": "T1021.002",
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1035",
+        "M1037"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p12"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e13",
+      "label": "Discover VMware ESXi hosts and backup systems",
+      "tactic": "DS",
+      "technique": "T1518.002",
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p13"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e14",
+      "label": "Transfer and stage DragonForce ransomware payload to ESXi hosts",
+      "tactic": "C2",
+      "technique": "T1105",
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p14"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e15",
+      "label": "Deploy ransomware to encrypt VMware ESXi hosts and VMs",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p15"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e16",
+      "label": "Delete backup files to prevent recovery",
+      "tactic": "IM",
+      "technique": "T1490",
+      "mitigations": [
+        "M1018",
+        "M1028",
+        "M1038",
+        "M1053"
+      ],
+      "likelihood": 5.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p16"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e17",
+      "label": "Extort M&S for ransom payment threatening data leak",
+      "tactic": "IM",
+      "technique": "T1657",
+      "mitigations": [
+        "M1017",
+        "M1018"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p17",
+        "p18"
+      ],
+      "join": "AND"
+    }
+  ]
+}

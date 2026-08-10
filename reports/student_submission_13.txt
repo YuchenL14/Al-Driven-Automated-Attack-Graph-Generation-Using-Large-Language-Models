@@ -1,0 +1,13 @@
+An externally reachable file transfer service was running an unpatched version.
+The attacker exploited that service to obtain a foothold on the network
+(T1190; mitigations M1016, M1030, M1051).
+A foothold on an internal server was established.
+The attacker ran PowerShell on that server to stage further tooling
+(T1059.001; mitigations M1038, M1042).
+Tooling was staged on the compromised server.
+The attacker dumped LSASS process memory to obtain credentials
+(T1003.001; mitigations M1025, M1026, M1043).
+Domain credentials were obtained.
+The attacker exfiltrated 12GB of design documents over the command and control
+channel (T1041; mitigations M1031, M1057).
+Design documents left the network.

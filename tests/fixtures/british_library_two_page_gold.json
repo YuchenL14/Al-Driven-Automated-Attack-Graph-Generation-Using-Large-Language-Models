@@ -1,0 +1,547 @@
+{
+  "schema_version": "british-library-two-page-gold-v1",
+  "purpose": "Evidence-grounded, layout-independent gold specification for the agreed two-page British Library attack graph. This fixture is an evaluation oracle, not a production template.",
+  "source": {
+    "filename": "Cyber_Attack-_on_the_British_Library_Roly-Keating.pdf",
+    "report_type": "high-level incident review presentation",
+    "transcription": "manual_from_report",
+    "known_case_role": "development_and_regression_only"
+  },
+  "visual_contract": {
+    "primary_flow": "top_to_bottom",
+    "event_shape": "rectangle",
+    "state_shape": "ellipse",
+    "annotation_shape": "annotation",
+    "annotation_border": "dashed",
+    "event_badges_only": true,
+    "continuation_state_repeated_between_pages": true,
+    "page_count": 2,
+    "split_basis": "causal_state_boundary",
+    "split_state": "bl_broad_access",
+    "lossless_recomposition_required": true
+  },
+  "evidence": [
+    {
+      "id": "ev_recon",
+      "page": 3,
+      "status": "suspected",
+      "quote": "Suspected instance of hostile reconnaissance a few days prior"
+    },
+    {
+      "id": "ev_remote_entry",
+      "page": 4,
+      "status": "probable",
+      "quote": "Probable point of entry was a server set up to support remote IT access in response to Covid restrictions"
+    },
+    {
+      "id": "ev_access_method",
+      "page": 4,
+      "status": "possible_alternatives",
+      "quote": "Possibly a phishing or spear-phishing attack, or a brute force attack"
+    },
+    {
+      "id": "ev_no_mfa",
+      "page": 4,
+      "status": "reported",
+      "quote": "Legacy system not subject to Multi Factor Authentication"
+    },
+    {
+      "id": "ev_security_gap",
+      "page": 4,
+      "status": "reported",
+      "quote": "Cyber-security software protected parts of the network but not all. Some software was ineffective against this attack"
+    },
+    {
+      "id": "ev_broad_access",
+      "page": 8,
+      "status": "reported",
+      "quote": "Topology of our IT estate allowed significant access to attackers"
+    },
+    {
+      "id": "ev_data_theft",
+      "page": 3,
+      "status": "reported",
+      "quote": "Around 600GB of data copied and exfiltrated – targeted Finance, HR, Technology Department data, and then backups of other databases"
+    },
+    {
+      "id": "ev_encryption",
+      "page": 3,
+      "status": "reported",
+      "quote": "Other data encrypted, substantial damage to applications, all users locked out, online services taken offline"
+    },
+    {
+      "id": "ev_server_destruction",
+      "page": 4,
+      "status": "reported",
+      "quote": "Attackers used disruptive and anti-forensic measures – including destruction of servers to inhibit recovery"
+    },
+    {
+      "id": "ev_extortion_publication",
+      "page": 3,
+      "status": "reported_sequence",
+      "quote": "Extortion attempt, followed by auction, then publication of most of the dataset on the dark web"
+    },
+    {
+      "id": "ev_continuity",
+      "page": 3,
+      "status": "context",
+      "quote": "Range of on-site public services continued throughout the incident"
+    },
+    {
+      "id": "ev_defence",
+      "page": 8,
+      "status": "recommendation",
+      "quote": "Enhance network monitoring capabilities; Implement and enhance network segmentation"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "bl_recon",
+      "label": "Suspected hostile reconnaissance of Library systems",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "RE",
+      "evidence_id": "ev_recon",
+      "evidence_status": "suspected",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_target_info",
+      "label": "Target-network information obtained",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_recon",
+      "evidence_status": "derived",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_no_mfa",
+      "label": "Legacy system had no MFA",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_no_mfa",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_security_gap",
+      "label": "Security-software coverage was incomplete",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_security_gap",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 1,
+      "branch": "expansion"
+    },
+    {
+      "id": "bl_flat_topology",
+      "label": "IT network was insufficiently segmented",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_broad_access",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 1,
+      "branch": "expansion"
+    },
+    {
+      "id": "bl_segmentation_note",
+      "label": "Defence: segment the network and enhance monitoring",
+      "role": "annotation",
+      "shape": "annotation",
+      "tactic": null,
+      "evidence_id": "ev_defence",
+      "evidence_status": "recommendation",
+      "technique": null,
+      "page": 1,
+      "branch": "expansion"
+    },
+    {
+      "id": "bl_phishing",
+      "label": "Possibly phish or spear-phish for credentials",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "CA",
+      "evidence_id": "ev_access_method",
+      "evidence_status": "possible",
+      "technique": "T1566",
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_bruteforce",
+      "label": "Possibly brute-force a user account",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "CA",
+      "evidence_id": "ev_access_method",
+      "evidence_status": "possible",
+      "technique": "T1110",
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_access_method",
+      "label": "Credentials or another access method obtained",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_access_method",
+      "evidence_status": "possible",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_remote_server",
+      "label": "Covid-era remote-access server exposed",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_remote_entry",
+      "evidence_status": "probable",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_gain_entry",
+      "label": "Gain entry through the remote-access server",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "IA",
+      "evidence_id": "ev_remote_entry",
+      "evidence_status": "probable",
+      "technique": "T1133",
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_foothold",
+      "label": "Initial foothold established",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_remote_entry",
+      "evidence_status": "derived",
+      "technique": null,
+      "page": 1,
+      "branch": "entry"
+    },
+    {
+      "id": "bl_expand_access",
+      "label": "Exploit the flat topology to expand access",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "LM",
+      "evidence_id": "ev_broad_access",
+      "evidence_status": "reported_at_high_level",
+      "technique": null,
+      "page": 1,
+      "branch": "expansion"
+    },
+    {
+      "id": "bl_broad_access",
+      "label": "Attacker obtained broad network access",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_broad_access",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 1,
+      "continues_on_page": 2,
+      "branch": "expansion"
+    },
+    {
+      "id": "bl_broad_access_continuation",
+      "label": "Attacker obtained broad network access",
+      "role": "continuation_state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_broad_access",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "continued_from_page": 1,
+      "canonical_id": "bl_broad_access",
+      "branch": "page_boundary"
+    },
+    {
+      "id": "bl_discover_data",
+      "label": "Identify Finance, HR, Technology and backup data",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "DS",
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_encrypt_data",
+      "label": "Encrypt other data and damage applications",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "IM",
+      "evidence_id": "ev_encryption",
+      "evidence_status": "reported",
+      "technique": "T1486",
+      "page": 2,
+      "branch": "encryption"
+    },
+    {
+      "id": "bl_continuity_note",
+      "label": "Business continuity: some on-site public services continued",
+      "role": "annotation",
+      "shape": "annotation",
+      "tactic": null,
+      "evidence_id": "ev_continuity",
+      "evidence_status": "context",
+      "technique": null,
+      "page": 2,
+      "branch": "encryption"
+    },
+    {
+      "id": "bl_destroy_servers",
+      "label": "Destroy servers to inhibit recovery",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "IM",
+      "evidence_id": "ev_server_destruction",
+      "evidence_status": "reported",
+      "technique": "T1485",
+      "page": 2,
+      "branch": "destruction"
+    },
+    {
+      "id": "bl_target_data",
+      "label": "Target datasets identified",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_encrypted_impact",
+      "label": "Data encrypted, applications damaged and services offline",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_encryption",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "encryption"
+    },
+    {
+      "id": "bl_recovery_inhibited",
+      "label": "Servers destroyed and recovery inhibited",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_server_destruction",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "destruction"
+    },
+    {
+      "id": "bl_copy_data",
+      "label": "Copy about 600GB of targeted data",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "CL",
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_data_copied",
+      "label": "About 600GB of data copied",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_exfiltrate",
+      "label": "Exfiltrate the copied data",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "EF",
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported_channel_unknown",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_data_exfiltrated",
+      "label": "Data exfiltrated to attacker infrastructure",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_data_theft",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "data_theft"
+    },
+    {
+      "id": "bl_extort",
+      "label": "Issue extortion demand using stolen and encrypted data",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "IM",
+      "evidence_id": "ev_extortion_publication",
+      "evidence_status": "reported_sequence",
+      "technique": "T1657",
+      "page": 2,
+      "branch": "extortion"
+    },
+    {
+      "id": "bl_extortion_leverage",
+      "label": "Extortion leverage established",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_extortion_publication",
+      "evidence_status": "derived",
+      "technique": null,
+      "page": 2,
+      "branch": "extortion"
+    },
+    {
+      "id": "bl_publish",
+      "label": "Auction then publish most stolen data",
+      "role": "event",
+      "shape": "rectangle",
+      "tactic": "IM",
+      "evidence_id": "ev_extortion_publication",
+      "evidence_status": "reported_sequence",
+      "technique": "T1657",
+      "page": 2,
+      "branch": "extortion"
+    },
+    {
+      "id": "bl_published",
+      "label": "Most stolen data published on the dark web",
+      "role": "state",
+      "shape": "ellipse",
+      "tactic": null,
+      "evidence_id": "ev_extortion_publication",
+      "evidence_status": "reported",
+      "technique": null,
+      "page": 2,
+      "branch": "extortion"
+    }
+  ],
+  "edges": [
+    {"source": "bl_recon", "target": "bl_target_info", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_target_info", "target": "bl_phishing", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_target_info", "target": "bl_bruteforce", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_phishing", "target": "bl_access_method", "relation": "causal", "style": "solid", "logic": "OR"},
+    {"source": "bl_bruteforce", "target": "bl_access_method", "relation": "causal", "style": "solid", "logic": "OR"},
+    {"source": "bl_access_method", "target": "bl_gain_entry", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_remote_server", "target": "bl_gain_entry", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_no_mfa", "target": "bl_gain_entry", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_gain_entry", "target": "bl_foothold", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_foothold", "target": "bl_expand_access", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_security_gap", "target": "bl_expand_access", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_flat_topology", "target": "bl_expand_access", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_segmentation_note", "target": "bl_expand_access", "relation": "annotation", "style": "dashed", "logic": null},
+    {"source": "bl_expand_access", "target": "bl_broad_access", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_broad_access_continuation", "target": "bl_discover_data", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_broad_access_continuation", "target": "bl_encrypt_data", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_broad_access_continuation", "target": "bl_destroy_servers", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_discover_data", "target": "bl_target_data", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_encrypt_data", "target": "bl_encrypted_impact", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_continuity_note", "target": "bl_encrypted_impact", "relation": "annotation", "style": "dashed", "logic": null},
+    {"source": "bl_destroy_servers", "target": "bl_recovery_inhibited", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_target_data", "target": "bl_copy_data", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_copy_data", "target": "bl_data_copied", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_data_copied", "target": "bl_exfiltrate", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_exfiltrate", "target": "bl_data_exfiltrated", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_data_exfiltrated", "target": "bl_extort", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_encrypted_impact", "target": "bl_extort", "relation": "causal", "style": "solid", "logic": "AND"},
+    {"source": "bl_extort", "target": "bl_extortion_leverage", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_extortion_leverage", "target": "bl_publish", "relation": "causal", "style": "solid", "logic": null},
+    {"source": "bl_publish", "target": "bl_published", "relation": "causal", "style": "solid", "logic": null}
+  ],
+  "page_layout": [
+    {
+      "page": 1,
+      "title": "Entry and expansion",
+      "entry_nodes": ["bl_recon", "bl_remote_server"],
+      "exit_nodes": ["bl_broad_access"],
+      "same_row_groups": [
+        [
+          "bl_target_info",
+          "bl_no_mfa",
+          "bl_security_gap",
+          "bl_flat_topology",
+          "bl_segmentation_note"
+        ]
+      ]
+    },
+    {
+      "page": 2,
+      "title": "Theft, impact and extortion",
+      "entry_nodes": ["bl_broad_access_continuation"],
+      "exit_nodes": ["bl_recovery_inhibited", "bl_published"],
+      "same_row_groups": [
+        [
+          "bl_discover_data",
+          "bl_encrypt_data",
+          "bl_continuity_note",
+          "bl_destroy_servers"
+        ]
+      ]
+    }
+  ],
+  "uncertainties": [
+    {
+      "field": "bl_recon.evidence_id",
+      "detail": "The hostile-reconnaissance sentence is reported separately from the access-method sentence; the model must retain its suspected status and must not invent a specific reconnaissance technique."
+    },
+    {
+      "field": "bl_phishing/bl_bruteforce",
+      "detail": "The report presents these as alternatives. They are separate possible events joined by OR, not one confirmed combined action."
+    },
+    {
+      "field": "bl_expand_access.technique",
+      "detail": "The report states that topology allowed significant access but does not identify the remote protocol or lateral-movement mechanism, so the technique is intentionally null."
+    },
+    {
+      "field": "bl_copy_data/bl_exfiltrate.technique",
+      "detail": "The report confirms copying and exfiltration but does not identify a staging method or exfiltration channel, so no specific technique is asserted."
+    },
+    {
+      "field": "annotation nodes",
+      "detail": "Defensive recommendations and business-continuity observations are contextual annotations, not attacker actions or prerequisite states."
+    }
+  ]
+}

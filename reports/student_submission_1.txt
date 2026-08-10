@@ -1,0 +1,7 @@
+On 22 March 2023, a malicious file was unintentionally downloaded onto a Capita employee's device. The file enabled malicious software to be deployed on Capita's network. Although a high-priority security alert was raised within ten minutes, the device remained unquarantined for 58 hours, during which the attacker exploited Capita's systems.
+
+The attacker maintained access, gained administrator permissions, moved laterally across multiple domains, accessed other areas of the network, and compromised critical systems. Capita had not implemented a tiering model for administrative accounts, which enabled the privilege escalation and lateral movement.
+
+Between 29 and 30 March 2023, nearly one terabyte of data was exfiltrated. The stolen information included pension records, staff records, customer records, criminal records, financial data, and other special-category data. The breach affected the personal information of 6.6 million people and impacted 325 organisations.
+
+On 31 March 2023, ransomware was deployed on Capita's systems. The attacker reset all user passwords, preventing Capita staff from accessing their systems and network.

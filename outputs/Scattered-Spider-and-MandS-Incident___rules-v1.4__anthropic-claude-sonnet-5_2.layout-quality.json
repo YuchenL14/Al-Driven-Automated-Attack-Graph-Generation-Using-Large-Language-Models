@@ -1,0 +1,70 @@
+{
+  "page_count": 4,
+  "warning_count": 0,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 9,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 4.246666666666667,
+      "page_aspect_ratio": 1.600502512562814,
+      "occupied_width_fraction": 0.5866666666666667,
+      "occupied_height_fraction": 0.9277864992150706,
+      "node_area_density": 0.41167974882260594,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0,
+      "bend_count": 0,
+      "has_parallel_structure": false,
+      "warnings": []
+    },
+    {
+      "page": 2,
+      "node_count": 9,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 3.8533333333333335,
+      "page_aspect_ratio": 1.4522613065326633,
+      "occupied_width_fraction": 0.5866666666666667,
+      "occupied_height_fraction": 0.9204152249134948,
+      "node_area_density": 0.3938177623990773,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0,
+      "bend_count": 0,
+      "has_parallel_structure": false,
+      "warnings": []
+    },
+    {
+      "page": 3,
+      "node_count": 9,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 3.7466666666666666,
+      "page_aspect_ratio": 1.4120603015075377,
+      "occupied_width_fraction": 0.5866666666666667,
+      "occupied_height_fraction": 0.9181494661921709,
+      "node_area_density": 0.3883274021352313,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0,
+      "bend_count": 0,
+      "has_parallel_structure": false,
+      "warnings": []
+    },
+    {
+      "page": 4,
+      "node_count": 12,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.129151291512915,
+      "page_aspect_ratio": 1.1117533718689787,
+      "occupied_width_fraction": 0.8745387453874539,
+      "occupied_height_fraction": 0.9202772963604853,
+      "node_area_density": 0.28364041006094637,
+      "median_horizontal_drift_fraction": 0.03228782287822878,
+      "mean_route_detour": 1.0,
+      "bend_count": 7,
+      "has_parallel_structure": true,
+      "warnings": []
+    }
+  ]
+}

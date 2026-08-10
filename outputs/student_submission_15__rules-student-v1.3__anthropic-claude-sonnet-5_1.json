@@ -1,0 +1,142 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Initial access to M&S systems",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "NTDS.dit file obtained",
+      "code": "CR",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p3",
+      "label": "Domain account password hashes in attacker possession",
+      "code": "CR",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p4",
+      "label": "DragonForce ransomware deployed on ESXi hosts",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Servers and VMs encrypted",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "In-store contactless payments disrupted",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Online/app shopping suspended, Click and Collect paused",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Castle Donington warehouse operations impacted",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Market value reduced by ~700 million pounds",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e2",
+      "label": "Steal NTDS.dit file",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.003"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1041"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": "The attackers stole the NTDS.dit file from the Windows domain controllers",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "stole",
+      "style": "solid",
+      "parents": [
+        "p1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e3",
+      "label": "Deploy DragonForce ransomware",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": "The attackers deployed DragonForce ransomware against VMware ESXi hosts on 24 April 2025",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 95,
+      "actor": "adversary",
+      "action_evidence": "deployed",
+      "style": "solid",
+      "parents": [
+        "p1"
+      ],
+      "join": "AND"
+    }
+  ]
+}

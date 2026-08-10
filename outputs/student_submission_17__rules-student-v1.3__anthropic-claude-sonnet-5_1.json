@@ -1,0 +1,77 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Initial access to M&S systems",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "Domain controller access",
+      "code": "DC",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p3",
+      "label": "NTDS.dit file and AD password hashes obtained",
+      "code": "CR",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e2"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Gain access to systems",
+      "tactic": "IA",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 5.0,
+      "source_evidence": "Attackers first gained access to Marks and Spencer systems as early as February 2025",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "gained access",
+      "style": "solid",
+      "parents": [
+        "p1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e2",
+      "label": "Steal NTDS.dit file",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.003"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1041"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attackers stole the NTDS.dit file from the Windows domain controllers",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "stole",
+      "style": "solid",
+      "parents": [
+        "p2"
+      ],
+      "join": "AND"
+    }
+  ]
+}

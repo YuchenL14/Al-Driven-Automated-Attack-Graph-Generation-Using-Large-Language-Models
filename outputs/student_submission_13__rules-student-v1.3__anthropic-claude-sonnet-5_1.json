@@ -1,0 +1,149 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "P1",
+      "label": "File transfer service externally reachable and unpatched",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "P2",
+      "label": "Foothold on internal server established",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E1"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "Tooling staged on compromised server",
+      "code": "EX",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P4",
+      "label": "Domain credentials obtained",
+      "code": "CA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P5",
+      "label": "Design documents exfiltrated from network",
+      "code": "EF",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E4"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "label": "Exploit file transfer service to obtain foothold",
+      "tactic": "IA",
+      "techniques": [
+        "T1190"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1030",
+        "M1051"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attacker exploited that service to obtain a foothold on the network",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "exploited",
+      "style": "solid",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E2",
+      "label": "Run PowerShell to stage further tooling",
+      "tactic": "EX",
+      "techniques": [
+        "T1059.001"
+      ],
+      "mitigations": [
+        "M1038",
+        "M1042"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attacker ran PowerShell on that server to stage further tooling",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "ran PowerShell",
+      "style": "solid",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Dump LSASS process memory to obtain credentials",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.001"
+      ],
+      "mitigations": [
+        "M1025",
+        "M1026",
+        "M1043"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attacker dumped LSASS process memory to obtain credentials",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "dumped LSASS process memory",
+      "style": "solid",
+      "parents": [
+        "P3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E4",
+      "label": "Exfiltrate design documents over command and control channel",
+      "tactic": "EF",
+      "techniques": [
+        "T1041"
+      ],
+      "mitigations": [
+        "M1031",
+        "M1057"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attacker exfiltrated 12GB of design documents over the command and control channel",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "exfiltrated",
+      "style": "solid",
+      "parents": [
+        "P4"
+      ],
+      "join": "AND"
+    }
+  ]
+}

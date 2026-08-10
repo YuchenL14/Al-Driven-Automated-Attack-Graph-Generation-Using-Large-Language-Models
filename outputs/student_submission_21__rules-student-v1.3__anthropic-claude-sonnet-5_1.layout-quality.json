@@ -1,0 +1,25 @@
+{
+  "page_count": 1,
+  "warning_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 8,
+      "page_width_px": 1580,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.33001658374792703,
+      "page_aspect_ratio": 0.2518987341772152,
+      "occupied_width_fraction": 0.9601990049751243,
+      "occupied_height_fraction": 0.7688442211055276,
+      "node_area_density": 0.22880572014300357,
+      "median_horizontal_drift_fraction": 0.26533996683250416,
+      "mean_route_detour": 1.0,
+      "bend_count": 10,
+      "has_parallel_structure": true,
+      "warnings": [
+        "one page is 1580px wide against a 1240px budget; its labels print at about 6.3pt across a landscape page, below the 8pt figure-text floor"
+      ]
+    }
+  ]
+}

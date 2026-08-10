@@ -1,0 +1,370 @@
+{
+  "title": "British Library Ransomware Attack (Rhysida, October 2023)",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Remote access server exposed for Covid-era IT access",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "Legacy server lacks multi-factor authentication",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p3",
+      "label": "Security software ineffective across whole network",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p4",
+      "label": "Target information gathered on British Library IT estate",
+      "code": "DS",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Valid or guessed credentials obtained",
+      "code": "CA",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Initial foothold on remote access server",
+      "code": "IA",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Broad network access due to flat IT topology",
+      "code": "DE",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Security tooling evaded or disabled",
+      "code": "DE",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Sensitive Finance, HR, Technology and backup data located",
+      "code": "DS",
+      "parents": [
+        "e6"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "~600GB of data staged and copied out",
+      "code": "CL",
+      "parents": [
+        "e7"
+      ]
+    },
+    {
+      "id": "p11",
+      "label": "Data exfiltrated to attacker infrastructure",
+      "code": "EF",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p12",
+      "label": "Servers and data destroyed, backups encrypted",
+      "code": "IM",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p13",
+      "label": "Users locked out, online services offline",
+      "code": "IM",
+      "parents": [
+        "e10"
+      ]
+    },
+    {
+      "id": "p14",
+      "label": "Stolen and encrypted data held for ransom",
+      "code": "IM",
+      "parents": [
+        "e11"
+      ]
+    },
+    {
+      "id": "p15",
+      "label": "Data auctioned then published on dark web",
+      "code": "IM",
+      "parents": [
+        "e12"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Suspected hostile reconnaissance of British Library network",
+      "tactic": "RE",
+      "technique": "T1595",
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e2",
+      "label": "Suspected phishing/spear-phishing or brute-force password attack",
+      "tactic": "CA",
+      "technique": "T1110",
+      "mitigations": [
+        "M1027",
+        "M1032",
+        "M1036"
+      ],
+      "likelihood": 5.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p2",
+        "p4"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e3",
+      "label": "Gain entry via internet-facing remote access server",
+      "tactic": "IA",
+      "technique": "T1133",
+      "mitigations": [
+        "M1032",
+        "M1030",
+        "M1035"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p1",
+        "p5"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Move through poorly segmented IT estate",
+      "tactic": "LM",
+      "technique": "T1021.002",
+      "mitigations": [
+        "M1030",
+        "M1026"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p6"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Evade or bypass ineffective security software",
+      "tactic": "DE",
+      "technique": "T1685",
+      "mitigations": [
+        "M1049",
+        "M1040"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p3",
+        "p7"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Discover Finance, HR, Technology and backup data",
+      "tactic": "DS",
+      "technique": "T1083",
+      "mitigations": [
+        "M1022",
+        "M1028"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p7",
+        "p8"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e7",
+      "label": "Collect and stage targeted data for exfiltration",
+      "tactic": "CL",
+      "technique": "T1074.001",
+      "mitigations": [
+        "M1057",
+        "M1022"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p9"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e8",
+      "label": "Exfiltrate approximately 600GB of data",
+      "tactic": "EF",
+      "technique": "T1041",
+      "mitigations": [
+        "M1057",
+        "M1037",
+        "M1031"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p10"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e9",
+      "label": "Destroy servers and encrypt backups to inhibit recovery",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": [
+        "M1053",
+        "M1040"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p8",
+        "p11"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Lock out users and take online services offline",
+      "tactic": "IM",
+      "technique": "T1489",
+      "mitigations": [
+        "M1018",
+        "M1026"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p12"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e11",
+      "label": "Issue extortion demand over stolen and encrypted data",
+      "tactic": "IM",
+      "technique": "T1657",
+      "mitigations": [
+        "M1053",
+        "M1041"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p11",
+        "p13"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e12",
+      "label": "Auction then publish dataset on dark web",
+      "tactic": "IM",
+      "technique": "T1491.002",
+      "mitigations": [
+        "M1057",
+        "M1041"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p14"
+      ],
+      "join": "AND"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+An attacker accessed an online marketplace selling breached credentials
+(T1589.001; mitigation M1056). The source does not state that any credential
+from that marketplace was obtained or used against Transport for London.
+
+Two attackers infiltrated the Transport for London network between 31 August
+and 3 September 2024. The source does not state how entry was achieved, so no
+technique is given for this step.
+
+The attackers accessed data held in Transport for London's Oyster refunds
+system (T1213; mitigations M1047, M1041, M1018, M1032).
+
+Customer refunds were delayed, leaving some customers out of pocket for longer
+than usual.
+
+The Oyster photocard application system for children and young people was
+closed.
+
+All 28,000 Transport for London employees were required to attend an office in
+person to reset their passwords.
+
+Transport for London reported GBP 29 million in loss and recovery costs.

@@ -1,0 +1,370 @@
+{
+  "title": "British Library Ransomware Attack (Rhysida, October 2023)",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Terminal server exposed without MFA",
+      "code": "IA",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "Third-party privileged account credentials exist",
+      "code": "CA",
+      "parents": []
+    },
+    {
+      "id": "p3",
+      "label": "Network reconnaissance findings obtained",
+      "code": "RE",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p4",
+      "label": "Privileged credentials compromised",
+      "code": "CA",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Remote access to Library network obtained",
+      "code": "IA",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Wide lateral access due to complex network topology",
+      "code": "DS",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Persistence established on network",
+      "code": "PS",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Native admin utilities available for abuse",
+      "code": "DE",
+      "parents": []
+    },
+    {
+      "id": "p9",
+      "label": "Security tooling/log visibility evaded",
+      "code": "DE",
+      "parents": [
+        "e6"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "Sensitive files and databases located",
+      "code": "CL",
+      "parents": [
+        "e7"
+      ]
+    },
+    {
+      "id": "p11",
+      "label": "Data staged for exfiltration",
+      "code": "CL",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p12",
+      "label": "600GB data exfiltrated from network",
+      "code": "EF",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p13",
+      "label": "Data available for ransom/auction/leak",
+      "code": "IM",
+      "parents": [
+        "e10"
+      ]
+    },
+    {
+      "id": "p14",
+      "label": "Systems and data encrypted",
+      "code": "IM",
+      "parents": [
+        "e11"
+      ]
+    },
+    {
+      "id": "p15",
+      "label": "Server estate destroyed, recovery inhibited",
+      "code": "IM",
+      "parents": [
+        "e12"
+      ]
+    },
+    {
+      "id": "p16",
+      "label": "Forensic evidence and logs destroyed",
+      "code": "DE",
+      "parents": [
+        "e13"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Conduct hostile reconnaissance of Library network",
+      "tactic": "RE",
+      "technique": "T1595",
+      "mitigations": [
+        "M1031",
+        "M1030"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e2",
+      "label": "Obtain privileged account credentials (phishing/spear-phishing or brute force)",
+      "tactic": "CA",
+      "technique": "T1110",
+      "mitigations": [
+        "M1032",
+        "M1027",
+        "M1036"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "OR"
+    },
+    {
+      "id": "e3",
+      "label": "Access terminal server remotely using compromised credentials, no MFA",
+      "tactic": "IA",
+      "technique": "T1133",
+      "mitigations": [
+        "M1032",
+        "M1030",
+        "M1035"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Move laterally across complex legacy network",
+      "tactic": "LM",
+      "technique": "T1021.001",
+      "mitigations": [
+        "M1030",
+        "M1032",
+        "M1026"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Establish persistence on compromised systems",
+      "tactic": "PS",
+      "technique": "T1136.001",
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1032"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Evade defenses and disable/bypass endpoint monitoring",
+      "tactic": "DE",
+      "technique": "T1685",
+      "mitigations": [
+        "M1022",
+        "M1026",
+        "M1047"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e7",
+      "label": "Discover and identify sensitive files/databases via keyword and targeted scanning",
+      "tactic": "DS",
+      "technique": "T1083",
+      "mitigations": [
+        "M1022",
+        "M1028"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e8",
+      "label": "Hijack native utilities to create backup copies of databases",
+      "tactic": "CL",
+      "technique": "T1560.001",
+      "mitigations": [
+        "M1038",
+        "M1040"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "OR"
+    },
+    {
+      "id": "e9",
+      "label": "Exfiltrate 600GB of copied data from network",
+      "tactic": "EF",
+      "technique": "T1048",
+      "mitigations": [
+        "M1037",
+        "M1057",
+        "M1030"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Auction and dump stolen data on dark web after ransom refusal",
+      "tactic": "IM",
+      "technique": "T1657",
+      "mitigations": [
+        "M1057",
+        "M1041"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e11",
+      "label": "Encrypt data and systems across server estate",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": [
+        "M1053",
+        "M1040"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e12",
+      "label": "Destroy servers to inhibit recovery",
+      "tactic": "IM",
+      "technique": "T1561.001",
+      "mitigations": [
+        "M1053",
+        "M1030"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "e13",
+      "label": "Delete logs and perform anti-forensic cleanup",
+      "tactic": "DE",
+      "technique": "T1070.004",
+      "mitigations": [
+        "M1022",
+        "M1029",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [],
+      "join": "AND"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "P1",
+      "label": "Access to M&S systems",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E1"
+      ]
+    },
+    {
+      "id": "P2",
+      "label": "NTDS.dit stolen from domain controllers",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "AD password hashes in attackers' possession",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P4",
+      "label": "Ransomware deployed on ESXi hosts",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P5",
+      "label": "Servers and VMs encrypted",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P6",
+      "label": "In-store contactless payments disrupted",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P7",
+      "label": "Online/app shopping suspended, Click and Collect paused",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P8",
+      "label": "Warehouse operations impacted, agency staff told not to attend",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P9",
+      "label": "Market value wiped by ~700 million pounds",
+      "code": "R",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "E3"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "label": "Gain access to systems",
+      "tactic": "IA",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 5.0,
+      "source_evidence": "Attackers first gained access to Marks and Spencer systems as early as February 2025.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "gained access",
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "E2",
+      "label": "Steal NTDS.dit file",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.003"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1041"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": "The attackers stole the NTDS.dit file from the Windows domain controllers",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "stole",
+      "style": "solid",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Deploy DragonForce ransomware",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": "The attackers deployed DragonForce ransomware against VMware ESXi hosts on 24 April 2025",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "deployed",
+      "style": "solid",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    }
+  ]
+}

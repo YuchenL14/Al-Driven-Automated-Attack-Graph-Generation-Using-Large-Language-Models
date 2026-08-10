@@ -1,0 +1,96 @@
+{
+  "title": "Ransomware outbreak (extracted from report)",
+  "preconditions": [
+    {
+      "id": "p_unpatched",
+      "label": "Unpatched network file-sharing service",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p_reachable",
+      "label": "Service reachable on internal network",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "pc_foothold",
+      "label": "Foothold on a single host",
+      "code": "IA",
+      "parents": [
+        "e_exploit"
+      ]
+    },
+    {
+      "id": "pc_spread",
+      "label": "Malware present on many hosts",
+      "code": "LM",
+      "parents": [
+        "e_propagate"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e_exploit",
+      "label": "Exploit file-sharing service for initial access",
+      "tactic": "IA",
+      "technique": "T1190",
+      "mitigations": [
+        "M1051",
+        "M1030"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p_unpatched",
+        "p_reachable"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_propagate",
+      "label": "Self-propagate to other unpatched hosts",
+      "tactic": "LM",
+      "technique": "T1210",
+      "mitigations": [
+        "M1051",
+        "M1030"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "pc_foothold"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_encrypt",
+      "label": "Encrypt files and demand ransom",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "pc_spread"
+      ],
+      "join": "AND"
+    }
+  ]
+}

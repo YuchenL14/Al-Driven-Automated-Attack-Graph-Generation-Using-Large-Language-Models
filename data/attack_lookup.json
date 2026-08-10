@@ -1,0 +1,5639 @@
+{
+  "_comment": "Auto-generated from the official MITRE ATT&CK Enterprise STIX data. Do not edit by hand; rerun scripts/update_attack_lookup.py to refresh.",
+  "_source": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
+  "techniques": {
+    "T1001": "Data Obfuscation",
+    "T1001.001": "Junk Data",
+    "T1001.002": "Steganography",
+    "T1001.003": "Protocol or Service Impersonation",
+    "T1003": "OS Credential Dumping",
+    "T1003.001": "LSASS Memory",
+    "T1003.002": "Security Account Manager",
+    "T1003.003": "NTDS",
+    "T1003.004": "LSA Secrets",
+    "T1003.005": "Cached Domain Credentials",
+    "T1003.006": "DCSync",
+    "T1003.007": "Proc Filesystem",
+    "T1003.008": "/etc/passwd and /etc/shadow",
+    "T1005": "Data from Local System",
+    "T1006": "Direct Volume Access",
+    "T1007": "System Service Discovery",
+    "T1008": "Fallback Channels",
+    "T1010": "Application Window Discovery",
+    "T1011": "Exfiltration Over Other Network Medium",
+    "T1011.001": "Exfiltration Over Bluetooth",
+    "T1012": "Query Registry",
+    "T1014": "Rootkit",
+    "T1016": "System Network Configuration Discovery",
+    "T1016.001": "Internet Connection Discovery",
+    "T1016.002": "Wi-Fi Discovery",
+    "T1018": "Remote System Discovery",
+    "T1020": "Automated Exfiltration",
+    "T1020.001": "Traffic Duplication",
+    "T1021": "Remote Services",
+    "T1021.001": "Remote Desktop Protocol",
+    "T1021.002": "SMB/Windows Admin Shares",
+    "T1021.003": "Distributed Component Object Model",
+    "T1021.004": "SSH",
+    "T1021.005": "VNC",
+    "T1021.006": "Windows Remote Management",
+    "T1021.007": "Cloud Services",
+    "T1021.008": "Direct Cloud VM Connections",
+    "T1025": "Data from Removable Media",
+    "T1027": "Obfuscated Files or Information",
+    "T1027.001": "Binary Padding",
+    "T1027.002": "Software Packing",
+    "T1027.003": "Steganography",
+    "T1027.004": "Compile After Delivery",
+    "T1027.005": "Indicator Removal from Tools",
+    "T1027.006": "HTML Smuggling",
+    "T1027.007": "Dynamic API Resolution",
+    "T1027.008": "Stripped Payloads",
+    "T1027.009": "Embedded Payloads",
+    "T1027.010": "Command Obfuscation",
+    "T1027.011": "Fileless Storage",
+    "T1027.012": "LNK Icon Smuggling",
+    "T1027.013": "Encrypted/Encoded File",
+    "T1027.014": "Polymorphic Code",
+    "T1027.015": "Compression",
+    "T1027.016": "Junk Code Insertion",
+    "T1027.017": "SVG Smuggling",
+    "T1027.018": "Invisible Unicode",
+    "T1029": "Scheduled Transfer",
+    "T1030": "Data Transfer Size Limits",
+    "T1033": "System Owner/User Discovery",
+    "T1036": "Masquerading",
+    "T1036.001": "Invalid Code Signature",
+    "T1036.002": "Right-to-Left Override",
+    "T1036.003": "Rename Legitimate Utilities",
+    "T1036.004": "Masquerade Task or Service",
+    "T1036.005": "Match Legitimate Resource Name or Location",
+    "T1036.006": "Space after Filename",
+    "T1036.007": "Double File Extension",
+    "T1036.008": "Masquerade File Type",
+    "T1036.009": "Break Process Trees",
+    "T1036.010": "Masquerade Account Name",
+    "T1036.011": "Overwrite Process Arguments",
+    "T1036.012": "Browser Fingerprint",
+    "T1037": "Boot or Logon Initialization Scripts",
+    "T1037.001": "Logon Script (Windows)",
+    "T1037.002": "Login Hook",
+    "T1037.003": "Network Logon Script",
+    "T1037.004": "RC Scripts",
+    "T1037.005": "Startup Items",
+    "T1039": "Data from Network Shared Drive",
+    "T1040": "Network Sniffing",
+    "T1041": "Exfiltration Over C2 Channel",
+    "T1046": "Network Service Discovery",
+    "T1047": "Windows Management Instrumentation",
+    "T1048": "Exfiltration Over Alternative Protocol",
+    "T1048.001": "Exfiltration Over Symmetric Encrypted Non-C2 Protocol",
+    "T1048.002": "Exfiltration Over Asymmetric Encrypted Non-C2 Protocol",
+    "T1048.003": "Exfiltration Over Unencrypted Non-C2 Protocol",
+    "T1049": "System Network Connections Discovery",
+    "T1052": "Exfiltration Over Physical Medium",
+    "T1052.001": "Exfiltration over USB",
+    "T1053": "Scheduled Task/Job",
+    "T1053.002": "At",
+    "T1053.003": "Cron",
+    "T1053.005": "Scheduled Task",
+    "T1053.006": "Systemd Timers",
+    "T1053.007": "Container Orchestration Job",
+    "T1055": "Process Injection",
+    "T1055.001": "Dynamic-link Library Injection",
+    "T1055.002": "Portable Executable Injection",
+    "T1055.003": "Thread Execution Hijacking",
+    "T1055.004": "Asynchronous Procedure Call",
+    "T1055.005": "Thread Local Storage",
+    "T1055.008": "Ptrace System Calls",
+    "T1055.009": "Proc Memory",
+    "T1055.011": "Extra Window Memory Injection",
+    "T1055.012": "Process Hollowing",
+    "T1055.013": "Process Doppelgänging",
+    "T1055.014": "VDSO Hijacking",
+    "T1055.015": "ListPlanting",
+    "T1056": "Input Capture",
+    "T1056.001": "Keylogging",
+    "T1056.002": "GUI Input Capture",
+    "T1056.003": "Web Portal Capture",
+    "T1056.004": "Credential API Hooking",
+    "T1057": "Process Discovery",
+    "T1059": "Command and Scripting Interpreter",
+    "T1059.001": "PowerShell",
+    "T1059.002": "AppleScript",
+    "T1059.003": "Windows Command Shell",
+    "T1059.004": "Unix Shell",
+    "T1059.005": "Visual Basic",
+    "T1059.006": "Python",
+    "T1059.007": "JavaScript",
+    "T1059.008": "Network Device CLI",
+    "T1059.009": "Cloud API",
+    "T1059.010": "AutoHotKey & AutoIT",
+    "T1059.011": "Lua",
+    "T1059.012": "Hypervisor CLI",
+    "T1059.013": "Container CLI/API",
+    "T1068": "Exploitation for Privilege Escalation",
+    "T1069": "Permission Groups Discovery",
+    "T1069.001": "Local Groups",
+    "T1069.002": "Domain Groups",
+    "T1069.003": "Cloud Groups",
+    "T1070": "Indicator Removal",
+    "T1070.003": "Clear Command History",
+    "T1070.004": "File Deletion",
+    "T1070.005": "Network Share Connection Removal",
+    "T1070.006": "Timestomp",
+    "T1070.007": "Clear Network Connection History and Configurations",
+    "T1070.008": "Clear Mailbox Data",
+    "T1070.009": "Clear Persistence",
+    "T1070.010": "Relocate Malware",
+    "T1071": "Application Layer Protocol",
+    "T1071.001": "Web Protocols",
+    "T1071.002": "File Transfer Protocols",
+    "T1071.003": "Mail Protocols",
+    "T1071.004": "DNS",
+    "T1071.005": "Publish/Subscribe Protocols",
+    "T1072": "Software Deployment Tools",
+    "T1074": "Data Staged",
+    "T1074.001": "Local Data Staging",
+    "T1074.002": "Remote Data Staging",
+    "T1078": "Valid Accounts",
+    "T1078.001": "Default Accounts",
+    "T1078.002": "Domain Accounts",
+    "T1078.003": "Local Accounts",
+    "T1078.004": "Cloud Accounts",
+    "T1080": "Taint Shared Content",
+    "T1082": "System Information Discovery",
+    "T1083": "File and Directory Discovery",
+    "T1087": "Account Discovery",
+    "T1087.001": "Local Account",
+    "T1087.002": "Domain Account",
+    "T1087.003": "Email Account",
+    "T1087.004": "Cloud Account",
+    "T1090": "Proxy",
+    "T1090.001": "Internal Proxy",
+    "T1090.002": "External Proxy",
+    "T1090.003": "Multi-hop Proxy",
+    "T1090.004": "Domain Fronting",
+    "T1091": "Replication Through Removable Media",
+    "T1092": "Communication Through Removable Media",
+    "T1095": "Non-Application Layer Protocol",
+    "T1098": "Account Manipulation",
+    "T1098.001": "Additional Cloud Credentials",
+    "T1098.002": "Additional Email Delegate Permissions",
+    "T1098.003": "Additional Cloud Roles",
+    "T1098.004": "SSH Authorized Keys",
+    "T1098.005": "Device Registration",
+    "T1098.006": "Additional Container Cluster Roles",
+    "T1098.007": "Additional Local or Domain Groups",
+    "T1102": "Web Service",
+    "T1102.001": "Dead Drop Resolver",
+    "T1102.002": "Bidirectional Communication",
+    "T1102.003": "One-Way Communication",
+    "T1104": "Multi-Stage Channels",
+    "T1105": "Ingress Tool Transfer",
+    "T1106": "Native API",
+    "T1110": "Brute Force",
+    "T1110.001": "Password Guessing",
+    "T1110.002": "Password Cracking",
+    "T1110.003": "Password Spraying",
+    "T1110.004": "Credential Stuffing",
+    "T1111": "Multi-Factor Authentication Interception",
+    "T1112": "Modify Registry",
+    "T1113": "Screen Capture",
+    "T1114": "Email Collection",
+    "T1114.001": "Local Email Collection",
+    "T1114.002": "Remote Email Collection",
+    "T1114.003": "Email Forwarding Rule",
+    "T1115": "Clipboard Data",
+    "T1119": "Automated Collection",
+    "T1120": "Peripheral Device Discovery",
+    "T1123": "Audio Capture",
+    "T1124": "System Time Discovery",
+    "T1125": "Video Capture",
+    "T1127": "Trusted Developer Utilities Proxy Execution",
+    "T1127.001": "MSBuild",
+    "T1127.002": "ClickOnce",
+    "T1127.003": "JamPlus",
+    "T1129": "Shared Modules",
+    "T1132": "Data Encoding",
+    "T1132.001": "Standard Encoding",
+    "T1132.002": "Non-Standard Encoding",
+    "T1133": "External Remote Services",
+    "T1134": "Access Token Manipulation",
+    "T1134.001": "Token Impersonation/Theft",
+    "T1134.002": "Create Process with Token",
+    "T1134.003": "Make and Impersonate Token",
+    "T1134.004": "Parent PID Spoofing",
+    "T1134.005": "SID-History Injection",
+    "T1135": "Network Share Discovery",
+    "T1136": "Create Account",
+    "T1136.001": "Local Account",
+    "T1136.002": "Domain Account",
+    "T1136.003": "Cloud Account",
+    "T1137": "Office Application Startup",
+    "T1137.001": "Office Template Macros",
+    "T1137.002": "Office Test",
+    "T1137.003": "Outlook Forms",
+    "T1137.004": "Outlook Home Page",
+    "T1137.005": "Outlook Rules",
+    "T1137.006": "Add-ins",
+    "T1140": "Deobfuscate/Decode Files or Information",
+    "T1176": "Software Extensions",
+    "T1176.001": "Browser Extensions",
+    "T1176.002": "IDE Extensions",
+    "T1185": "Browser Session Hijacking",
+    "T1187": "Forced Authentication",
+    "T1189": "Drive-by Compromise",
+    "T1190": "Exploit Public-Facing Application",
+    "T1195": "Supply Chain Compromise",
+    "T1195.001": "Compromise Software Dependencies and Development Tools",
+    "T1195.002": "Compromise Software Supply Chain",
+    "T1195.003": "Compromise Hardware Supply Chain",
+    "T1197": "BITS Jobs",
+    "T1199": "Trusted Relationship",
+    "T1200": "Hardware Additions",
+    "T1201": "Password Policy Discovery",
+    "T1202": "Indirect Command Execution",
+    "T1203": "Exploitation for Client Execution",
+    "T1204": "User Execution",
+    "T1204.001": "Malicious Link",
+    "T1204.002": "Malicious File",
+    "T1204.003": "Malicious Image",
+    "T1204.004": "Malicious Copy and Paste",
+    "T1204.005": "Malicious Library",
+    "T1205": "Traffic Signaling",
+    "T1205.001": "Port Knocking",
+    "T1205.002": "Socket Filters",
+    "T1207": "Rogue Domain Controller",
+    "T1210": "Exploitation of Remote Services",
+    "T1211": "Exploitation for Stealth",
+    "T1212": "Exploitation for Credential Access",
+    "T1213": "Data from Information Repositories",
+    "T1213.001": "Confluence",
+    "T1213.002": "Sharepoint",
+    "T1213.003": "Code Repositories",
+    "T1213.004": "Customer Relationship Management Software",
+    "T1213.005": "Messaging Applications",
+    "T1213.006": "Databases",
+    "T1216": "System Script Proxy Execution",
+    "T1216.001": "PubPrn",
+    "T1216.002": "SyncAppvPublishingServer",
+    "T1217": "Browser Information Discovery",
+    "T1218": "System Binary Proxy Execution",
+    "T1218.001": "Compiled HTML File",
+    "T1218.002": "Control Panel",
+    "T1218.003": "CMSTP",
+    "T1218.004": "InstallUtil",
+    "T1218.005": "Mshta",
+    "T1218.007": "Msiexec",
+    "T1218.008": "Odbcconf",
+    "T1218.009": "Regsvcs/Regasm",
+    "T1218.010": "Regsvr32",
+    "T1218.011": "Rundll32",
+    "T1218.012": "Verclsid",
+    "T1218.013": "Mavinject",
+    "T1218.014": "MMC",
+    "T1218.015": "Electron Applications",
+    "T1219": "Remote Access Tools",
+    "T1219.001": "IDE Tunneling",
+    "T1219.002": "Remote Desktop Software",
+    "T1219.003": "Remote Access Hardware",
+    "T1220": "XSL Script Processing",
+    "T1221": "Template Injection",
+    "T1222": "File and Directory Permissions Modification",
+    "T1222.001": "Windows Permissions",
+    "T1222.002": "Linux and Mac Permissions",
+    "T1480": "Execution Guardrails",
+    "T1480.001": "Environmental Keying",
+    "T1480.002": "Mutual Exclusion",
+    "T1482": "Domain Trust Discovery",
+    "T1484": "Domain or Tenant Policy Modification",
+    "T1484.001": "Group Policy Modification",
+    "T1484.002": "Trust Modification",
+    "T1485": "Data Destruction",
+    "T1485.001": "Lifecycle-Triggered Deletion",
+    "T1486": "Data Encrypted for Impact",
+    "T1489": "Service Stop",
+    "T1490": "Inhibit System Recovery",
+    "T1491": "Defacement",
+    "T1491.001": "Internal Defacement",
+    "T1491.002": "External Defacement",
+    "T1495": "Firmware Corruption",
+    "T1496": "Resource Hijacking",
+    "T1496.001": "Compute Hijacking",
+    "T1496.002": "Bandwidth Hijacking",
+    "T1496.003": "SMS Pumping",
+    "T1496.004": "Cloud Service Hijacking",
+    "T1497": "Virtualization/Sandbox Evasion",
+    "T1497.001": "System Checks",
+    "T1497.002": "User Activity Based Checks",
+    "T1497.003": "Time Based Checks",
+    "T1498": "Network Denial of Service",
+    "T1498.001": "Direct Network Flood",
+    "T1498.002": "Reflection Amplification",
+    "T1499": "Endpoint Denial of Service",
+    "T1499.001": "OS Exhaustion Flood",
+    "T1499.002": "Service Exhaustion Flood",
+    "T1499.003": "Application Exhaustion Flood",
+    "T1499.004": "Application or System Exploitation",
+    "T1505": "Server Software Component",
+    "T1505.001": "SQL Stored Procedures",
+    "T1505.002": "Transport Agent",
+    "T1505.003": "Web Shell",
+    "T1505.004": "IIS Components",
+    "T1505.005": "Terminal Services DLL",
+    "T1505.006": "vSphere Installation Bundles",
+    "T1518": "Software Discovery",
+    "T1518.001": "Security Software Discovery",
+    "T1518.002": "Backup Software Discovery",
+    "T1525": "Implant Internal Image",
+    "T1526": "Cloud Service Discovery",
+    "T1528": "Steal Application Access Token",
+    "T1529": "System Shutdown/Reboot",
+    "T1530": "Data from Cloud Storage",
+    "T1531": "Account Access Removal",
+    "T1534": "Internal Spearphishing",
+    "T1535": "Unused/Unsupported Cloud Regions",
+    "T1537": "Transfer Data to Cloud Account",
+    "T1538": "Cloud Service Dashboard",
+    "T1539": "Steal Web Session Cookie",
+    "T1542": "Pre-OS Boot",
+    "T1542.001": "System Firmware",
+    "T1542.002": "Component Firmware",
+    "T1542.003": "Bootkit",
+    "T1542.004": "ROMMONkit",
+    "T1542.005": "TFTP Boot",
+    "T1543": "Create or Modify System Process",
+    "T1543.001": "Launch Agent",
+    "T1543.002": "Systemd Service",
+    "T1543.003": "Windows Service",
+    "T1543.004": "Launch Daemon",
+    "T1543.005": "Container Service",
+    "T1546": "Event Triggered Execution",
+    "T1546.001": "Change Default File Association",
+    "T1546.002": "Screensaver",
+    "T1546.003": "Windows Management Instrumentation Event Subscription",
+    "T1546.004": "Unix Shell Configuration Modification",
+    "T1546.005": "Trap",
+    "T1546.006": "LC_LOAD_DYLIB Addition",
+    "T1546.007": "Netsh Helper DLL",
+    "T1546.008": "Accessibility Features",
+    "T1546.009": "AppCert DLLs",
+    "T1546.010": "AppInit DLLs",
+    "T1546.011": "Application Shimming",
+    "T1546.012": "Image File Execution Options Injection",
+    "T1546.013": "PowerShell Profile",
+    "T1546.014": "Emond",
+    "T1546.015": "Component Object Model Hijacking",
+    "T1546.016": "Installer Packages",
+    "T1546.017": "Udev Rules",
+    "T1546.018": "Python Startup Hooks",
+    "T1547": "Boot or Logon Autostart Execution",
+    "T1547.001": "Registry Run Keys / Startup Folder",
+    "T1547.002": "Authentication Package",
+    "T1547.003": "Time Providers",
+    "T1547.004": "Winlogon Helper DLL",
+    "T1547.005": "Security Support Provider",
+    "T1547.006": "Kernel Modules and Extensions",
+    "T1547.007": "Re-opened Applications",
+    "T1547.008": "LSASS Driver",
+    "T1547.009": "Shortcut Modification",
+    "T1547.010": "Port Monitors",
+    "T1547.012": "Print Processors",
+    "T1547.013": "XDG Autostart Entries",
+    "T1547.014": "Active Setup",
+    "T1547.015": "Login Items",
+    "T1548": "Abuse Elevation Control Mechanism",
+    "T1548.001": "Setuid and Setgid",
+    "T1548.002": "Bypass User Account Control",
+    "T1548.003": "Sudo and Sudo Caching",
+    "T1548.004": "Elevated Execution with Prompt",
+    "T1548.005": "Temporary Elevated Cloud Access",
+    "T1548.006": "TCC Manipulation",
+    "T1550": "Use Alternate Authentication Material",
+    "T1550.001": "Application Access Token",
+    "T1550.002": "Pass the Hash",
+    "T1550.003": "Pass the Ticket",
+    "T1550.004": "Web Session Cookie",
+    "T1552": "Unsecured Credentials",
+    "T1552.001": "Credentials In Files",
+    "T1552.002": "Credentials in Registry",
+    "T1552.003": "Shell History",
+    "T1552.004": "Private Keys",
+    "T1552.005": "Cloud Instance Metadata API",
+    "T1552.006": "Group Policy Preferences",
+    "T1552.007": "Container API",
+    "T1552.008": "Chat Messages",
+    "T1553": "Subvert Trust Controls",
+    "T1553.001": "Gatekeeper Bypass",
+    "T1553.002": "Code Signing",
+    "T1553.003": "SIP and Trust Provider Hijacking",
+    "T1553.004": "Install Root Certificate",
+    "T1553.005": "Mark-of-the-Web Bypass",
+    "T1553.006": "Code Signing Policy Modification",
+    "T1554": "Compromise Host Software Binary",
+    "T1555": "Credentials from Password Stores",
+    "T1555.001": "Keychain",
+    "T1555.002": "Securityd Memory",
+    "T1555.003": "Credentials from Web Browsers",
+    "T1555.004": "Windows Credential Manager",
+    "T1555.005": "Password Managers",
+    "T1555.006": "Cloud Secrets Management Stores",
+    "T1556": "Modify Authentication Process",
+    "T1556.001": "Domain Controller Authentication",
+    "T1556.002": "Password Filter DLL",
+    "T1556.003": "Pluggable Authentication Modules",
+    "T1556.004": "Network Device Authentication",
+    "T1556.005": "Reversible Encryption",
+    "T1556.006": "Multi-Factor Authentication",
+    "T1556.007": "Hybrid Identity",
+    "T1556.008": "Network Provider DLL",
+    "T1556.009": "Conditional Access Policies",
+    "T1557": "Adversary-in-the-Middle",
+    "T1557.001": "Name Resolution Poisoning and SMB Relay",
+    "T1557.002": "ARP Cache Poisoning",
+    "T1557.003": "DHCP Spoofing",
+    "T1557.004": "Evil Twin",
+    "T1558": "Steal or Forge Kerberos Tickets",
+    "T1558.001": "Golden Ticket",
+    "T1558.002": "Silver Ticket",
+    "T1558.003": "Kerberoasting",
+    "T1558.004": "AS-REP Roasting",
+    "T1558.005": "Ccache Files",
+    "T1559": "Inter-Process Communication",
+    "T1559.001": "Component Object Model",
+    "T1559.002": "Dynamic Data Exchange",
+    "T1559.003": "XPC Services",
+    "T1560": "Archive Collected Data",
+    "T1560.001": "Archive via Utility",
+    "T1560.002": "Archive via Library",
+    "T1560.003": "Archive via Custom Method",
+    "T1561": "Disk Wipe",
+    "T1561.001": "Disk Content Wipe",
+    "T1561.002": "Disk Structure Wipe",
+    "T1563": "Remote Service Session Hijacking",
+    "T1563.001": "SSH Hijacking",
+    "T1563.002": "RDP Hijacking",
+    "T1564": "Hide Artifacts",
+    "T1564.001": "Hidden Files and Directories",
+    "T1564.002": "Hidden Users",
+    "T1564.003": "Hidden Window",
+    "T1564.004": "NTFS File Attributes",
+    "T1564.005": "Hidden File System",
+    "T1564.006": "Run Virtual Instance",
+    "T1564.007": "VBA Stomping",
+    "T1564.008": "Email Hiding Rules",
+    "T1564.009": "Resource Forking",
+    "T1564.010": "Process Argument Spoofing",
+    "T1564.011": "Ignore Process Interrupts",
+    "T1564.012": "File/Path Exclusions",
+    "T1564.013": "Bind Mounts",
+    "T1564.014": "Extended Attributes",
+    "T1565": "Data Manipulation",
+    "T1565.001": "Stored Data Manipulation",
+    "T1565.002": "Transmitted Data Manipulation",
+    "T1565.003": "Runtime Data Manipulation",
+    "T1566": "Phishing",
+    "T1566.001": "Spearphishing Attachment",
+    "T1566.002": "Spearphishing Link",
+    "T1566.003": "Spearphishing via Service",
+    "T1566.004": "Spearphishing Voice",
+    "T1567": "Exfiltration Over Web Service",
+    "T1567.001": "Exfiltration to Code Repository",
+    "T1567.002": "Exfiltration to Cloud Storage",
+    "T1567.003": "Exfiltration to Text Storage Sites",
+    "T1567.004": "Exfiltration Over Webhook",
+    "T1568": "Dynamic Resolution",
+    "T1568.001": "Fast Flux DNS",
+    "T1568.002": "Domain Generation Algorithms",
+    "T1568.003": "DNS Calculation",
+    "T1569": "System Services",
+    "T1569.001": "Launchctl",
+    "T1569.002": "Service Execution",
+    "T1569.003": "Systemctl",
+    "T1570": "Lateral Tool Transfer",
+    "T1571": "Non-Standard Port",
+    "T1572": "Protocol Tunneling",
+    "T1573": "Encrypted Channel",
+    "T1573.001": "Symmetric Cryptography",
+    "T1573.002": "Asymmetric Cryptography",
+    "T1574": "Hijack Execution Flow",
+    "T1574.001": "DLL",
+    "T1574.004": "Dylib Hijacking",
+    "T1574.005": "Executable Installer File Permissions Weakness",
+    "T1574.006": "Dynamic Linker Hijacking",
+    "T1574.007": "Path Interception by PATH Environment Variable",
+    "T1574.008": "Path Interception by Search Order Hijacking",
+    "T1574.009": "Path Interception by Unquoted Path",
+    "T1574.010": "Services File Permissions Weakness",
+    "T1574.011": "Services Registry Permissions Weakness",
+    "T1574.012": "COR_PROFILER",
+    "T1574.013": "KernelCallbackTable",
+    "T1574.014": "AppDomainManager",
+    "T1578": "Modify Cloud Compute Infrastructure",
+    "T1578.001": "Create Snapshot",
+    "T1578.002": "Create Cloud Instance",
+    "T1578.003": "Delete Cloud Instance",
+    "T1578.004": "Revert Cloud Instance",
+    "T1578.005": "Modify Cloud Compute Configurations",
+    "T1580": "Cloud Infrastructure Discovery",
+    "T1583": "Acquire Infrastructure",
+    "T1583.001": "Domains",
+    "T1583.002": "DNS Server",
+    "T1583.003": "Virtual Private Server",
+    "T1583.004": "Server",
+    "T1583.005": "Botnet",
+    "T1583.006": "Web Services",
+    "T1583.007": "Serverless",
+    "T1583.008": "Malvertising",
+    "T1584": "Compromise Infrastructure",
+    "T1584.001": "Domains",
+    "T1584.002": "DNS Server",
+    "T1584.003": "Virtual Private Server",
+    "T1584.004": "Server",
+    "T1584.005": "Botnet",
+    "T1584.006": "Web Services",
+    "T1584.007": "Serverless",
+    "T1584.008": "Network Devices",
+    "T1585": "Establish Accounts",
+    "T1585.001": "Social Media Accounts",
+    "T1585.002": "Email Accounts",
+    "T1585.003": "Cloud Accounts",
+    "T1586": "Compromise Accounts",
+    "T1586.001": "Social Media Accounts",
+    "T1586.002": "Email Accounts",
+    "T1586.003": "Cloud Accounts",
+    "T1587": "Develop Capabilities",
+    "T1587.001": "Malware",
+    "T1587.002": "Code Signing Certificates",
+    "T1587.003": "Digital Certificates",
+    "T1587.004": "Exploits",
+    "T1588": "Obtain Capabilities",
+    "T1588.001": "Malware",
+    "T1588.002": "Tool",
+    "T1588.003": "Code Signing Certificates",
+    "T1588.004": "Digital Certificates",
+    "T1588.005": "Exploits",
+    "T1588.006": "Vulnerabilities",
+    "T1588.007": "Artificial Intelligence",
+    "T1589": "Gather Victim Identity Information",
+    "T1589.001": "Credentials",
+    "T1589.002": "Email Addresses",
+    "T1589.003": "Employee Names",
+    "T1590": "Gather Victim Network Information",
+    "T1590.001": "Domain Properties",
+    "T1590.002": "DNS",
+    "T1590.003": "Network Trust Dependencies",
+    "T1590.004": "Network Topology",
+    "T1590.005": "IP Addresses",
+    "T1590.006": "Network Security Appliances",
+    "T1591": "Gather Victim Org Information",
+    "T1591.001": "Determine Physical Locations",
+    "T1591.002": "Business Relationships",
+    "T1591.003": "Identify Business Tempo",
+    "T1591.004": "Identify Roles",
+    "T1592": "Gather Victim Host Information",
+    "T1592.001": "Hardware",
+    "T1592.002": "Software",
+    "T1592.003": "Firmware",
+    "T1592.004": "Client Configurations",
+    "T1593": "Search Open Websites/Domains",
+    "T1593.001": "Social Media",
+    "T1593.002": "Search Engines",
+    "T1593.003": "Code Repositories",
+    "T1594": "Search Victim-Owned Websites",
+    "T1595": "Active Scanning",
+    "T1595.001": "Scanning IP Blocks",
+    "T1595.002": "Vulnerability Scanning",
+    "T1595.003": "Wordlist Scanning",
+    "T1596": "Search Open Technical Databases",
+    "T1596.001": "DNS/Passive DNS",
+    "T1596.002": "WHOIS",
+    "T1596.003": "Digital Certificates",
+    "T1596.004": "CDNs",
+    "T1596.005": "Scan Databases",
+    "T1597": "Search Closed Sources",
+    "T1597.001": "Threat Intel Vendors",
+    "T1597.002": "Purchase Technical Data",
+    "T1598": "Phishing for Information",
+    "T1598.001": "Spearphishing Service",
+    "T1598.002": "Spearphishing Attachment",
+    "T1598.003": "Spearphishing Link",
+    "T1598.004": "Spearphishing Voice",
+    "T1599": "Network Boundary Bridging",
+    "T1599.001": "Network Address Translation Traversal",
+    "T1600": "Weaken Encryption",
+    "T1600.001": "Reduce Key Space",
+    "T1600.002": "Disable Crypto Hardware",
+    "T1601": "Modify System Image",
+    "T1601.001": "Patch System Image",
+    "T1601.002": "Downgrade System Image",
+    "T1602": "Data from Configuration Repository",
+    "T1602.001": "SNMP (MIB Dump)",
+    "T1602.002": "Network Device Configuration Dump",
+    "T1606": "Forge Web Credentials",
+    "T1606.001": "Web Cookies",
+    "T1606.002": "SAML Tokens",
+    "T1608": "Stage Capabilities",
+    "T1608.001": "Upload Malware",
+    "T1608.002": "Upload Tool",
+    "T1608.003": "Install Digital Certificate",
+    "T1608.004": "Drive-by Target",
+    "T1608.005": "Link Target",
+    "T1608.006": "SEO Poisoning",
+    "T1609": "Container Administration Command",
+    "T1610": "Deploy Container",
+    "T1611": "Escape to Host",
+    "T1612": "Build Image on Host",
+    "T1613": "Container and Resource Discovery",
+    "T1614": "System Location Discovery",
+    "T1614.001": "System Language Discovery",
+    "T1615": "Group Policy Discovery",
+    "T1619": "Cloud Storage Object Discovery",
+    "T1620": "Reflective Code Loading",
+    "T1621": "Multi-Factor Authentication Request Generation",
+    "T1622": "Debugger Evasion",
+    "T1647": "Plist File Modification",
+    "T1648": "Serverless Execution",
+    "T1649": "Steal or Forge Authentication Certificates",
+    "T1650": "Acquire Access",
+    "T1651": "Cloud Administration Command",
+    "T1652": "Device Driver Discovery",
+    "T1653": "Power Settings",
+    "T1654": "Log Enumeration",
+    "T1657": "Financial Theft",
+    "T1659": "Content Injection",
+    "T1665": "Hide Infrastructure",
+    "T1666": "Modify Cloud Resource Hierarchy",
+    "T1667": "Email Bombing",
+    "T1668": "Exclusive Control",
+    "T1669": "Wi-Fi Networks",
+    "T1671": "Cloud Application Integration",
+    "T1673": "Virtual Machine Discovery",
+    "T1674": "Input Injection",
+    "T1675": "ESXi Administration Command",
+    "T1677": "Poisoned Pipeline Execution",
+    "T1678": "Delay Execution",
+    "T1679": "Selective Exclusion",
+    "T1680": "Local Storage Discovery",
+    "T1681": "Search Threat Vendor Data",
+    "T1682": "Query Public AI Services",
+    "T1683": "Generate Content",
+    "T1683.001": "Written Content",
+    "T1683.002": "Audio-Visual Content",
+    "T1684": "Social Engineering",
+    "T1684.001": "Impersonation",
+    "T1684.002": "Email Spoofing",
+    "T1685": "Disable or Modify Tools",
+    "T1685.001": "Disable or Modify Windows Event Log",
+    "T1685.002": "Disable or Modify Cloud Log",
+    "T1685.003": "Modify or Spoof Tool UI",
+    "T1685.004": "Disable or Modify Linux Audit System Log",
+    "T1685.005": "Clear Windows Event Logs",
+    "T1685.006": "Clear Linux or Mac System Logs",
+    "T1686": "Disable or Modify System Firewall",
+    "T1686.001": "Cloud Firewall",
+    "T1686.002": "Network Device Firewall",
+    "T1686.003": "Windows Host Firewall",
+    "T1687": "Exploitation for Defense Impairment",
+    "T1688": "Safe Mode Boot",
+    "T1689": "Downgrade Attack",
+    "T1690": "Prevent Command History Logging"
+  },
+  "technique_tactics": {
+    "T1001": [
+      "C2"
+    ],
+    "T1001.001": [
+      "C2"
+    ],
+    "T1001.002": [
+      "C2"
+    ],
+    "T1001.003": [
+      "C2"
+    ],
+    "T1003": [
+      "CA"
+    ],
+    "T1003.001": [
+      "CA"
+    ],
+    "T1003.002": [
+      "CA"
+    ],
+    "T1003.003": [
+      "CA"
+    ],
+    "T1003.004": [
+      "CA"
+    ],
+    "T1003.005": [
+      "CA"
+    ],
+    "T1003.006": [
+      "CA"
+    ],
+    "T1003.007": [
+      "CA"
+    ],
+    "T1003.008": [
+      "CA"
+    ],
+    "T1005": [
+      "CL"
+    ],
+    "T1006": [
+      "DE"
+    ],
+    "T1007": [
+      "DS"
+    ],
+    "T1008": [
+      "C2"
+    ],
+    "T1010": [
+      "DS"
+    ],
+    "T1011": [
+      "EF"
+    ],
+    "T1011.001": [
+      "EF"
+    ],
+    "T1012": [
+      "DS"
+    ],
+    "T1014": [
+      "DE"
+    ],
+    "T1016": [
+      "DS"
+    ],
+    "T1016.001": [
+      "DS"
+    ],
+    "T1016.002": [
+      "DS"
+    ],
+    "T1018": [
+      "DS"
+    ],
+    "T1020": [
+      "EF"
+    ],
+    "T1020.001": [
+      "EF"
+    ],
+    "T1021": [
+      "LM"
+    ],
+    "T1021.001": [
+      "LM"
+    ],
+    "T1021.002": [
+      "LM"
+    ],
+    "T1021.003": [
+      "LM"
+    ],
+    "T1021.004": [
+      "LM"
+    ],
+    "T1021.005": [
+      "LM"
+    ],
+    "T1021.006": [
+      "LM"
+    ],
+    "T1021.007": [
+      "LM"
+    ],
+    "T1021.008": [
+      "LM"
+    ],
+    "T1025": [
+      "CL"
+    ],
+    "T1027": [
+      "DE"
+    ],
+    "T1027.001": [
+      "DE"
+    ],
+    "T1027.002": [
+      "DE"
+    ],
+    "T1027.003": [
+      "DE"
+    ],
+    "T1027.004": [
+      "DE"
+    ],
+    "T1027.005": [
+      "DE"
+    ],
+    "T1027.006": [
+      "DE"
+    ],
+    "T1027.007": [
+      "DE"
+    ],
+    "T1027.008": [
+      "DE"
+    ],
+    "T1027.009": [
+      "DE"
+    ],
+    "T1027.010": [
+      "DE"
+    ],
+    "T1027.011": [
+      "DE"
+    ],
+    "T1027.012": [
+      "DE"
+    ],
+    "T1027.013": [
+      "DE"
+    ],
+    "T1027.014": [
+      "DE"
+    ],
+    "T1027.015": [
+      "DE"
+    ],
+    "T1027.016": [
+      "DE"
+    ],
+    "T1027.017": [
+      "DE"
+    ],
+    "T1027.018": [
+      "DE"
+    ],
+    "T1029": [
+      "EF"
+    ],
+    "T1030": [
+      "EF"
+    ],
+    "T1033": [
+      "DS"
+    ],
+    "T1036": [
+      "DE"
+    ],
+    "T1036.001": [
+      "DE"
+    ],
+    "T1036.002": [
+      "DE"
+    ],
+    "T1036.003": [
+      "DE"
+    ],
+    "T1036.004": [
+      "DE"
+    ],
+    "T1036.005": [
+      "DE"
+    ],
+    "T1036.006": [
+      "DE"
+    ],
+    "T1036.007": [
+      "DE"
+    ],
+    "T1036.008": [
+      "DE"
+    ],
+    "T1036.009": [
+      "DE"
+    ],
+    "T1036.010": [
+      "DE"
+    ],
+    "T1036.011": [
+      "DE"
+    ],
+    "T1036.012": [
+      "DE"
+    ],
+    "T1037": [
+      "PS",
+      "PE"
+    ],
+    "T1037.001": [
+      "PS",
+      "PE"
+    ],
+    "T1037.002": [
+      "PS",
+      "PE"
+    ],
+    "T1037.003": [
+      "PS",
+      "PE"
+    ],
+    "T1037.004": [
+      "PS",
+      "PE"
+    ],
+    "T1037.005": [
+      "PS",
+      "PE"
+    ],
+    "T1039": [
+      "CL"
+    ],
+    "T1040": [
+      "CA",
+      "DS"
+    ],
+    "T1041": [
+      "EF"
+    ],
+    "T1046": [
+      "DS"
+    ],
+    "T1047": [
+      "EX"
+    ],
+    "T1048": [
+      "EF"
+    ],
+    "T1048.001": [
+      "EF"
+    ],
+    "T1048.002": [
+      "EF"
+    ],
+    "T1048.003": [
+      "EF"
+    ],
+    "T1049": [
+      "DS"
+    ],
+    "T1052": [
+      "EF"
+    ],
+    "T1052.001": [
+      "EF"
+    ],
+    "T1053": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1053.002": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1053.003": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1053.005": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1053.006": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1053.007": [
+      "EX",
+      "PS",
+      "PE"
+    ],
+    "T1055": [
+      "DE",
+      "PE"
+    ],
+    "T1055.001": [
+      "DE",
+      "PE"
+    ],
+    "T1055.002": [
+      "DE",
+      "PE"
+    ],
+    "T1055.003": [
+      "DE",
+      "PE"
+    ],
+    "T1055.004": [
+      "DE",
+      "PE"
+    ],
+    "T1055.005": [
+      "DE",
+      "PE"
+    ],
+    "T1055.008": [
+      "DE",
+      "PE"
+    ],
+    "T1055.009": [
+      "DE",
+      "PE"
+    ],
+    "T1055.011": [
+      "DE",
+      "PE"
+    ],
+    "T1055.012": [
+      "DE",
+      "PE"
+    ],
+    "T1055.013": [
+      "DE",
+      "PE"
+    ],
+    "T1055.014": [
+      "DE",
+      "PE"
+    ],
+    "T1055.015": [
+      "DE",
+      "PE"
+    ],
+    "T1056": [
+      "CL",
+      "CA"
+    ],
+    "T1056.001": [
+      "CL",
+      "CA"
+    ],
+    "T1056.002": [
+      "CL",
+      "CA"
+    ],
+    "T1056.003": [
+      "CL",
+      "CA"
+    ],
+    "T1056.004": [
+      "CL",
+      "CA"
+    ],
+    "T1057": [
+      "DS"
+    ],
+    "T1059": [
+      "EX"
+    ],
+    "T1059.001": [
+      "EX"
+    ],
+    "T1059.002": [
+      "EX"
+    ],
+    "T1059.003": [
+      "EX"
+    ],
+    "T1059.004": [
+      "EX"
+    ],
+    "T1059.005": [
+      "EX"
+    ],
+    "T1059.006": [
+      "EX"
+    ],
+    "T1059.007": [
+      "EX"
+    ],
+    "T1059.008": [
+      "EX"
+    ],
+    "T1059.009": [
+      "EX"
+    ],
+    "T1059.010": [
+      "EX"
+    ],
+    "T1059.011": [
+      "EX"
+    ],
+    "T1059.012": [
+      "EX"
+    ],
+    "T1059.013": [
+      "EX"
+    ],
+    "T1068": [
+      "PE"
+    ],
+    "T1069": [
+      "DS"
+    ],
+    "T1069.001": [
+      "DS"
+    ],
+    "T1069.002": [
+      "DS"
+    ],
+    "T1069.003": [
+      "DS"
+    ],
+    "T1070": [
+      "DE"
+    ],
+    "T1070.003": [
+      "DE"
+    ],
+    "T1070.004": [
+      "DE"
+    ],
+    "T1070.005": [
+      "DE"
+    ],
+    "T1070.006": [
+      "DE"
+    ],
+    "T1070.007": [
+      "DE"
+    ],
+    "T1070.008": [
+      "DE"
+    ],
+    "T1070.009": [
+      "DE"
+    ],
+    "T1070.010": [
+      "DE"
+    ],
+    "T1071": [
+      "C2"
+    ],
+    "T1071.001": [
+      "C2"
+    ],
+    "T1071.002": [
+      "C2"
+    ],
+    "T1071.003": [
+      "C2"
+    ],
+    "T1071.004": [
+      "C2"
+    ],
+    "T1071.005": [
+      "C2"
+    ],
+    "T1072": [
+      "EX",
+      "LM"
+    ],
+    "T1074": [
+      "CL"
+    ],
+    "T1074.001": [
+      "CL"
+    ],
+    "T1074.002": [
+      "CL"
+    ],
+    "T1078": [
+      "DE",
+      "PS",
+      "PE",
+      "IA"
+    ],
+    "T1078.001": [
+      "DE",
+      "PS",
+      "PE",
+      "IA"
+    ],
+    "T1078.002": [
+      "DE",
+      "PS",
+      "PE",
+      "IA"
+    ],
+    "T1078.003": [
+      "DE",
+      "PS",
+      "PE",
+      "IA"
+    ],
+    "T1078.004": [
+      "DE",
+      "PS",
+      "PE",
+      "IA"
+    ],
+    "T1080": [
+      "LM"
+    ],
+    "T1082": [
+      "DS"
+    ],
+    "T1083": [
+      "DS"
+    ],
+    "T1087": [
+      "DS"
+    ],
+    "T1087.001": [
+      "DS"
+    ],
+    "T1087.002": [
+      "DS"
+    ],
+    "T1087.003": [
+      "DS"
+    ],
+    "T1087.004": [
+      "DS"
+    ],
+    "T1090": [
+      "C2"
+    ],
+    "T1090.001": [
+      "C2"
+    ],
+    "T1090.002": [
+      "C2"
+    ],
+    "T1090.003": [
+      "C2"
+    ],
+    "T1090.004": [
+      "C2"
+    ],
+    "T1091": [
+      "LM",
+      "IA"
+    ],
+    "T1092": [
+      "C2"
+    ],
+    "T1095": [
+      "C2"
+    ],
+    "T1098": [
+      "PS",
+      "PE"
+    ],
+    "T1098.001": [
+      "PS",
+      "PE"
+    ],
+    "T1098.002": [
+      "PS",
+      "PE"
+    ],
+    "T1098.003": [
+      "PS",
+      "PE"
+    ],
+    "T1098.004": [
+      "PS",
+      "PE"
+    ],
+    "T1098.005": [
+      "PS",
+      "PE"
+    ],
+    "T1098.006": [
+      "PS",
+      "PE"
+    ],
+    "T1098.007": [
+      "PS",
+      "PE"
+    ],
+    "T1102": [
+      "C2"
+    ],
+    "T1102.001": [
+      "C2"
+    ],
+    "T1102.002": [
+      "C2"
+    ],
+    "T1102.003": [
+      "C2"
+    ],
+    "T1104": [
+      "C2"
+    ],
+    "T1105": [
+      "C2"
+    ],
+    "T1106": [
+      "EX"
+    ],
+    "T1110": [
+      "CA"
+    ],
+    "T1110.001": [
+      "CA"
+    ],
+    "T1110.002": [
+      "CA"
+    ],
+    "T1110.003": [
+      "CA"
+    ],
+    "T1110.004": [
+      "CA"
+    ],
+    "T1111": [
+      "CA"
+    ],
+    "T1112": [
+      "DE",
+      "PS"
+    ],
+    "T1113": [
+      "CL"
+    ],
+    "T1114": [
+      "CL"
+    ],
+    "T1114.001": [
+      "CL"
+    ],
+    "T1114.002": [
+      "CL"
+    ],
+    "T1114.003": [
+      "CL"
+    ],
+    "T1115": [
+      "CL"
+    ],
+    "T1119": [
+      "CL"
+    ],
+    "T1120": [
+      "DS"
+    ],
+    "T1123": [
+      "CL"
+    ],
+    "T1124": [
+      "DS"
+    ],
+    "T1125": [
+      "CL"
+    ],
+    "T1127": [
+      "DE",
+      "EX"
+    ],
+    "T1127.001": [
+      "DE",
+      "EX"
+    ],
+    "T1127.002": [
+      "DE",
+      "EX"
+    ],
+    "T1127.003": [
+      "DE",
+      "EX"
+    ],
+    "T1129": [
+      "EX"
+    ],
+    "T1132": [
+      "C2"
+    ],
+    "T1132.001": [
+      "C2"
+    ],
+    "T1132.002": [
+      "C2"
+    ],
+    "T1133": [
+      "PS",
+      "IA"
+    ],
+    "T1134": [
+      "DE",
+      "PE"
+    ],
+    "T1134.001": [
+      "DE",
+      "PE"
+    ],
+    "T1134.002": [
+      "DE",
+      "PE"
+    ],
+    "T1134.003": [
+      "DE",
+      "PE"
+    ],
+    "T1134.004": [
+      "DE",
+      "PE"
+    ],
+    "T1134.005": [
+      "DE",
+      "PE"
+    ],
+    "T1135": [
+      "DS"
+    ],
+    "T1136": [
+      "PS"
+    ],
+    "T1136.001": [
+      "PS"
+    ],
+    "T1136.002": [
+      "PS"
+    ],
+    "T1136.003": [
+      "PS"
+    ],
+    "T1137": [
+      "PS"
+    ],
+    "T1137.001": [
+      "PS"
+    ],
+    "T1137.002": [
+      "PS"
+    ],
+    "T1137.003": [
+      "PS"
+    ],
+    "T1137.004": [
+      "PS"
+    ],
+    "T1137.005": [
+      "PS"
+    ],
+    "T1137.006": [
+      "PS"
+    ],
+    "T1140": [
+      "DE"
+    ],
+    "T1176": [
+      "PS"
+    ],
+    "T1176.001": [
+      "PS"
+    ],
+    "T1176.002": [
+      "PS"
+    ],
+    "T1185": [
+      "CL"
+    ],
+    "T1187": [
+      "CA"
+    ],
+    "T1189": [
+      "IA"
+    ],
+    "T1190": [
+      "IA"
+    ],
+    "T1195": [
+      "IA"
+    ],
+    "T1195.001": [
+      "IA"
+    ],
+    "T1195.002": [
+      "IA"
+    ],
+    "T1195.003": [
+      "IA"
+    ],
+    "T1197": [
+      "DE",
+      "PS",
+      "EX"
+    ],
+    "T1199": [
+      "IA"
+    ],
+    "T1200": [
+      "IA"
+    ],
+    "T1201": [
+      "DS"
+    ],
+    "T1202": [
+      "DE"
+    ],
+    "T1203": [
+      "EX"
+    ],
+    "T1204": [
+      "EX"
+    ],
+    "T1204.001": [
+      "EX"
+    ],
+    "T1204.002": [
+      "EX"
+    ],
+    "T1204.003": [
+      "EX"
+    ],
+    "T1204.004": [
+      "EX"
+    ],
+    "T1204.005": [
+      "EX"
+    ],
+    "T1205": [
+      "DE",
+      "PS",
+      "C2"
+    ],
+    "T1205.001": [
+      "DE",
+      "PS",
+      "C2"
+    ],
+    "T1205.002": [
+      "DE",
+      "PS",
+      "C2"
+    ],
+    "T1207": [
+      "DE"
+    ],
+    "T1210": [
+      "LM"
+    ],
+    "T1211": [
+      "DE"
+    ],
+    "T1212": [
+      "CA"
+    ],
+    "T1213": [
+      "CL"
+    ],
+    "T1213.001": [
+      "CL"
+    ],
+    "T1213.002": [
+      "CL"
+    ],
+    "T1213.003": [
+      "CL"
+    ],
+    "T1213.004": [
+      "CL"
+    ],
+    "T1213.005": [
+      "CL"
+    ],
+    "T1213.006": [
+      "CL"
+    ],
+    "T1216": [
+      "DE"
+    ],
+    "T1216.001": [
+      "DE"
+    ],
+    "T1216.002": [
+      "DE"
+    ],
+    "T1217": [
+      "DS"
+    ],
+    "T1218": [
+      "DE"
+    ],
+    "T1218.001": [
+      "DE"
+    ],
+    "T1218.002": [
+      "DE"
+    ],
+    "T1218.003": [
+      "DE"
+    ],
+    "T1218.004": [
+      "DE"
+    ],
+    "T1218.005": [
+      "DE"
+    ],
+    "T1218.007": [
+      "DE"
+    ],
+    "T1218.008": [
+      "DE"
+    ],
+    "T1218.009": [
+      "DE"
+    ],
+    "T1218.010": [
+      "DE"
+    ],
+    "T1218.011": [
+      "DE"
+    ],
+    "T1218.012": [
+      "DE"
+    ],
+    "T1218.013": [
+      "DE"
+    ],
+    "T1218.014": [
+      "DE"
+    ],
+    "T1218.015": [
+      "DE"
+    ],
+    "T1219": [
+      "C2"
+    ],
+    "T1219.001": [
+      "C2"
+    ],
+    "T1219.002": [
+      "C2"
+    ],
+    "T1219.003": [
+      "C2"
+    ],
+    "T1220": [
+      "DE"
+    ],
+    "T1221": [
+      "DE"
+    ],
+    "T1222": [
+      "DE"
+    ],
+    "T1222.001": [
+      "DE"
+    ],
+    "T1222.002": [
+      "DE"
+    ],
+    "T1480": [
+      "DE"
+    ],
+    "T1480.001": [
+      "DE"
+    ],
+    "T1480.002": [
+      "DE"
+    ],
+    "T1482": [
+      "DS"
+    ],
+    "T1484": [
+      "DE",
+      "PE"
+    ],
+    "T1484.001": [
+      "DE",
+      "PE"
+    ],
+    "T1484.002": [
+      "DE",
+      "PE"
+    ],
+    "T1485": [
+      "IM"
+    ],
+    "T1485.001": [
+      "IM"
+    ],
+    "T1486": [
+      "IM"
+    ],
+    "T1489": [
+      "IM"
+    ],
+    "T1490": [
+      "IM"
+    ],
+    "T1491": [
+      "IM"
+    ],
+    "T1491.001": [
+      "IM"
+    ],
+    "T1491.002": [
+      "IM"
+    ],
+    "T1495": [
+      "IM"
+    ],
+    "T1496": [
+      "IM"
+    ],
+    "T1496.001": [
+      "IM"
+    ],
+    "T1496.002": [
+      "IM"
+    ],
+    "T1496.003": [
+      "IM"
+    ],
+    "T1496.004": [
+      "IM"
+    ],
+    "T1497": [
+      "DE",
+      "DS"
+    ],
+    "T1497.001": [
+      "DE",
+      "DS"
+    ],
+    "T1497.002": [
+      "DE",
+      "DS"
+    ],
+    "T1497.003": [
+      "DE",
+      "DS"
+    ],
+    "T1498": [
+      "IM"
+    ],
+    "T1498.001": [
+      "IM"
+    ],
+    "T1498.002": [
+      "IM"
+    ],
+    "T1499": [
+      "IM"
+    ],
+    "T1499.001": [
+      "IM"
+    ],
+    "T1499.002": [
+      "IM"
+    ],
+    "T1499.003": [
+      "IM"
+    ],
+    "T1499.004": [
+      "IM"
+    ],
+    "T1505": [
+      "PS"
+    ],
+    "T1505.001": [
+      "PS"
+    ],
+    "T1505.002": [
+      "PS"
+    ],
+    "T1505.003": [
+      "PS"
+    ],
+    "T1505.004": [
+      "PS"
+    ],
+    "T1505.005": [
+      "PS"
+    ],
+    "T1505.006": [
+      "PS"
+    ],
+    "T1518": [
+      "DS"
+    ],
+    "T1518.001": [
+      "DS"
+    ],
+    "T1518.002": [
+      "DS"
+    ],
+    "T1525": [
+      "PS"
+    ],
+    "T1526": [
+      "DS"
+    ],
+    "T1528": [
+      "CA"
+    ],
+    "T1529": [
+      "IM"
+    ],
+    "T1530": [
+      "CL"
+    ],
+    "T1531": [
+      "IM"
+    ],
+    "T1534": [
+      "LM"
+    ],
+    "T1535": [
+      "DE"
+    ],
+    "T1537": [
+      "EF"
+    ],
+    "T1538": [
+      "DS"
+    ],
+    "T1539": [
+      "CA"
+    ],
+    "T1542": [
+      "DE",
+      "PS"
+    ],
+    "T1542.001": [
+      "DE",
+      "PS"
+    ],
+    "T1542.002": [
+      "DE",
+      "PS"
+    ],
+    "T1542.003": [
+      "DE",
+      "PS"
+    ],
+    "T1542.004": [
+      "DE",
+      "PS"
+    ],
+    "T1542.005": [
+      "DE",
+      "PS"
+    ],
+    "T1543": [
+      "PS",
+      "PE"
+    ],
+    "T1543.001": [
+      "PS",
+      "PE"
+    ],
+    "T1543.002": [
+      "PS",
+      "PE"
+    ],
+    "T1543.003": [
+      "PS",
+      "PE"
+    ],
+    "T1543.004": [
+      "PS",
+      "PE"
+    ],
+    "T1543.005": [
+      "PS",
+      "PE"
+    ],
+    "T1546": [
+      "PE",
+      "PS"
+    ],
+    "T1546.001": [
+      "PE",
+      "PS"
+    ],
+    "T1546.002": [
+      "PE",
+      "PS"
+    ],
+    "T1546.003": [
+      "PE",
+      "PS"
+    ],
+    "T1546.004": [
+      "PE",
+      "PS"
+    ],
+    "T1546.005": [
+      "PE",
+      "PS"
+    ],
+    "T1546.006": [
+      "PE",
+      "PS"
+    ],
+    "T1546.007": [
+      "PE",
+      "PS"
+    ],
+    "T1546.008": [
+      "PE",
+      "PS"
+    ],
+    "T1546.009": [
+      "PE",
+      "PS"
+    ],
+    "T1546.010": [
+      "PE",
+      "PS"
+    ],
+    "T1546.011": [
+      "PE",
+      "PS"
+    ],
+    "T1546.012": [
+      "PE",
+      "PS"
+    ],
+    "T1546.013": [
+      "PE",
+      "PS"
+    ],
+    "T1546.014": [
+      "PE",
+      "PS"
+    ],
+    "T1546.015": [
+      "PE",
+      "PS"
+    ],
+    "T1546.016": [
+      "PE",
+      "PS"
+    ],
+    "T1546.017": [
+      "PS",
+      "PE"
+    ],
+    "T1546.018": [
+      "PS",
+      "PE"
+    ],
+    "T1547": [
+      "PS",
+      "PE"
+    ],
+    "T1547.001": [
+      "PS",
+      "PE"
+    ],
+    "T1547.002": [
+      "PS",
+      "PE"
+    ],
+    "T1547.003": [
+      "PS",
+      "PE"
+    ],
+    "T1547.004": [
+      "PS",
+      "PE"
+    ],
+    "T1547.005": [
+      "PS",
+      "PE"
+    ],
+    "T1547.006": [
+      "PS",
+      "PE"
+    ],
+    "T1547.007": [
+      "PS",
+      "PE"
+    ],
+    "T1547.008": [
+      "PS",
+      "PE"
+    ],
+    "T1547.009": [
+      "PS",
+      "PE"
+    ],
+    "T1547.010": [
+      "PS",
+      "PE"
+    ],
+    "T1547.012": [
+      "PS",
+      "PE"
+    ],
+    "T1547.013": [
+      "PS",
+      "PE"
+    ],
+    "T1547.014": [
+      "PS",
+      "PE"
+    ],
+    "T1547.015": [
+      "PS",
+      "PE"
+    ],
+    "T1548": [
+      "PE"
+    ],
+    "T1548.001": [
+      "PE"
+    ],
+    "T1548.002": [
+      "PE"
+    ],
+    "T1548.003": [
+      "PE"
+    ],
+    "T1548.004": [
+      "PE"
+    ],
+    "T1548.005": [
+      "PE"
+    ],
+    "T1548.006": [
+      "PE"
+    ],
+    "T1550": [
+      "LM"
+    ],
+    "T1550.001": [
+      "LM"
+    ],
+    "T1550.002": [
+      "LM"
+    ],
+    "T1550.003": [
+      "LM"
+    ],
+    "T1550.004": [
+      "LM"
+    ],
+    "T1552": [
+      "CA"
+    ],
+    "T1552.001": [
+      "CA"
+    ],
+    "T1552.002": [
+      "CA"
+    ],
+    "T1552.003": [
+      "CA"
+    ],
+    "T1552.004": [
+      "CA"
+    ],
+    "T1552.005": [
+      "CA"
+    ],
+    "T1552.006": [
+      "CA"
+    ],
+    "T1552.007": [
+      "CA"
+    ],
+    "T1552.008": [
+      "CA"
+    ],
+    "T1553": [
+      "DE"
+    ],
+    "T1553.001": [
+      "DE"
+    ],
+    "T1553.002": [
+      "DE"
+    ],
+    "T1553.003": [
+      "DE"
+    ],
+    "T1553.004": [
+      "DE"
+    ],
+    "T1553.005": [
+      "DE"
+    ],
+    "T1553.006": [
+      "DE"
+    ],
+    "T1554": [
+      "PS"
+    ],
+    "T1555": [
+      "CA"
+    ],
+    "T1555.001": [
+      "CA"
+    ],
+    "T1555.002": [
+      "CA"
+    ],
+    "T1555.003": [
+      "CA"
+    ],
+    "T1555.004": [
+      "CA"
+    ],
+    "T1555.005": [
+      "CA"
+    ],
+    "T1555.006": [
+      "CA"
+    ],
+    "T1556": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.001": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.002": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.003": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.004": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.005": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.006": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.007": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.008": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1556.009": [
+      "DE",
+      "PS",
+      "CA"
+    ],
+    "T1557": [
+      "CA",
+      "CL"
+    ],
+    "T1557.001": [
+      "CA",
+      "CL"
+    ],
+    "T1557.002": [
+      "CA",
+      "CL"
+    ],
+    "T1557.003": [
+      "CA",
+      "CL"
+    ],
+    "T1557.004": [
+      "CA",
+      "CL"
+    ],
+    "T1558": [
+      "CA"
+    ],
+    "T1558.001": [
+      "CA"
+    ],
+    "T1558.002": [
+      "CA"
+    ],
+    "T1558.003": [
+      "CA"
+    ],
+    "T1558.004": [
+      "CA"
+    ],
+    "T1558.005": [
+      "CA"
+    ],
+    "T1559": [
+      "EX"
+    ],
+    "T1559.001": [
+      "EX"
+    ],
+    "T1559.002": [
+      "EX"
+    ],
+    "T1559.003": [
+      "EX"
+    ],
+    "T1560": [
+      "CL"
+    ],
+    "T1560.001": [
+      "CL"
+    ],
+    "T1560.002": [
+      "CL"
+    ],
+    "T1560.003": [
+      "CL"
+    ],
+    "T1561": [
+      "IM"
+    ],
+    "T1561.001": [
+      "IM"
+    ],
+    "T1561.002": [
+      "IM"
+    ],
+    "T1563": [
+      "LM"
+    ],
+    "T1563.001": [
+      "LM"
+    ],
+    "T1563.002": [
+      "LM"
+    ],
+    "T1564": [
+      "DE"
+    ],
+    "T1564.001": [
+      "DE"
+    ],
+    "T1564.002": [
+      "DE"
+    ],
+    "T1564.003": [
+      "DE"
+    ],
+    "T1564.004": [
+      "DE"
+    ],
+    "T1564.005": [
+      "DE"
+    ],
+    "T1564.006": [
+      "DE"
+    ],
+    "T1564.007": [
+      "DE"
+    ],
+    "T1564.008": [
+      "DE"
+    ],
+    "T1564.009": [
+      "DE"
+    ],
+    "T1564.010": [
+      "DE"
+    ],
+    "T1564.011": [
+      "DE"
+    ],
+    "T1564.012": [
+      "DE"
+    ],
+    "T1564.013": [
+      "DE"
+    ],
+    "T1564.014": [
+      "DE"
+    ],
+    "T1565": [
+      "IM"
+    ],
+    "T1565.001": [
+      "IM"
+    ],
+    "T1565.002": [
+      "IM"
+    ],
+    "T1565.003": [
+      "IM"
+    ],
+    "T1566": [
+      "IA"
+    ],
+    "T1566.001": [
+      "IA"
+    ],
+    "T1566.002": [
+      "IA"
+    ],
+    "T1566.003": [
+      "IA"
+    ],
+    "T1566.004": [
+      "IA"
+    ],
+    "T1567": [
+      "EF"
+    ],
+    "T1567.001": [
+      "EF"
+    ],
+    "T1567.002": [
+      "EF"
+    ],
+    "T1567.003": [
+      "EF"
+    ],
+    "T1567.004": [
+      "EF"
+    ],
+    "T1568": [
+      "C2"
+    ],
+    "T1568.001": [
+      "C2"
+    ],
+    "T1568.002": [
+      "C2"
+    ],
+    "T1568.003": [
+      "C2"
+    ],
+    "T1569": [
+      "EX"
+    ],
+    "T1569.001": [
+      "EX"
+    ],
+    "T1569.002": [
+      "EX"
+    ],
+    "T1569.003": [
+      "EX"
+    ],
+    "T1570": [
+      "LM"
+    ],
+    "T1571": [
+      "C2"
+    ],
+    "T1572": [
+      "C2"
+    ],
+    "T1573": [
+      "C2"
+    ],
+    "T1573.001": [
+      "C2"
+    ],
+    "T1573.002": [
+      "C2"
+    ],
+    "T1574": [
+      "DE",
+      "EX"
+    ],
+    "T1574.001": [
+      "DE",
+      "EX"
+    ],
+    "T1574.004": [
+      "DE",
+      "EX"
+    ],
+    "T1574.005": [
+      "DE",
+      "EX"
+    ],
+    "T1574.006": [
+      "DE",
+      "EX"
+    ],
+    "T1574.007": [
+      "DE",
+      "EX"
+    ],
+    "T1574.008": [
+      "DE",
+      "EX"
+    ],
+    "T1574.009": [
+      "DE",
+      "EX"
+    ],
+    "T1574.010": [
+      "DE",
+      "EX"
+    ],
+    "T1574.011": [
+      "DE",
+      "EX"
+    ],
+    "T1574.012": [
+      "DE",
+      "EX"
+    ],
+    "T1574.013": [
+      "DE",
+      "EX"
+    ],
+    "T1574.014": [
+      "DE",
+      "EX"
+    ],
+    "T1578": [
+      "DE"
+    ],
+    "T1578.001": [
+      "DE"
+    ],
+    "T1578.002": [
+      "DE"
+    ],
+    "T1578.003": [
+      "DE"
+    ],
+    "T1578.004": [
+      "DE"
+    ],
+    "T1578.005": [
+      "DE"
+    ],
+    "T1580": [
+      "DS"
+    ],
+    "T1583": [
+      "RS"
+    ],
+    "T1583.001": [
+      "RS"
+    ],
+    "T1583.002": [
+      "RS"
+    ],
+    "T1583.003": [
+      "RS"
+    ],
+    "T1583.004": [
+      "RS"
+    ],
+    "T1583.005": [
+      "RS"
+    ],
+    "T1583.006": [
+      "RS"
+    ],
+    "T1583.007": [
+      "RS"
+    ],
+    "T1583.008": [
+      "RS"
+    ],
+    "T1584": [
+      "RS"
+    ],
+    "T1584.001": [
+      "RS"
+    ],
+    "T1584.002": [
+      "RS"
+    ],
+    "T1584.003": [
+      "RS"
+    ],
+    "T1584.004": [
+      "RS"
+    ],
+    "T1584.005": [
+      "RS"
+    ],
+    "T1584.006": [
+      "RS"
+    ],
+    "T1584.007": [
+      "RS"
+    ],
+    "T1584.008": [
+      "RS"
+    ],
+    "T1585": [
+      "RS"
+    ],
+    "T1585.001": [
+      "RS"
+    ],
+    "T1585.002": [
+      "RS"
+    ],
+    "T1585.003": [
+      "RS"
+    ],
+    "T1586": [
+      "RS"
+    ],
+    "T1586.001": [
+      "RS"
+    ],
+    "T1586.002": [
+      "RS"
+    ],
+    "T1586.003": [
+      "RS"
+    ],
+    "T1587": [
+      "RS"
+    ],
+    "T1587.001": [
+      "RS"
+    ],
+    "T1587.002": [
+      "RS"
+    ],
+    "T1587.003": [
+      "RS"
+    ],
+    "T1587.004": [
+      "RS"
+    ],
+    "T1588": [
+      "RS"
+    ],
+    "T1588.001": [
+      "RS"
+    ],
+    "T1588.002": [
+      "RS"
+    ],
+    "T1588.003": [
+      "RS"
+    ],
+    "T1588.004": [
+      "RS"
+    ],
+    "T1588.005": [
+      "RS"
+    ],
+    "T1588.006": [
+      "RS"
+    ],
+    "T1588.007": [
+      "RS"
+    ],
+    "T1589": [
+      "RE"
+    ],
+    "T1589.001": [
+      "RE"
+    ],
+    "T1589.002": [
+      "RE"
+    ],
+    "T1589.003": [
+      "RE"
+    ],
+    "T1590": [
+      "RE"
+    ],
+    "T1590.001": [
+      "RE"
+    ],
+    "T1590.002": [
+      "RE"
+    ],
+    "T1590.003": [
+      "RE"
+    ],
+    "T1590.004": [
+      "RE"
+    ],
+    "T1590.005": [
+      "RE"
+    ],
+    "T1590.006": [
+      "RE"
+    ],
+    "T1591": [
+      "RE"
+    ],
+    "T1591.001": [
+      "RE"
+    ],
+    "T1591.002": [
+      "RE"
+    ],
+    "T1591.003": [
+      "RE"
+    ],
+    "T1591.004": [
+      "RE"
+    ],
+    "T1592": [
+      "RE"
+    ],
+    "T1592.001": [
+      "RE"
+    ],
+    "T1592.002": [
+      "RE"
+    ],
+    "T1592.003": [
+      "RE"
+    ],
+    "T1592.004": [
+      "RE"
+    ],
+    "T1593": [
+      "RE"
+    ],
+    "T1593.001": [
+      "RE"
+    ],
+    "T1593.002": [
+      "RE"
+    ],
+    "T1593.003": [
+      "RE"
+    ],
+    "T1594": [
+      "RE"
+    ],
+    "T1595": [
+      "RE"
+    ],
+    "T1595.001": [
+      "RE"
+    ],
+    "T1595.002": [
+      "RE"
+    ],
+    "T1595.003": [
+      "RE"
+    ],
+    "T1596": [
+      "RE"
+    ],
+    "T1596.001": [
+      "RE"
+    ],
+    "T1596.002": [
+      "RE"
+    ],
+    "T1596.003": [
+      "RE"
+    ],
+    "T1596.004": [
+      "RE"
+    ],
+    "T1596.005": [
+      "RE"
+    ],
+    "T1597": [
+      "RE"
+    ],
+    "T1597.001": [
+      "RE"
+    ],
+    "T1597.002": [
+      "RE"
+    ],
+    "T1598": [
+      "RE"
+    ],
+    "T1598.001": [
+      "RE"
+    ],
+    "T1598.002": [
+      "RE"
+    ],
+    "T1598.003": [
+      "RE"
+    ],
+    "T1598.004": [
+      "RE"
+    ],
+    "T1599": [
+      "DE"
+    ],
+    "T1599.001": [
+      "DE"
+    ],
+    "T1600": [
+      "DE"
+    ],
+    "T1600.001": [
+      "DE"
+    ],
+    "T1600.002": [
+      "DE"
+    ],
+    "T1601": [
+      "DE"
+    ],
+    "T1601.001": [
+      "DE"
+    ],
+    "T1601.002": [
+      "DE"
+    ],
+    "T1602": [
+      "CL"
+    ],
+    "T1602.001": [
+      "CL"
+    ],
+    "T1602.002": [
+      "CL"
+    ],
+    "T1606": [
+      "CA"
+    ],
+    "T1606.001": [
+      "CA"
+    ],
+    "T1606.002": [
+      "CA"
+    ],
+    "T1608": [
+      "RS"
+    ],
+    "T1608.001": [
+      "RS"
+    ],
+    "T1608.002": [
+      "RS"
+    ],
+    "T1608.003": [
+      "RS"
+    ],
+    "T1608.004": [
+      "RS"
+    ],
+    "T1608.005": [
+      "RS"
+    ],
+    "T1608.006": [
+      "RS"
+    ],
+    "T1609": [
+      "EX"
+    ],
+    "T1610": [
+      "EX"
+    ],
+    "T1611": [
+      "PE"
+    ],
+    "T1612": [
+      "DE"
+    ],
+    "T1613": [
+      "DS"
+    ],
+    "T1614": [
+      "DS"
+    ],
+    "T1614.001": [
+      "DS"
+    ],
+    "T1615": [
+      "DS"
+    ],
+    "T1619": [
+      "DS"
+    ],
+    "T1620": [
+      "DE"
+    ],
+    "T1621": [
+      "CA"
+    ],
+    "T1622": [
+      "DE",
+      "DS"
+    ],
+    "T1647": [
+      "DE"
+    ],
+    "T1648": [
+      "EX"
+    ],
+    "T1649": [
+      "CA"
+    ],
+    "T1650": [
+      "RS"
+    ],
+    "T1651": [
+      "EX"
+    ],
+    "T1652": [
+      "DS"
+    ],
+    "T1653": [
+      "PS"
+    ],
+    "T1654": [
+      "DS"
+    ],
+    "T1657": [
+      "IM"
+    ],
+    "T1659": [
+      "IA",
+      "C2"
+    ],
+    "T1665": [
+      "C2"
+    ],
+    "T1666": [
+      "DE"
+    ],
+    "T1667": [
+      "IM"
+    ],
+    "T1668": [
+      "PS"
+    ],
+    "T1669": [
+      "IA"
+    ],
+    "T1671": [
+      "PS"
+    ],
+    "T1673": [
+      "DS"
+    ],
+    "T1674": [
+      "EX"
+    ],
+    "T1675": [
+      "EX"
+    ],
+    "T1677": [
+      "EX"
+    ],
+    "T1678": [
+      "DE"
+    ],
+    "T1679": [
+      "DE"
+    ],
+    "T1680": [
+      "DS"
+    ],
+    "T1681": [
+      "RE"
+    ],
+    "T1682": [
+      "RE"
+    ],
+    "T1683": [
+      "RS"
+    ],
+    "T1683.001": [
+      "RS"
+    ],
+    "T1683.002": [
+      "RS"
+    ],
+    "T1684": [
+      "DE"
+    ],
+    "T1684.001": [
+      "DE"
+    ],
+    "T1684.002": [
+      "DE"
+    ],
+    "T1685": [
+      "DE"
+    ],
+    "T1685.001": [
+      "DE"
+    ],
+    "T1685.002": [
+      "DE"
+    ],
+    "T1685.003": [
+      "DE"
+    ],
+    "T1685.004": [
+      "DE"
+    ],
+    "T1685.005": [
+      "DE"
+    ],
+    "T1685.006": [
+      "DE"
+    ],
+    "T1686": [
+      "DE"
+    ],
+    "T1686.001": [
+      "DE"
+    ],
+    "T1686.002": [
+      "DE"
+    ],
+    "T1686.003": [
+      "DE"
+    ],
+    "T1687": [
+      "DE"
+    ],
+    "T1688": [
+      "DE"
+    ],
+    "T1689": [
+      "DE"
+    ],
+    "T1690": [
+      "DE"
+    ]
+  },
+  "technique_mitigations": {
+    "T1001": [
+      "M1031"
+    ],
+    "T1001.001": [
+      "M1031"
+    ],
+    "T1001.002": [
+      "M1031"
+    ],
+    "T1001.003": [
+      "M1031"
+    ],
+    "T1003": [
+      "M1015",
+      "M1017",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1040",
+      "M1041",
+      "M1043"
+    ],
+    "T1003.001": [
+      "M1017",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1040",
+      "M1043"
+    ],
+    "T1003.002": [
+      "M1017",
+      "M1026",
+      "M1027",
+      "M1028"
+    ],
+    "T1003.003": [
+      "M1017",
+      "M1026",
+      "M1027",
+      "M1041"
+    ],
+    "T1003.004": [
+      "M1017",
+      "M1026",
+      "M1027"
+    ],
+    "T1003.005": [
+      "M1015",
+      "M1017",
+      "M1026",
+      "M1027",
+      "M1028"
+    ],
+    "T1003.006": [
+      "M1015",
+      "M1026",
+      "M1027"
+    ],
+    "T1003.007": [
+      "M1026",
+      "M1027"
+    ],
+    "T1003.008": [
+      "M1026",
+      "M1027"
+    ],
+    "T1005": [
+      "M1057"
+    ],
+    "T1006": [
+      "M1018",
+      "M1040"
+    ],
+    "T1008": [
+      "M1031"
+    ],
+    "T1011": [
+      "M1028",
+      "M1042"
+    ],
+    "T1011.001": [
+      "M1028",
+      "M1042"
+    ],
+    "T1020.001": [
+      "M1018",
+      "M1041",
+      "M1057"
+    ],
+    "T1021": [
+      "M1018",
+      "M1027",
+      "M1032",
+      "M1035",
+      "M1042",
+      "M1047"
+    ],
+    "T1021.001": [
+      "M1018",
+      "M1026",
+      "M1028",
+      "M1030",
+      "M1032",
+      "M1035",
+      "M1042",
+      "M1047"
+    ],
+    "T1021.002": [
+      "M1026",
+      "M1027",
+      "M1035",
+      "M1037"
+    ],
+    "T1021.003": [
+      "M1026",
+      "M1030",
+      "M1042",
+      "M1048"
+    ],
+    "T1021.004": [
+      "M1018",
+      "M1032",
+      "M1042"
+    ],
+    "T1021.005": [
+      "M1033",
+      "M1037",
+      "M1042",
+      "M1047"
+    ],
+    "T1021.006": [
+      "M1026",
+      "M1030",
+      "M1042"
+    ],
+    "T1021.007": [
+      "M1026",
+      "M1032"
+    ],
+    "T1021.008": [
+      "M1018",
+      "M1042"
+    ],
+    "T1025": [
+      "M1057"
+    ],
+    "T1027": [
+      "M1017",
+      "M1040",
+      "M1047",
+      "M1049"
+    ],
+    "T1027.002": [
+      "M1049"
+    ],
+    "T1027.006": [
+      "M1048"
+    ],
+    "T1027.009": [
+      "M1040",
+      "M1049"
+    ],
+    "T1027.010": [
+      "M1040",
+      "M1049"
+    ],
+    "T1027.011": [
+      "M1047"
+    ],
+    "T1027.012": [
+      "M1040",
+      "M1049"
+    ],
+    "T1027.013": [
+      "M1040",
+      "M1049"
+    ],
+    "T1027.014": [
+      "M1040",
+      "M1049"
+    ],
+    "T1027.015": [
+      "M1049"
+    ],
+    "T1027.016": [
+      "M1049"
+    ],
+    "T1027.017": [
+      "M1048"
+    ],
+    "T1029": [
+      "M1031"
+    ],
+    "T1030": [
+      "M1031"
+    ],
+    "T1036": [
+      "M1017",
+      "M1018",
+      "M1022",
+      "M1038",
+      "M1040",
+      "M1045",
+      "M1047",
+      "M1049"
+    ],
+    "T1036.001": [
+      "M1045"
+    ],
+    "T1036.003": [
+      "M1022"
+    ],
+    "T1036.005": [
+      "M1022",
+      "M1038",
+      "M1045"
+    ],
+    "T1036.007": [
+      "M1017",
+      "M1028"
+    ],
+    "T1036.008": [
+      "M1038",
+      "M1040",
+      "M1049"
+    ],
+    "T1036.010": [
+      "M1018",
+      "M1047"
+    ],
+    "T1036.012": [
+      "M1047"
+    ],
+    "T1037": [
+      "M1022",
+      "M1024"
+    ],
+    "T1037.001": [
+      "M1024"
+    ],
+    "T1037.002": [
+      "M1022"
+    ],
+    "T1037.003": [
+      "M1022"
+    ],
+    "T1037.004": [
+      "M1022"
+    ],
+    "T1037.005": [
+      "M1022"
+    ],
+    "T1040": [
+      "M1018",
+      "M1030",
+      "M1032",
+      "M1041"
+    ],
+    "T1041": [
+      "M1031",
+      "M1057"
+    ],
+    "T1046": [
+      "M1030",
+      "M1031",
+      "M1042"
+    ],
+    "T1047": [
+      "M1018",
+      "M1026",
+      "M1038",
+      "M1040"
+    ],
+    "T1048": [
+      "M1018",
+      "M1022",
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1057"
+    ],
+    "T1048.001": [
+      "M1030",
+      "M1031",
+      "M1037"
+    ],
+    "T1048.002": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1057"
+    ],
+    "T1048.003": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1057"
+    ],
+    "T1052": [
+      "M1034",
+      "M1042",
+      "M1057"
+    ],
+    "T1052.001": [
+      "M1034",
+      "M1042",
+      "M1057"
+    ],
+    "T1053": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1028",
+      "M1047"
+    ],
+    "T1053.002": [
+      "M1018",
+      "M1026",
+      "M1028",
+      "M1047"
+    ],
+    "T1053.003": [
+      "M1018",
+      "M1047"
+    ],
+    "T1053.005": [
+      "M1018",
+      "M1026",
+      "M1028",
+      "M1047"
+    ],
+    "T1053.006": [
+      "M1018",
+      "M1022",
+      "M1026"
+    ],
+    "T1053.007": [
+      "M1018",
+      "M1026"
+    ],
+    "T1055": [
+      "M1026",
+      "M1040"
+    ],
+    "T1055.001": [
+      "M1040"
+    ],
+    "T1055.002": [
+      "M1040"
+    ],
+    "T1055.003": [
+      "M1040"
+    ],
+    "T1055.004": [
+      "M1040"
+    ],
+    "T1055.005": [
+      "M1040"
+    ],
+    "T1055.008": [
+      "M1026",
+      "M1040"
+    ],
+    "T1055.009": [
+      "M1022",
+      "M1040"
+    ],
+    "T1055.011": [
+      "M1040"
+    ],
+    "T1055.012": [
+      "M1040"
+    ],
+    "T1055.013": [
+      "M1040"
+    ],
+    "T1055.014": [
+      "M1040"
+    ],
+    "T1055.015": [
+      "M1040"
+    ],
+    "T1056.002": [
+      "M1017"
+    ],
+    "T1056.003": [
+      "M1026"
+    ],
+    "T1059": [
+      "M1021",
+      "M1026",
+      "M1033",
+      "M1038",
+      "M1040",
+      "M1042",
+      "M1045",
+      "M1047",
+      "M1049"
+    ],
+    "T1059.001": [
+      "M1026",
+      "M1038",
+      "M1042",
+      "M1045",
+      "M1049"
+    ],
+    "T1059.002": [
+      "M1038",
+      "M1045"
+    ],
+    "T1059.003": [
+      "M1038"
+    ],
+    "T1059.004": [
+      "M1038"
+    ],
+    "T1059.005": [
+      "M1021",
+      "M1038",
+      "M1040",
+      "M1042",
+      "M1049"
+    ],
+    "T1059.006": [
+      "M1033",
+      "M1038",
+      "M1047",
+      "M1049"
+    ],
+    "T1059.007": [
+      "M1021",
+      "M1038",
+      "M1040",
+      "M1042"
+    ],
+    "T1059.008": [
+      "M1018",
+      "M1026",
+      "M1038"
+    ],
+    "T1059.009": [
+      "M1026",
+      "M1038"
+    ],
+    "T1059.010": [
+      "M1038"
+    ],
+    "T1059.011": [
+      "M1033",
+      "M1038",
+      "M1047"
+    ],
+    "T1059.013": [
+      "M1026",
+      "M1038"
+    ],
+    "T1068": [
+      "M1019",
+      "M1038",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1070": [
+      "M1022",
+      "M1029",
+      "M1041"
+    ],
+    "T1070.003": [
+      "M1022",
+      "M1029",
+      "M1039"
+    ],
+    "T1070.007": [
+      "M1024",
+      "M1029"
+    ],
+    "T1070.008": [
+      "M1022",
+      "M1029",
+      "M1047"
+    ],
+    "T1070.009": [
+      "M1022",
+      "M1029"
+    ],
+    "T1071": [
+      "M1031",
+      "M1037"
+    ],
+    "T1071.001": [
+      "M1031",
+      "M1037"
+    ],
+    "T1071.002": [
+      "M1031",
+      "M1037"
+    ],
+    "T1071.003": [
+      "M1031",
+      "M1037"
+    ],
+    "T1071.004": [
+      "M1031",
+      "M1037"
+    ],
+    "T1071.005": [
+      "M1031",
+      "M1037"
+    ],
+    "T1072": [
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1029",
+      "M1030",
+      "M1032",
+      "M1033",
+      "M1051"
+    ],
+    "T1078": [
+      "M1013",
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1036"
+    ],
+    "T1078.001": [
+      "M1027",
+      "M1032"
+    ],
+    "T1078.002": [
+      "M1017",
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1032"
+    ],
+    "T1078.003": [
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1032"
+    ],
+    "T1078.004": [
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1036"
+    ],
+    "T1080": [
+      "M1022",
+      "M1038",
+      "M1049",
+      "M1050"
+    ],
+    "T1087": [
+      "M1018",
+      "M1028"
+    ],
+    "T1087.001": [
+      "M1028"
+    ],
+    "T1087.002": [
+      "M1028"
+    ],
+    "T1087.004": [
+      "M1018",
+      "M1047"
+    ],
+    "T1090": [
+      "M1020",
+      "M1031",
+      "M1037"
+    ],
+    "T1090.001": [
+      "M1031"
+    ],
+    "T1090.002": [
+      "M1031"
+    ],
+    "T1090.003": [
+      "M1037"
+    ],
+    "T1090.004": [
+      "M1020"
+    ],
+    "T1091": [
+      "M1034",
+      "M1040",
+      "M1042"
+    ],
+    "T1092": [
+      "M1028",
+      "M1042"
+    ],
+    "T1095": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1047"
+    ],
+    "T1098": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1028",
+      "M1030",
+      "M1032",
+      "M1042"
+    ],
+    "T1098.001": [
+      "M1018",
+      "M1026",
+      "M1030",
+      "M1032",
+      "M1042"
+    ],
+    "T1098.002": [
+      "M1026",
+      "M1032",
+      "M1042"
+    ],
+    "T1098.003": [
+      "M1018",
+      "M1026",
+      "M1032"
+    ],
+    "T1098.004": [
+      "M1018",
+      "M1022",
+      "M1042"
+    ],
+    "T1098.005": [
+      "M1032"
+    ],
+    "T1098.006": [
+      "M1018",
+      "M1032"
+    ],
+    "T1102": [
+      "M1021",
+      "M1031"
+    ],
+    "T1102.001": [
+      "M1021",
+      "M1031"
+    ],
+    "T1102.002": [
+      "M1021",
+      "M1031"
+    ],
+    "T1102.003": [
+      "M1021",
+      "M1031"
+    ],
+    "T1104": [
+      "M1031"
+    ],
+    "T1105": [
+      "M1031",
+      "M1037"
+    ],
+    "T1106": [
+      "M1038",
+      "M1040"
+    ],
+    "T1110": [
+      "M1018",
+      "M1027",
+      "M1032",
+      "M1036"
+    ],
+    "T1110.001": [
+      "M1027",
+      "M1032",
+      "M1036",
+      "M1051"
+    ],
+    "T1110.002": [
+      "M1027",
+      "M1032"
+    ],
+    "T1110.003": [
+      "M1027",
+      "M1032",
+      "M1036"
+    ],
+    "T1110.004": [
+      "M1018",
+      "M1027",
+      "M1032",
+      "M1036"
+    ],
+    "T1111": [
+      "M1017"
+    ],
+    "T1112": [
+      "M1024"
+    ],
+    "T1114": [
+      "M1032",
+      "M1041",
+      "M1047",
+      "M1060"
+    ],
+    "T1114.001": [
+      "M1041",
+      "M1060"
+    ],
+    "T1114.002": [
+      "M1032",
+      "M1041",
+      "M1060"
+    ],
+    "T1114.003": [
+      "M1041",
+      "M1042",
+      "M1047",
+      "M1060"
+    ],
+    "T1119": [
+      "M1029",
+      "M1041"
+    ],
+    "T1127": [
+      "M1021",
+      "M1038",
+      "M1042"
+    ],
+    "T1127.001": [
+      "M1038",
+      "M1042"
+    ],
+    "T1127.002": [
+      "M1021",
+      "M1042",
+      "M1045"
+    ],
+    "T1127.003": [
+      "M1038",
+      "M1042"
+    ],
+    "T1129": [
+      "M1038"
+    ],
+    "T1132": [
+      "M1031"
+    ],
+    "T1132.001": [
+      "M1031"
+    ],
+    "T1132.002": [
+      "M1031"
+    ],
+    "T1133": [
+      "M1021",
+      "M1030",
+      "M1032",
+      "M1035",
+      "M1042"
+    ],
+    "T1134": [
+      "M1018",
+      "M1026"
+    ],
+    "T1134.001": [
+      "M1018",
+      "M1026"
+    ],
+    "T1134.002": [
+      "M1018",
+      "M1026"
+    ],
+    "T1134.003": [
+      "M1018",
+      "M1026"
+    ],
+    "T1134.005": [
+      "M1015"
+    ],
+    "T1135": [
+      "M1028"
+    ],
+    "T1136": [
+      "M1026",
+      "M1028",
+      "M1030",
+      "M1032"
+    ],
+    "T1136.001": [
+      "M1026",
+      "M1032"
+    ],
+    "T1136.002": [
+      "M1026",
+      "M1028",
+      "M1030",
+      "M1032"
+    ],
+    "T1136.003": [
+      "M1026",
+      "M1030",
+      "M1032"
+    ],
+    "T1137": [
+      "M1040",
+      "M1042",
+      "M1051",
+      "M1054"
+    ],
+    "T1137.001": [
+      "M1040",
+      "M1042"
+    ],
+    "T1137.002": [
+      "M1040",
+      "M1054"
+    ],
+    "T1137.003": [
+      "M1040",
+      "M1051"
+    ],
+    "T1137.004": [
+      "M1040",
+      "M1051"
+    ],
+    "T1137.005": [
+      "M1040",
+      "M1051"
+    ],
+    "T1137.006": [
+      "M1040"
+    ],
+    "T1176": [
+      "M1017",
+      "M1033",
+      "M1038",
+      "M1047",
+      "M1051"
+    ],
+    "T1176.001": [
+      "M1017",
+      "M1033",
+      "M1038",
+      "M1047",
+      "M1051"
+    ],
+    "T1176.002": [
+      "M1017",
+      "M1033",
+      "M1038",
+      "M1047",
+      "M1051"
+    ],
+    "T1185": [
+      "M1017",
+      "M1018"
+    ],
+    "T1187": [
+      "M1027",
+      "M1037"
+    ],
+    "T1189": [
+      "M1017",
+      "M1021",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1190": [
+      "M1016",
+      "M1026",
+      "M1030",
+      "M1035",
+      "M1037",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1195": [
+      "M1013",
+      "M1016",
+      "M1018",
+      "M1033",
+      "M1046",
+      "M1051"
+    ],
+    "T1195.001": [
+      "M1013",
+      "M1016",
+      "M1033",
+      "M1051"
+    ],
+    "T1195.002": [
+      "M1016",
+      "M1051"
+    ],
+    "T1195.003": [
+      "M1046"
+    ],
+    "T1197": [
+      "M1018",
+      "M1028",
+      "M1037"
+    ],
+    "T1199": [
+      "M1018",
+      "M1030",
+      "M1032"
+    ],
+    "T1200": [
+      "M1034",
+      "M1035"
+    ],
+    "T1201": [
+      "M1027"
+    ],
+    "T1203": [
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1204": [
+      "M1017",
+      "M1021",
+      "M1031",
+      "M1033",
+      "M1038",
+      "M1040"
+    ],
+    "T1204.001": [
+      "M1017",
+      "M1021",
+      "M1031"
+    ],
+    "T1204.002": [
+      "M1017",
+      "M1038",
+      "M1040"
+    ],
+    "T1204.003": [
+      "M1017",
+      "M1031",
+      "M1045",
+      "M1047"
+    ],
+    "T1204.004": [
+      "M1021",
+      "M1031",
+      "M1038"
+    ],
+    "T1204.005": [
+      "M1017",
+      "M1031",
+      "M1033"
+    ],
+    "T1205": [
+      "M1037",
+      "M1042"
+    ],
+    "T1205.001": [
+      "M1037"
+    ],
+    "T1205.002": [
+      "M1037"
+    ],
+    "T1210": [
+      "M1016",
+      "M1019",
+      "M1026",
+      "M1030",
+      "M1042",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1211": [
+      "M1019",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1212": [
+      "M1013",
+      "M1019",
+      "M1048",
+      "M1050",
+      "M1051"
+    ],
+    "T1213": [
+      "M1017",
+      "M1018",
+      "M1032",
+      "M1041",
+      "M1047",
+      "M1054",
+      "M1060"
+    ],
+    "T1213.001": [
+      "M1017",
+      "M1018",
+      "M1047"
+    ],
+    "T1213.002": [
+      "M1017",
+      "M1018",
+      "M1047"
+    ],
+    "T1213.003": [
+      "M1017",
+      "M1018",
+      "M1032",
+      "M1047"
+    ],
+    "T1213.004": [
+      "M1017",
+      "M1018",
+      "M1047",
+      "M1054"
+    ],
+    "T1213.005": [
+      "M1017",
+      "M1047",
+      "M1060"
+    ],
+    "T1213.006": [
+      "M1017",
+      "M1018",
+      "M1041",
+      "M1047",
+      "M1054"
+    ],
+    "T1216": [
+      "M1038"
+    ],
+    "T1216.001": [
+      "M1038",
+      "M1040"
+    ],
+    "T1216.002": [
+      "M1038"
+    ],
+    "T1218": [
+      "M1021",
+      "M1026",
+      "M1037",
+      "M1038",
+      "M1042",
+      "M1050"
+    ],
+    "T1218.001": [
+      "M1021",
+      "M1038"
+    ],
+    "T1218.002": [
+      "M1022",
+      "M1038"
+    ],
+    "T1218.003": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.004": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.005": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.007": [
+      "M1026",
+      "M1042"
+    ],
+    "T1218.008": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.009": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.010": [
+      "M1050"
+    ],
+    "T1218.011": [
+      "M1050"
+    ],
+    "T1218.012": [
+      "M1037",
+      "M1038",
+      "M1042"
+    ],
+    "T1218.013": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.014": [
+      "M1038",
+      "M1042"
+    ],
+    "T1218.015": [
+      "M1038",
+      "M1042",
+      "M1050"
+    ],
+    "T1219": [
+      "M1031",
+      "M1034",
+      "M1037",
+      "M1038",
+      "M1042"
+    ],
+    "T1219.001": [
+      "M1038"
+    ],
+    "T1219.002": [
+      "M1037",
+      "M1038",
+      "M1042"
+    ],
+    "T1219.003": [
+      "M1034"
+    ],
+    "T1220": [
+      "M1038"
+    ],
+    "T1221": [
+      "M1017",
+      "M1031",
+      "M1042",
+      "M1049"
+    ],
+    "T1222": [
+      "M1022",
+      "M1026"
+    ],
+    "T1222.001": [
+      "M1022",
+      "M1026"
+    ],
+    "T1222.002": [
+      "M1022",
+      "M1026"
+    ],
+    "T1480": [
+      "M1055"
+    ],
+    "T1480.001": [
+      "M1055"
+    ],
+    "T1480.002": [
+      "M1055"
+    ],
+    "T1482": [
+      "M1030",
+      "M1047"
+    ],
+    "T1484": [
+      "M1018",
+      "M1026",
+      "M1047"
+    ],
+    "T1484.001": [
+      "M1018",
+      "M1047"
+    ],
+    "T1484.002": [
+      "M1018",
+      "M1026"
+    ],
+    "T1485": [
+      "M1018",
+      "M1032",
+      "M1053"
+    ],
+    "T1485.001": [
+      "M1018",
+      "M1053"
+    ],
+    "T1486": [
+      "M1040",
+      "M1053"
+    ],
+    "T1489": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1030",
+      "M1060"
+    ],
+    "T1490": [
+      "M1018",
+      "M1028",
+      "M1038",
+      "M1053"
+    ],
+    "T1491": [
+      "M1053"
+    ],
+    "T1491.001": [
+      "M1053"
+    ],
+    "T1491.002": [
+      "M1053"
+    ],
+    "T1495": [
+      "M1026",
+      "M1046",
+      "M1051"
+    ],
+    "T1496.003": [
+      "M1013"
+    ],
+    "T1498": [
+      "M1037"
+    ],
+    "T1498.001": [
+      "M1037"
+    ],
+    "T1498.002": [
+      "M1037"
+    ],
+    "T1499": [
+      "M1037"
+    ],
+    "T1499.001": [
+      "M1037"
+    ],
+    "T1499.002": [
+      "M1037"
+    ],
+    "T1499.003": [
+      "M1037"
+    ],
+    "T1499.004": [
+      "M1037"
+    ],
+    "T1505": [
+      "M1018",
+      "M1024",
+      "M1026",
+      "M1042",
+      "M1045",
+      "M1046",
+      "M1047"
+    ],
+    "T1505.001": [
+      "M1026",
+      "M1045",
+      "M1047"
+    ],
+    "T1505.002": [
+      "M1026",
+      "M1045",
+      "M1047"
+    ],
+    "T1505.003": [
+      "M1018",
+      "M1042"
+    ],
+    "T1505.004": [
+      "M1026",
+      "M1038",
+      "M1045",
+      "M1047"
+    ],
+    "T1505.005": [
+      "M1024",
+      "M1047"
+    ],
+    "T1505.006": [
+      "M1045",
+      "M1046",
+      "M1047"
+    ],
+    "T1525": [
+      "M1026",
+      "M1045",
+      "M1047"
+    ],
+    "T1528": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1047"
+    ],
+    "T1530": [
+      "M1018",
+      "M1022",
+      "M1032",
+      "M1037",
+      "M1041",
+      "M1047"
+    ],
+    "T1535": [
+      "M1054"
+    ],
+    "T1537": [
+      "M1018",
+      "M1037",
+      "M1054",
+      "M1057"
+    ],
+    "T1538": [
+      "M1018"
+    ],
+    "T1539": [
+      "M1017",
+      "M1021",
+      "M1032",
+      "M1047",
+      "M1051",
+      "M1054"
+    ],
+    "T1542": [
+      "M1026",
+      "M1035",
+      "M1046",
+      "M1047",
+      "M1051"
+    ],
+    "T1542.001": [
+      "M1026",
+      "M1046",
+      "M1051"
+    ],
+    "T1542.002": [
+      "M1051"
+    ],
+    "T1542.003": [
+      "M1026",
+      "M1046"
+    ],
+    "T1542.004": [
+      "M1031",
+      "M1046",
+      "M1047"
+    ],
+    "T1542.005": [
+      "M1026",
+      "M1028",
+      "M1031",
+      "M1035",
+      "M1046",
+      "M1047"
+    ],
+    "T1543": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1028",
+      "M1033",
+      "M1040",
+      "M1045",
+      "M1047",
+      "M1054"
+    ],
+    "T1543.001": [
+      "M1022"
+    ],
+    "T1543.002": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1033"
+    ],
+    "T1543.003": [
+      "M1018",
+      "M1028",
+      "M1040",
+      "M1045",
+      "M1047"
+    ],
+    "T1543.004": [
+      "M1018",
+      "M1047"
+    ],
+    "T1543.005": [
+      "M1018",
+      "M1054"
+    ],
+    "T1546": [
+      "M1026",
+      "M1051"
+    ],
+    "T1546.002": [
+      "M1038",
+      "M1042"
+    ],
+    "T1546.003": [
+      "M1018",
+      "M1026",
+      "M1040"
+    ],
+    "T1546.004": [
+      "M1022"
+    ],
+    "T1546.006": [
+      "M1038",
+      "M1045",
+      "M1047"
+    ],
+    "T1546.008": [
+      "M1028",
+      "M1035",
+      "M1038"
+    ],
+    "T1546.009": [
+      "M1038"
+    ],
+    "T1546.010": [
+      "M1038",
+      "M1051"
+    ],
+    "T1546.011": [
+      "M1051",
+      "M1052"
+    ],
+    "T1546.013": [
+      "M1022",
+      "M1045",
+      "M1054"
+    ],
+    "T1546.014": [
+      "M1042"
+    ],
+    "T1547.002": [
+      "M1025"
+    ],
+    "T1547.003": [
+      "M1022",
+      "M1024"
+    ],
+    "T1547.004": [
+      "M1018",
+      "M1038"
+    ],
+    "T1547.005": [
+      "M1025"
+    ],
+    "T1547.006": [
+      "M1018",
+      "M1026",
+      "M1038",
+      "M1049"
+    ],
+    "T1547.007": [
+      "M1017",
+      "M1042"
+    ],
+    "T1547.008": [
+      "M1025",
+      "M1043",
+      "M1044"
+    ],
+    "T1547.009": [
+      "M1018",
+      "M1022",
+      "M1038"
+    ],
+    "T1547.012": [
+      "M1018"
+    ],
+    "T1547.013": [
+      "M1018",
+      "M1022",
+      "M1033"
+    ],
+    "T1548": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1028",
+      "M1038",
+      "M1047",
+      "M1051",
+      "M1052"
+    ],
+    "T1548.001": [
+      "M1028"
+    ],
+    "T1548.002": [
+      "M1026",
+      "M1047",
+      "M1051",
+      "M1052"
+    ],
+    "T1548.003": [
+      "M1022",
+      "M1026",
+      "M1028"
+    ],
+    "T1548.004": [
+      "M1038"
+    ],
+    "T1548.005": [
+      "M1018"
+    ],
+    "T1548.006": [
+      "M1022",
+      "M1026",
+      "M1047"
+    ],
+    "T1550": [
+      "M1013",
+      "M1015",
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1036",
+      "M1047"
+    ],
+    "T1550.001": [
+      "M1013",
+      "M1021",
+      "M1036",
+      "M1041",
+      "M1047"
+    ],
+    "T1550.002": [
+      "M1018",
+      "M1026",
+      "M1051",
+      "M1052"
+    ],
+    "T1550.003": [
+      "M1015",
+      "M1018",
+      "M1026",
+      "M1027"
+    ],
+    "T1550.004": [
+      "M1054"
+    ],
+    "T1552": [
+      "M1015",
+      "M1017",
+      "M1022",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1035",
+      "M1037",
+      "M1041",
+      "M1047",
+      "M1051"
+    ],
+    "T1552.001": [
+      "M1017",
+      "M1022",
+      "M1027",
+      "M1047"
+    ],
+    "T1552.002": [
+      "M1026",
+      "M1027",
+      "M1047"
+    ],
+    "T1552.003": [
+      "M1028"
+    ],
+    "T1552.004": [
+      "M1022",
+      "M1027",
+      "M1041",
+      "M1047"
+    ],
+    "T1552.005": [
+      "M1035",
+      "M1037",
+      "M1042"
+    ],
+    "T1552.006": [
+      "M1015",
+      "M1047",
+      "M1051"
+    ],
+    "T1552.007": [
+      "M1018",
+      "M1026",
+      "M1030",
+      "M1035"
+    ],
+    "T1552.008": [
+      "M1017",
+      "M1047"
+    ],
+    "T1553": [
+      "M1024",
+      "M1026",
+      "M1028",
+      "M1038",
+      "M1054"
+    ],
+    "T1553.001": [
+      "M1038"
+    ],
+    "T1553.003": [
+      "M1022",
+      "M1024",
+      "M1038"
+    ],
+    "T1553.004": [
+      "M1028",
+      "M1054"
+    ],
+    "T1553.005": [
+      "M1038",
+      "M1042"
+    ],
+    "T1553.006": [
+      "M1024",
+      "M1026",
+      "M1046"
+    ],
+    "T1554": [
+      "M1045"
+    ],
+    "T1555": [
+      "M1026",
+      "M1027",
+      "M1051"
+    ],
+    "T1555.001": [
+      "M1027"
+    ],
+    "T1555.003": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1027",
+      "M1051"
+    ],
+    "T1555.004": [
+      "M1042"
+    ],
+    "T1555.005": [
+      "M1017",
+      "M1018",
+      "M1027",
+      "M1051",
+      "M1054"
+    ],
+    "T1555.006": [
+      "M1026"
+    ],
+    "T1556": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1032",
+      "M1047"
+    ],
+    "T1556.001": [
+      "M1017",
+      "M1025",
+      "M1026",
+      "M1032"
+    ],
+    "T1556.002": [
+      "M1028"
+    ],
+    "T1556.003": [
+      "M1026",
+      "M1032"
+    ],
+    "T1556.004": [
+      "M1026",
+      "M1032"
+    ],
+    "T1556.005": [
+      "M1026",
+      "M1027"
+    ],
+    "T1556.006": [
+      "M1018",
+      "M1032",
+      "M1047"
+    ],
+    "T1556.007": [
+      "M1026",
+      "M1032",
+      "M1047"
+    ],
+    "T1556.008": [
+      "M1024",
+      "M1028",
+      "M1047"
+    ],
+    "T1556.009": [
+      "M1018"
+    ],
+    "T1557": [
+      "M1017",
+      "M1030",
+      "M1031",
+      "M1035",
+      "M1037",
+      "M1041",
+      "M1042"
+    ],
+    "T1557.001": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1042"
+    ],
+    "T1557.002": [
+      "M1017",
+      "M1031",
+      "M1035",
+      "M1037",
+      "M1041",
+      "M1042"
+    ],
+    "T1557.003": [
+      "M1031",
+      "M1037"
+    ],
+    "T1557.004": [
+      "M1017",
+      "M1031"
+    ],
+    "T1558": [
+      "M1015",
+      "M1026",
+      "M1027",
+      "M1041",
+      "M1043",
+      "M1047"
+    ],
+    "T1558.001": [
+      "M1015",
+      "M1026"
+    ],
+    "T1558.002": [
+      "M1026",
+      "M1027",
+      "M1041"
+    ],
+    "T1558.003": [
+      "M1026",
+      "M1027",
+      "M1041"
+    ],
+    "T1558.004": [
+      "M1027",
+      "M1041",
+      "M1047"
+    ],
+    "T1558.005": [
+      "M1043",
+      "M1047"
+    ],
+    "T1559": [
+      "M1013",
+      "M1026",
+      "M1040",
+      "M1042",
+      "M1048",
+      "M1054"
+    ],
+    "T1559.001": [
+      "M1026",
+      "M1048"
+    ],
+    "T1559.002": [
+      "M1040",
+      "M1042",
+      "M1048",
+      "M1054"
+    ],
+    "T1559.003": [
+      "M1013"
+    ],
+    "T1560": [
+      "M1047"
+    ],
+    "T1560.001": [
+      "M1047"
+    ],
+    "T1561": [
+      "M1053"
+    ],
+    "T1561.001": [
+      "M1053"
+    ],
+    "T1561.002": [
+      "M1053"
+    ],
+    "T1563": [
+      "M1018",
+      "M1026",
+      "M1027",
+      "M1030",
+      "M1042"
+    ],
+    "T1563.001": [
+      "M1022",
+      "M1026",
+      "M1027",
+      "M1042"
+    ],
+    "T1563.002": [
+      "M1018",
+      "M1026",
+      "M1028",
+      "M1030",
+      "M1035",
+      "M1042",
+      "M1047"
+    ],
+    "T1564": [
+      "M1013",
+      "M1033",
+      "M1047",
+      "M1049"
+    ],
+    "T1564.002": [
+      "M1028"
+    ],
+    "T1564.003": [
+      "M1033",
+      "M1038"
+    ],
+    "T1564.004": [
+      "M1022"
+    ],
+    "T1564.006": [
+      "M1038",
+      "M1042",
+      "M1047"
+    ],
+    "T1564.007": [
+      "M1042"
+    ],
+    "T1564.008": [
+      "M1047"
+    ],
+    "T1564.009": [
+      "M1013"
+    ],
+    "T1564.012": [
+      "M1013",
+      "M1049"
+    ],
+    "T1564.014": [
+      "M1040"
+    ],
+    "T1565": [
+      "M1022",
+      "M1029",
+      "M1030",
+      "M1041"
+    ],
+    "T1565.001": [
+      "M1022",
+      "M1029",
+      "M1041"
+    ],
+    "T1565.002": [
+      "M1041"
+    ],
+    "T1565.003": [
+      "M1022",
+      "M1030"
+    ],
+    "T1566": [
+      "M1017",
+      "M1021",
+      "M1031",
+      "M1047",
+      "M1049",
+      "M1054"
+    ],
+    "T1566.001": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1031",
+      "M1047",
+      "M1049",
+      "M1054"
+    ],
+    "T1566.002": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1047",
+      "M1054"
+    ],
+    "T1566.003": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1047",
+      "M1049"
+    ],
+    "T1566.004": [
+      "M1017"
+    ],
+    "T1567": [
+      "M1021",
+      "M1057"
+    ],
+    "T1567.001": [
+      "M1021"
+    ],
+    "T1567.002": [
+      "M1021"
+    ],
+    "T1567.003": [
+      "M1021"
+    ],
+    "T1567.004": [
+      "M1057"
+    ],
+    "T1568": [
+      "M1021",
+      "M1031"
+    ],
+    "T1568.002": [
+      "M1021",
+      "M1031"
+    ],
+    "T1569": [
+      "M1018",
+      "M1022",
+      "M1026",
+      "M1040"
+    ],
+    "T1569.001": [
+      "M1018"
+    ],
+    "T1569.002": [
+      "M1022",
+      "M1026",
+      "M1040"
+    ],
+    "T1569.003": [
+      "M1018"
+    ],
+    "T1570": [
+      "M1031",
+      "M1037"
+    ],
+    "T1571": [
+      "M1030",
+      "M1031"
+    ],
+    "T1572": [
+      "M1031",
+      "M1037"
+    ],
+    "T1573": [
+      "M1020",
+      "M1031"
+    ],
+    "T1573.001": [
+      "M1031"
+    ],
+    "T1573.002": [
+      "M1020",
+      "M1031"
+    ],
+    "T1574": [
+      "M1013",
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1038",
+      "M1040",
+      "M1044",
+      "M1047",
+      "M1051",
+      "M1052"
+    ],
+    "T1574.001": [
+      "M1013",
+      "M1038",
+      "M1044",
+      "M1047",
+      "M1051"
+    ],
+    "T1574.004": [
+      "M1022"
+    ],
+    "T1574.005": [
+      "M1018",
+      "M1047",
+      "M1052"
+    ],
+    "T1574.006": [
+      "M1028",
+      "M1038"
+    ],
+    "T1574.007": [
+      "M1022",
+      "M1038",
+      "M1047"
+    ],
+    "T1574.008": [
+      "M1022",
+      "M1038",
+      "M1047"
+    ],
+    "T1574.009": [
+      "M1022",
+      "M1038",
+      "M1047"
+    ],
+    "T1574.010": [
+      "M1018",
+      "M1047",
+      "M1052"
+    ],
+    "T1574.011": [
+      "M1024"
+    ],
+    "T1574.012": [
+      "M1018",
+      "M1024",
+      "M1038"
+    ],
+    "T1574.013": [
+      "M1040"
+    ],
+    "T1574.014": [
+      "M1022"
+    ],
+    "T1578": [
+      "M1018",
+      "M1047"
+    ],
+    "T1578.001": [
+      "M1018",
+      "M1047"
+    ],
+    "T1578.002": [
+      "M1018",
+      "M1047"
+    ],
+    "T1578.003": [
+      "M1018",
+      "M1047"
+    ],
+    "T1578.005": [
+      "M1018",
+      "M1047"
+    ],
+    "T1580": [
+      "M1018"
+    ],
+    "T1583": [
+      "M1056"
+    ],
+    "T1583.001": [
+      "M1056"
+    ],
+    "T1583.002": [
+      "M1056"
+    ],
+    "T1583.003": [
+      "M1056"
+    ],
+    "T1583.004": [
+      "M1056"
+    ],
+    "T1583.005": [
+      "M1056"
+    ],
+    "T1583.006": [
+      "M1056"
+    ],
+    "T1583.007": [
+      "M1056"
+    ],
+    "T1583.008": [
+      "M1056"
+    ],
+    "T1584": [
+      "M1056"
+    ],
+    "T1584.001": [
+      "M1056"
+    ],
+    "T1584.002": [
+      "M1056"
+    ],
+    "T1584.003": [
+      "M1056"
+    ],
+    "T1584.004": [
+      "M1056"
+    ],
+    "T1584.005": [
+      "M1056"
+    ],
+    "T1584.006": [
+      "M1056"
+    ],
+    "T1584.007": [
+      "M1056"
+    ],
+    "T1584.008": [
+      "M1056"
+    ],
+    "T1585": [
+      "M1056"
+    ],
+    "T1585.001": [
+      "M1056"
+    ],
+    "T1585.002": [
+      "M1056"
+    ],
+    "T1585.003": [
+      "M1056"
+    ],
+    "T1586": [
+      "M1056"
+    ],
+    "T1586.001": [
+      "M1056"
+    ],
+    "T1586.002": [
+      "M1056"
+    ],
+    "T1586.003": [
+      "M1056"
+    ],
+    "T1587": [
+      "M1056"
+    ],
+    "T1587.001": [
+      "M1056"
+    ],
+    "T1587.002": [
+      "M1056"
+    ],
+    "T1587.003": [
+      "M1056"
+    ],
+    "T1587.004": [
+      "M1056"
+    ],
+    "T1588": [
+      "M1056"
+    ],
+    "T1588.001": [
+      "M1056"
+    ],
+    "T1588.002": [
+      "M1056"
+    ],
+    "T1588.003": [
+      "M1056"
+    ],
+    "T1588.004": [
+      "M1056"
+    ],
+    "T1588.005": [
+      "M1056"
+    ],
+    "T1588.006": [
+      "M1056"
+    ],
+    "T1588.007": [
+      "M1056"
+    ],
+    "T1589": [
+      "M1056"
+    ],
+    "T1589.001": [
+      "M1056"
+    ],
+    "T1589.002": [
+      "M1056"
+    ],
+    "T1589.003": [
+      "M1056"
+    ],
+    "T1590": [
+      "M1056"
+    ],
+    "T1590.001": [
+      "M1056"
+    ],
+    "T1590.002": [
+      "M1054"
+    ],
+    "T1590.003": [
+      "M1056"
+    ],
+    "T1590.004": [
+      "M1056"
+    ],
+    "T1590.005": [
+      "M1056"
+    ],
+    "T1590.006": [
+      "M1056"
+    ],
+    "T1591": [
+      "M1056"
+    ],
+    "T1591.001": [
+      "M1056"
+    ],
+    "T1591.002": [
+      "M1056"
+    ],
+    "T1591.003": [
+      "M1056"
+    ],
+    "T1591.004": [
+      "M1056"
+    ],
+    "T1592": [
+      "M1056"
+    ],
+    "T1592.001": [
+      "M1056"
+    ],
+    "T1592.002": [
+      "M1056"
+    ],
+    "T1592.003": [
+      "M1056"
+    ],
+    "T1592.004": [
+      "M1056"
+    ],
+    "T1593": [
+      "M1013",
+      "M1047"
+    ],
+    "T1593.001": [
+      "M1056"
+    ],
+    "T1593.002": [
+      "M1056"
+    ],
+    "T1593.003": [
+      "M1013",
+      "M1047"
+    ],
+    "T1594": [
+      "M1056"
+    ],
+    "T1595": [
+      "M1056"
+    ],
+    "T1595.001": [
+      "M1056"
+    ],
+    "T1595.002": [
+      "M1056"
+    ],
+    "T1595.003": [
+      "M1042",
+      "M1056"
+    ],
+    "T1596": [
+      "M1056"
+    ],
+    "T1596.001": [
+      "M1056"
+    ],
+    "T1596.002": [
+      "M1056"
+    ],
+    "T1596.003": [
+      "M1056"
+    ],
+    "T1596.004": [
+      "M1056"
+    ],
+    "T1596.005": [
+      "M1056"
+    ],
+    "T1597": [
+      "M1056"
+    ],
+    "T1597.001": [
+      "M1056"
+    ],
+    "T1597.002": [
+      "M1056"
+    ],
+    "T1598": [
+      "M1017",
+      "M1054"
+    ],
+    "T1598.001": [
+      "M1017"
+    ],
+    "T1598.002": [
+      "M1017",
+      "M1054"
+    ],
+    "T1598.003": [
+      "M1017",
+      "M1054"
+    ],
+    "T1598.004": [
+      "M1017"
+    ],
+    "T1599": [
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1037",
+      "M1043"
+    ],
+    "T1599.001": [
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1037",
+      "M1043"
+    ],
+    "T1601": [
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1043",
+      "M1045",
+      "M1046"
+    ],
+    "T1601.001": [
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1043",
+      "M1045",
+      "M1046"
+    ],
+    "T1601.002": [
+      "M1026",
+      "M1027",
+      "M1032",
+      "M1043",
+      "M1045",
+      "M1046"
+    ],
+    "T1602": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1041",
+      "M1051",
+      "M1054"
+    ],
+    "T1602.001": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1041",
+      "M1051",
+      "M1054"
+    ],
+    "T1602.002": [
+      "M1030",
+      "M1031",
+      "M1037",
+      "M1041",
+      "M1051",
+      "M1054"
+    ],
+    "T1606": [
+      "M1018",
+      "M1026",
+      "M1047",
+      "M1054"
+    ],
+    "T1606.001": [
+      "M1047",
+      "M1054"
+    ],
+    "T1606.002": [
+      "M1015",
+      "M1018",
+      "M1026",
+      "M1047"
+    ],
+    "T1608": [
+      "M1056"
+    ],
+    "T1608.001": [
+      "M1056"
+    ],
+    "T1608.002": [
+      "M1056"
+    ],
+    "T1608.003": [
+      "M1056"
+    ],
+    "T1608.004": [
+      "M1056"
+    ],
+    "T1608.005": [
+      "M1056"
+    ],
+    "T1608.006": [
+      "M1056"
+    ],
+    "T1609": [
+      "M1018",
+      "M1026",
+      "M1035",
+      "M1038",
+      "M1042"
+    ],
+    "T1610": [
+      "M1018",
+      "M1030",
+      "M1035",
+      "M1047"
+    ],
+    "T1611": [
+      "M1026",
+      "M1038",
+      "M1042",
+      "M1048",
+      "M1051"
+    ],
+    "T1612": [
+      "M1026",
+      "M1030",
+      "M1035",
+      "M1047"
+    ],
+    "T1613": [
+      "M1018",
+      "M1030",
+      "M1035"
+    ],
+    "T1619": [
+      "M1018"
+    ],
+    "T1621": [
+      "M1017",
+      "M1032",
+      "M1036"
+    ],
+    "T1647": [
+      "M1013"
+    ],
+    "T1648": [
+      "M1018",
+      "M1036"
+    ],
+    "T1649": [
+      "M1015",
+      "M1041",
+      "M1042",
+      "M1047"
+    ],
+    "T1650": [
+      "M1056"
+    ],
+    "T1651": [
+      "M1026"
+    ],
+    "T1653": [
+      "M1047"
+    ],
+    "T1654": [
+      "M1018"
+    ],
+    "T1657": [
+      "M1017",
+      "M1018"
+    ],
+    "T1659": [
+      "M1021",
+      "M1041"
+    ],
+    "T1666": [
+      "M1018",
+      "M1047",
+      "M1054"
+    ],
+    "T1667": [
+      "M1017",
+      "M1054"
+    ],
+    "T1669": [
+      "M1030",
+      "M1032",
+      "M1041"
+    ],
+    "T1671": [
+      "M1042",
+      "M1047"
+    ],
+    "T1674": [
+      "M1034",
+      "M1038"
+    ],
+    "T1675": [
+      "M1018"
+    ],
+    "T1677": [
+      "M1018",
+      "M1054"
+    ],
+    "T1681": [
+      "M1056"
+    ],
+    "T1682": [
+      "M1056"
+    ],
+    "T1683": [
+      "M1056"
+    ],
+    "T1683.001": [
+      "M1056"
+    ],
+    "T1683.002": [
+      "M1056"
+    ],
+    "T1684": [
+      "M1017",
+      "M1036",
+      "M1047"
+    ],
+    "T1684.001": [
+      "M1017",
+      "M1019"
+    ],
+    "T1684.002": [
+      "M1054"
+    ],
+    "T1685": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1038",
+      "M1042",
+      "M1047",
+      "M1054"
+    ],
+    "T1685.001": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1047"
+    ],
+    "T1685.002": [
+      "M1018"
+    ],
+    "T1685.003": [
+      "M1038"
+    ],
+    "T1685.004": [
+      "M1018",
+      "M1047"
+    ],
+    "T1685.005": [
+      "M1022",
+      "M1029",
+      "M1041"
+    ],
+    "T1685.006": [
+      "M1022",
+      "M1029",
+      "M1041"
+    ],
+    "T1686": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1047"
+    ],
+    "T1686.001": [
+      "M1018",
+      "M1047"
+    ],
+    "T1686.002": [
+      "M1018",
+      "M1047",
+      "M1051"
+    ],
+    "T1686.003": [
+      "M1018",
+      "M1022",
+      "M1024",
+      "M1047"
+    ],
+    "T1688": [
+      "M1026",
+      "M1054"
+    ],
+    "T1689": [
+      "M1042",
+      "M1054"
+    ],
+    "T1690": [
+      "M1028",
+      "M1039"
+    ]
+  },
+  "mitigations": {
+    "M1013": "Application Developer Guidance",
+    "M1015": "Active Directory Configuration",
+    "M1016": "Vulnerability Scanning",
+    "M1017": "User Training",
+    "M1018": "User Account Management",
+    "M1019": "Threat Intelligence Program",
+    "M1020": "SSL/TLS Inspection",
+    "M1021": "Restrict Web-Based Content",
+    "M1022": "Restrict File and Directory Permissions",
+    "M1024": "Restrict Registry Permissions",
+    "M1025": "Privileged Process Integrity",
+    "M1026": "Privileged Account Management",
+    "M1027": "Password Policies",
+    "M1028": "Operating System Configuration",
+    "M1029": "Remote Data Storage",
+    "M1030": "Network Segmentation",
+    "M1031": "Network Intrusion Prevention",
+    "M1032": "Multi-factor Authentication",
+    "M1033": "Limit Software Installation",
+    "M1034": "Limit Hardware Installation",
+    "M1035": "Limit Access to Resource Over Network",
+    "M1036": "Account Use Policies",
+    "M1037": "Filter Network Traffic",
+    "M1038": "Execution Prevention",
+    "M1039": "Environment Variable Permissions",
+    "M1040": "Behavior Prevention on Endpoint",
+    "M1041": "Encrypt Sensitive Information",
+    "M1042": "Disable or Remove Feature or Program",
+    "M1043": "Credential Access Protection",
+    "M1044": "Restrict Library Loading",
+    "M1045": "Code Signing",
+    "M1046": "Boot Integrity",
+    "M1047": "Audit",
+    "M1048": "Application Isolation and Sandboxing",
+    "M1049": "Antivirus/Antimalware",
+    "M1050": "Exploit Protection",
+    "M1051": "Update Software",
+    "M1052": "User Account Control",
+    "M1053": "Data Backup",
+    "M1054": "Software Configuration",
+    "M1055": "Do Not Mitigate",
+    "M1056": "Pre-compromise",
+    "M1057": "Data Loss Prevention",
+    "M1060": "Out-of-Band Communications Channel"
+  }
+}

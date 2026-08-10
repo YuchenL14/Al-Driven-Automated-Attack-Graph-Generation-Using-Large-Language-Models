@@ -1,0 +1,147 @@
+{
+  "graph": {
+    "title": "Mock semantic incident",
+    "preconditions": [
+      {
+        "id": "p_initial",
+        "label": "Initial target state",
+        "code": "IA",
+        "parents": []
+      },
+      {
+        "id": "p_result",
+        "label": "Initial access obtained",
+        "code": "IA",
+        "parents": [
+          "e_reported_action"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "e_reported_action",
+        "label": "Exploit the exposed target service",
+        "tactic": "IA",
+        "technique": "T1190",
+        "mitigations": [
+          "M1051"
+        ],
+        "likelihood": 7.0,
+        "source_evidence": "Cyber-attack on the British Library: what\nhappened and what we’ve learned\n\nSir Roly Keating, Chief Executive\n\n\fSharing insights to build collective\nresilience\n\n• To help our peers plan and protect themselves against increasingly\n\naggressive cyber threats we published a comprehensive cyber incident\nreview paper\n\n• As open about our situation as we can safely and securely describe\n\n• Significant, sometimes uncomfortable, lessons for us – valuable for all those\nengaged in collecting and providing access to knowledge and culture, and\ndelivering public services\n\n•\n\nIncreased resilience across our community of peers would be a welcome\npositive outcome from this deeply damaging criminal attack\n\nbl.uk\n\n2\n\n\fUnderstanding the attack\n\n• Ransomware attack on 28 October 2023 claimed by Rhysida, a criminal\n\ngroup rather than geopolitical\n\n• Suspected instance of hostile reconnaissance a few days prior\n\n• Around 600GB of data copied and exfiltrated – targeted Finance, HR,\nTechnology Department data, and then backups of other databases\n\n• Other data encrypted, substantial damage to applications, all users locked\n\nout, online services taken offline\n\n• Extortion attempt, followed by auction, then publication of most of the dataset\n\non the dark web\n\n• Range of on-site public services continued throughout the incident\n\nbl.uk\n\n3\n\n\fCausality\n\n• Probable point of entry was a server set up to support remote IT access in\n\nresponse to Covid restrictions\n\n• Possibly a phishing or spear-phishing attack, or a brute force attack\n(where passwords are repeatedly tried against a user’s account)\n\n• Legacy system not subject to Multi Factor Authentication, unlike much of\n\nthe rest of the IT estate\n\n• Cyber-security software protected parts of the network but not all.  Some\n\nsoftware was ineffective against this attack\n\n• Attackers used disruptive and anti-forensic measures – including\n\ndestruction of servers to inhibit recovery\n\nbl.uk\n\n4\n\n\fIncident management\n\n• Immediate shut down by IT Department to\n\nprevent further loss\n\n• Major incident protocols immediately\n\ninvoked: Gold and Silver command process\n\n• National Cyber Security Centre called\n\nimmediately\n\n• Independent cyber experts immediately\n\nprocured\n\n• DCMS Cyber and Sponsor expertise\n• Staff and stakeholder engagement\n• No engagement with the perpetrators\n\nImmediate, open engagement\nwith sponsor team, cyber and\ncommunications teams (critical\nfor bringing expertise to bear\nand enabling/controlling the\nflow of information)\n\nBusiness continuity plans for total outage\nof systems need to be practiced regularly,\nalongside those relating to single systems\n\nbl.uk\n\n5\n\n\fStakeholder management\n\n•\n\nInstinct to communicate as openly as possible,\nrestricted by criminal investigations\n\n• WhatsApp and staff cascade systems for key\n\nupdates\n\n•\n\nIn person briefings for staff by Chief Officers\n\n• Social media, basic interim website for external\n\nmessaging\n\n• Periodic CEO blogs to help set and clarify external\n\nnarrative\n\n• Close involvement of the Board – CEO updates and\n\nextraordinary meetings at key investigation\nmilestones\n\nKeep communications\nupdated regularly, even\nwhen detail is hard to give\n\nSeek to proactively manage the\nwellbeing of users and staff\n\nbl.uk\n\n6\n\n\fEarly recovery\n\n• Safety first approach to checking the integrity of data and collection\n\n• Service restoration – helping most of our users to access most of what they\n\ncould pre-cyber through workarounds by end of Q1 24/25\n\n• Prioritisation – for example fulfilling our statutory Public Lending Right\n\nobligations\n\n• Some innovation, as well as drawing on institutional memory to revive pre-\n\ndigital workflows\n\n• Restoration of main catalogue in January, increasing access to Reading\nRoom material and Special Collections, PLR statements issued and on\ntrack for payment by end of March\n\nbl.uk\n\n7\n\n\fTechnology\n\n• Topology of our IT estate allowed significant\naccess to attackers, modern infrastructure\nwill be segmented and resilient\n\n• Legacy infrastructure largely irrecoverable,\n\nslowing restoration\n\n•\n\nImpact partially mitigated by procurement of\nnew infrastructure that had already begun\n\n• Permanent uplift in spend on cyber-security,\naccelerating already planned Knowledge\nMatters investment in digital infrastructure\n\n• Collaboration with sector peers – common\n\nthreats and adoption of best practice\n\nEnsure MFA covers all internet-\nfacing endpoints\n\nEnhance network monitoring\ncapabilities\n\nImplement and enhance network\nsegmentation\n\nPrioritise the remediation of legacy tech\nissues and manage systems lifecycles to\neliminate in future\n\nPrioritise the ability to recover as well as\nsecurity itself\n\nbl.uk\n\n8\n\n\fGovernance\n\n• New Board committee established: Digital\nPortfolio Committee, with external adviser\n\n• Oversees a new Programme – Rebuild\nand Renew (six month Adapt phase, 18\nmonth Renew phase), along with wider\nTechnology/Digital strategy\n\n• Particular weight being given to change\n\nmanagement to ensure long term culture\nchange\n\nEnsure holistic overview of\ncyber risk so that low level\naggregate risks are better\nunderstood\n\nRegular cyber risk training at all\nlevels\n\nBuild cyber risk understanding\nat Board level – if possible,\nrecruit or co-opt experts\n\nbl.uk\n\n9",
+        "evidence_status": "reported",
+        "evidence_confidence": 85,
+        "actor": null,
+        "action_evidence": null,
+        "parents": [
+          "p_initial"
+        ],
+        "join": "AND"
+      }
+    ]
+  },
+  "draft": {
+    "title": "Mock semantic incident",
+    "evidence": [
+      {
+        "id": "ev_reported_action",
+        "quote": "Cyber-attack on the British Library: what\nhappened and what we’ve learned\n\nSir Roly Keating, Chief Executive\n\n\fSharing insights to build collective\nresilience\n\n• To help our peers plan and protect themselves against increasingly\n\naggressive cyber threats we published a comprehensive cyber incident\nreview paper\n\n• As open about our situation as we can safely and securely describe\n\n• Significant, sometimes uncomfortable, lessons for us – valuable for all those\nengaged in collecting and providing access to knowledge and culture, and\ndelivering public services\n\n•\n\nIncreased resilience across our community of peers would be a welcome\npositive outcome from this deeply damaging criminal attack\n\nbl.uk\n\n2\n\n\fUnderstanding the attack\n\n• Ransomware attack on 28 October 2023 claimed by Rhysida, a criminal\n\ngroup rather than geopolitical\n\n• Suspected instance of hostile reconnaissance a few days prior\n\n• Around 600GB of data copied and exfiltrated – targeted Finance, HR,\nTechnology Department data, and then backups of other databases\n\n• Other data encrypted, substantial damage to applications, all users locked\n\nout, online services taken offline\n\n• Extortion attempt, followed by auction, then publication of most of the dataset\n\non the dark web\n\n• Range of on-site public services continued throughout the incident\n\nbl.uk\n\n3\n\n\fCausality\n\n• Probable point of entry was a server set up to support remote IT access in\n\nresponse to Covid restrictions\n\n• Possibly a phishing or spear-phishing attack, or a brute force attack\n(where passwords are repeatedly tried against a user’s account)\n\n• Legacy system not subject to Multi Factor Authentication, unlike much of\n\nthe rest of the IT estate\n\n• Cyber-security software protected parts of the network but not all.  Some\n\nsoftware was ineffective against this attack\n\n• Attackers used disruptive and anti-forensic measures – including\n\ndestruction of servers to inhibit recovery\n\nbl.uk\n\n4\n\n\fIncident management\n\n• Immediate shut down by IT Department to\n\nprevent further loss\n\n• Major incident protocols immediately\n\ninvoked: Gold and Silver command process\n\n• National Cyber Security Centre called\n\nimmediately\n\n• Independent cyber experts immediately\n\nprocured\n\n• DCMS Cyber and Sponsor expertise\n• Staff and stakeholder engagement\n• No engagement with the perpetrators\n\nImmediate, open engagement\nwith sponsor team, cyber and\ncommunications teams (critical\nfor bringing expertise to bear\nand enabling/controlling the\nflow of information)\n\nBusiness continuity plans for total outage\nof systems need to be practiced regularly,\nalongside those relating to single systems\n\nbl.uk\n\n5\n\n\fStakeholder management\n\n•\n\nInstinct to communicate as openly as possible,\nrestricted by criminal investigations\n\n• WhatsApp and staff cascade systems for key\n\nupdates\n\n•\n\nIn person briefings for staff by Chief Officers\n\n• Social media, basic interim website for external\n\nmessaging\n\n• Periodic CEO blogs to help set and clarify external\n\nnarrative\n\n• Close involvement of the Board – CEO updates and\n\nextraordinary meetings at key investigation\nmilestones\n\nKeep communications\nupdated regularly, even\nwhen detail is hard to give\n\nSeek to proactively manage the\nwellbeing of users and staff\n\nbl.uk\n\n6\n\n\fEarly recovery\n\n• Safety first approach to checking the integrity of data and collection\n\n• Service restoration – helping most of our users to access most of what they\n\ncould pre-cyber through workarounds by end of Q1 24/25\n\n• Prioritisation – for example fulfilling our statutory Public Lending Right\n\nobligations\n\n• Some innovation, as well as drawing on institutional memory to revive pre-\n\ndigital workflows\n\n• Restoration of main catalogue in January, increasing access to Reading\nRoom material and Special Collections, PLR statements issued and on\ntrack for payment by end of March\n\nbl.uk\n\n7\n\n\fTechnology\n\n• Topology of our IT estate allowed significant\naccess to attackers, modern infrastructure\nwill be segmented and resilient\n\n• Legacy infrastructure largely irrecoverable,\n\nslowing restoration\n\n•\n\nImpact partially mitigated by procurement of\nnew infrastructure that had already begun\n\n• Permanent uplift in spend on cyber-security,\naccelerating already planned Knowledge\nMatters investment in digital infrastructure\n\n• Collaboration with sector peers – common\n\nthreats and adoption of best practice\n\nEnsure MFA covers all internet-\nfacing endpoints\n\nEnhance network monitoring\ncapabilities\n\nImplement and enhance network\nsegmentation\n\nPrioritise the remediation of legacy tech\nissues and manage systems lifecycles to\neliminate in future\n\nPrioritise the ability to recover as well as\nsecurity itself\n\nbl.uk\n\n8\n\n\fGovernance\n\n• New Board committee established: Digital\nPortfolio Committee, with external adviser\n\n• Oversees a new Programme – Rebuild\nand Renew (six month Adapt phase, 18\nmonth Renew phase), along with wider\nTechnology/Digital strategy\n\n• Particular weight being given to change\n\nmanagement to ensure long term culture\nchange\n\nEnsure holistic overview of\ncyber risk so that low level\naggregate risks are better\nunderstood\n\nRegular cyber risk training at all\nlevels\n\nBuild cyber risk understanding\nat Board level – if possible,\nrecruit or co-opt experts\n\nbl.uk\n\n9",
+        "status": "reported",
+        "page": null
+      }
+    ],
+    "nodes": [
+      {
+        "id": "p_initial",
+        "label": "Initial target state",
+        "role": "state",
+        "shape": "ellipse",
+        "evidence_id": "ev_reported_action",
+        "evidence_status": "reported",
+        "page": 1,
+        "branch": "main",
+        "tactic": null,
+        "likelihood": null,
+        "canonical_id": null,
+        "continued_from_page": null,
+        "continues_on_page": null
+      },
+      {
+        "id": "e_reported_action",
+        "label": "Exploit the exposed target service",
+        "role": "event",
+        "shape": "rectangle",
+        "evidence_id": "ev_reported_action",
+        "evidence_status": "reported",
+        "page": 1,
+        "branch": "main",
+        "tactic": "IA",
+        "likelihood": 7.0,
+        "canonical_id": null,
+        "continued_from_page": null,
+        "continues_on_page": null
+      },
+      {
+        "id": "p_result",
+        "label": "Initial access obtained",
+        "role": "state",
+        "shape": "ellipse",
+        "evidence_id": "ev_reported_action",
+        "evidence_status": "derived",
+        "page": 1,
+        "branch": "main",
+        "tactic": null,
+        "likelihood": null,
+        "canonical_id": null,
+        "continued_from_page": null,
+        "continues_on_page": null
+      }
+    ],
+    "edges": [
+      {
+        "source": "p_initial",
+        "target": "e_reported_action",
+        "relation": "causal",
+        "style": "solid",
+        "logic": null
+      },
+      {
+        "source": "e_reported_action",
+        "target": "p_result",
+        "relation": "causal",
+        "style": "solid",
+        "logic": null
+      }
+    ],
+    "pages": [
+      {
+        "page": 1,
+        "title": "Mock incident",
+        "entry_nodes": [
+          "p_initial"
+        ],
+        "exit_nodes": [
+          "p_result"
+        ],
+        "rank_groups": []
+      }
+    ]
+  },
+  "presentation": {
+    "semantic_contract": "incident-semantic-draft-v1",
+    "annotations": [],
+    "annotation_edges": [],
+    "pages": [
+      {
+        "page": 1,
+        "title": "Mock incident",
+        "entry_nodes": [
+          "p_initial"
+        ],
+        "exit_nodes": [
+          "p_result"
+        ],
+        "rank_groups": []
+      }
+    ]
+  }
+}

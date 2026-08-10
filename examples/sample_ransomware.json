@@ -1,0 +1,30 @@
+{
+  "title": "Ransomware via VPN (sample)",
+  "preconditions": [
+    { "id": "p_vpn",   "label": "Unpatched internet-facing VPN", "code": "RS" },
+    { "id": "p_creds", "label": "Valid stolen credentials",       "code": "CA" },
+    { "id": "p_access", "label": "Initial VPN access obtained", "code": "IA", "parents": ["e_access"] }
+  ],
+  "events": [
+    {
+      "id": "e_access",
+      "label": "Exploit VPN to gain initial access",
+      "tactic": "IA",
+      "technique": "T1190",
+      "mitigations": ["M1051", "M1032"],
+      "likelihood": 6.0,
+      "parents": ["p_vpn", "p_creds"],
+      "join": "OR"
+    },
+    {
+      "id": "e_ransom",
+      "label": "Deploy ransomware across network",
+      "tactic": "IM",
+      "technique": "T1486",
+      "mitigations": ["M1040"],
+      "likelihood": 5.0,
+      "parents": ["p_access"],
+      "join": "AND"
+    }
+  ]
+}

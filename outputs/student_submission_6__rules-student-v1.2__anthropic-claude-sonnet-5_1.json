@@ -1,0 +1,121 @@
+{
+  "title": "TfL Cyber Attack - Scattered Spider (Jubair & Flowers)",
+  "preconditions": [
+    {
+      "id": "P1",
+      "label": "TfL network infiltrated",
+      "code": "R",
+      "parents": [
+        "E1"
+      ]
+    },
+    {
+      "id": "P2",
+      "label": "TfL network compromised / access established",
+      "code": "R",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "Employees forced to attend password reset",
+      "code": "IM",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P4",
+      "label": "£29 million loss and recovery costs incurred",
+      "code": "IM",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P5",
+      "label": "Customer refund system affected, refunds delayed",
+      "code": "IM",
+      "parents": [
+        "E3"
+      ]
+    },
+    {
+      "id": "P6",
+      "label": "Oyster photocard application system closed down",
+      "code": "IM",
+      "parents": [
+        "E3"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "label": "Infiltrate TfL network",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "TfL’s network was infiltrated between 31 August and 3 September 2024",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "infiltrated",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "E2",
+      "label": "Compromise TfL network",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "The pair compromised TfL’s network",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "compromised",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Access data from Oyster refunds system",
+      "tactic": "CL",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "Data from TfL’s Oyster refunds system was accessed",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "was accessed",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E5",
+      "label": "Access TfL systems",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "showing Jubair accessing TfL systems during the attack",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "accessing",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    }
+  ]
+}

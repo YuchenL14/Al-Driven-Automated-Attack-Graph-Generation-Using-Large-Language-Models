@@ -1,0 +1,146 @@
+{
+  "title": "Transport for London (TfL) Network Compromise by Scattered Spider Members",
+  "preconditions": [
+    {
+      "id": "P1",
+      "label": "TfL network infiltrated",
+      "code": "A",
+      "parents": [
+        "E1"
+      ]
+    },
+    {
+      "id": "P2",
+      "label": "TfL network compromised (access established)",
+      "code": "A",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "Oyster refunds system data accessible",
+      "code": "R",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P5",
+      "label": "28,000 employees forced to reset passwords (impact)",
+      "code": "IM",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P6",
+      "label": "£29 million in loss and recovery costs (impact)",
+      "code": "IM",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P7",
+      "label": "Customer refund system affected, customers delayed (impact)",
+      "code": "IM",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P8",
+      "label": "Oyster photocard application system closed down (impact)",
+      "code": "IM",
+      "parents": [
+        "E5"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "label": "Infiltrate TfL network",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "TfL’s network was infiltrated between 31 August and 3 September 2024",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "infiltrated",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "E2",
+      "label": "Compromise TfL network",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "The pair compromised TfL’s network, forcing all 28,000 employees to attend a TfL office for a password reset.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "compromised",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Access data from Oyster refunds system",
+      "tactic": "CL",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "Data from TfL’s Oyster refunds system was accessed",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "was accessed",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E5",
+      "label": "Close down Oyster photocard application system",
+      "tactic": "IM",
+      "technique": "T1489",
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "It also closed down the application system for Oyster photocards for children and young people.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 75,
+      "actor": "adversary",
+      "action_evidence": "closed down",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E7",
+      "label": "Access TfL systems during the attack",
+      "tactic": "IA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "showing Jubair accessing TfL systems during the attack",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "accessing",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "page_count": 3,
+  "warning_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 13,
+      "page_width_px": 826,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.9292035398230087,
+      "page_aspect_ratio": 1.602905569007264,
+      "occupied_width_fraction": 0.8938053097345132,
+      "occupied_height_fraction": 0.9305135951661632,
+      "node_area_density": 0.3023286902120151,
+      "median_horizontal_drift_fraction": 0.252212389380531,
+      "mean_route_detour": 1.3167146323570904,
+      "bend_count": 21,
+      "has_parallel_structure": true,
+      "warnings": []
+    },
+    {
+      "page": 2,
+      "node_count": 18,
+      "page_width_px": 1282,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 1.1916299559471366,
+      "page_aspect_ratio": 0.84399375975039,
+      "occupied_width_fraction": 0.947136563876652,
+      "occupied_height_fraction": 0.9149722735674677,
+      "node_area_density": 0.2515166073595153,
+      "median_horizontal_drift_fraction": 0.12555066079295155,
+      "mean_route_detour": 1.0,
+      "bend_count": 24,
+      "has_parallel_structure": true,
+      "warnings": [
+        "one page is 1282px wide against a 1240px budget; its labels print at about 7.7pt across a landscape page, below the 8pt figure-text floor"
+      ]
+    },
+    {
+      "page": 3,
+      "node_count": 12,
+      "page_width_px": 826,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.646017699115044,
+      "page_aspect_ratio": 1.4479418886198547,
+      "occupied_width_fraction": 0.8938053097345132,
+      "occupied_height_fraction": 0.9230769230769231,
+      "node_area_density": 0.30473258945748366,
+      "median_horizontal_drift_fraction": 0.252212389380531,
+      "mean_route_detour": 1.0464606618452772,
+      "bend_count": 18,
+      "has_parallel_structure": true,
+      "warnings": []
+    }
+  ]
+}

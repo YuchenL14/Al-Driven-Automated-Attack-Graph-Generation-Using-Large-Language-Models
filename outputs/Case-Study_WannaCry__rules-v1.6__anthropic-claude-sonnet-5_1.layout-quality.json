@@ -1,0 +1,54 @@
+{
+  "page_count": 3,
+  "warning_count": 0,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 12,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.5635593220338984,
+      "page_aspect_ratio": 1.25,
+      "occupied_width_fraction": 0.8559322033898306,
+      "occupied_height_fraction": 0.9239669421487603,
+      "node_area_density": 0.29275808936825887,
+      "median_horizontal_drift_fraction": 0.12076271186440678,
+      "mean_route_detour": 1.1037181996086105,
+      "bend_count": 7,
+      "has_parallel_structure": true,
+      "warnings": []
+    },
+    {
+      "page": 2,
+      "node_count": 12,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.022140221402214,
+      "page_aspect_ratio": 1.0558766859344895,
+      "occupied_width_fraction": 0.8745387453874539,
+      "occupied_height_fraction": 0.916058394160584,
+      "node_area_density": 0.28146631831281815,
+      "median_horizontal_drift_fraction": 0.21033210332103322,
+      "mean_route_detour": 1.0,
+      "bend_count": 12,
+      "has_parallel_structure": true,
+      "warnings": []
+    },
+    {
+      "page": 3,
+      "node_count": 12,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.8127340823970037,
+      "page_aspect_ratio": 0.5549872122762148,
+      "occupied_width_fraction": 0.9363295880149812,
+      "occupied_height_fraction": 0.8940092165898618,
+      "node_area_density": 0.18036210497247104,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0,
+      "bend_count": 7,
+      "has_parallel_structure": true,
+      "warnings": []
+    }
+  ]
+}

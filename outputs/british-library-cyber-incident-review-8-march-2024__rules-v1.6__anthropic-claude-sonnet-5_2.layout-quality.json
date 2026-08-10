@@ -1,0 +1,38 @@
+{
+  "page_count": 2,
+  "warning_count": 0,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 24,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 1.3351903435468895,
+      "page_aspect_ratio": 0.9141767323585506,
+      "occupied_width_fraction": 0.9368616527390901,
+      "occupied_height_fraction": 0.9360222531293463,
+      "node_area_density": 0.21751039241286063,
+      "median_horizontal_drift_fraction": 0.10584958217270195,
+      "mean_route_detour": 1.0,
+      "bend_count": 26,
+      "has_parallel_structure": true,
+      "warnings": []
+    },
+    {
+      "page": 2,
+      "node_count": 14,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 2.0396341463414633,
+      "page_aspect_ratio": 1.1614583333333333,
+      "occupied_width_fraction": 0.8963414634146342,
+      "occupied_height_fraction": 0.9312406576980568,
+      "node_area_density": 0.22457982427357906,
+      "median_horizontal_drift_fraction": 0.0,
+      "mean_route_detour": 1.0968036529680367,
+      "bend_count": 9,
+      "has_parallel_structure": true,
+      "warnings": []
+    }
+  ]
+}

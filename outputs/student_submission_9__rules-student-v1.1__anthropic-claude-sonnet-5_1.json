@@ -1,0 +1,137 @@
+{
+  "title": "TfL Incident Attack Graph",
+  "preconditions": [
+    {
+      "id": "P1",
+      "label": "Help desk contacted by impersonator",
+      "code": "IA",
+      "parents": [
+        "E1"
+      ]
+    },
+    {
+      "id": "P2",
+      "label": "Employee account password reset",
+      "code": "CA",
+      "parents": [
+        "E2"
+      ]
+    },
+    {
+      "id": "P3",
+      "label": "Access to TfL systems and Oyster database",
+      "code": "IA",
+      "parents": [
+        "E3"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "label": "Impersonate TfL employee and contact help desk",
+      "tactic": "IA",
+      "technique": "T1566.004",
+      "mitigations": [
+        "M1017"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attackers impersonated a TfL employee and contacted the telephone help desk.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "impersonated a TfL employee and contacted the telephone help desk",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "E2",
+      "label": "Persuade help desk to reset employee password",
+      "tactic": "CA",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "They persuaded the help-desk worker to reset the employee’s password.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "persuaded the help-desk worker to reset the employee’s password",
+      "parents": [
+        "P1"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E3",
+      "label": "Use reset account to gain access to TfL systems and Oyster database",
+      "tactic": "IA",
+      "technique": "T1078",
+      "mitigations": [
+        "M1026",
+        "M1032",
+        "M1036"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": "The attackers used the reset account to gain access to TfL systems and the Oyster customer database.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "used the reset account to gain access to TfL systems and the Oyster customer database",
+      "parents": [
+        "P2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E4",
+      "label": "Search customer records for personal details of well-known individuals",
+      "tactic": "CL",
+      "technique": "T1213.006",
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "They searched customer records for the personal details of well-known individuals and attempted to access banking information.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "searched customer records for the personal details of well-known individuals",
+      "parents": [
+        "P3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E5",
+      "label": "Attempt to access banking information",
+      "tactic": "CL",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "They searched customer records for the personal details of well-known individuals and attempted to access banking information.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "attempted to access banking information",
+      "parents": [
+        "P3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "E6",
+      "label": "Steal customer data",
+      "tactic": "EF",
+      "technique": null,
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "Customer data was stolen.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "was stolen",
+      "parents": [
+        "P3"
+      ],
+      "join": "AND"
+    }
+  ]
+}

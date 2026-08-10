@@ -1,0 +1,1014 @@
+{
+  "title": "STOLEN PENCIL Campaign Targets Academia",
+  "preconditions": [
+    {
+      "id": "p_domains",
+      "label": "Phishing domains registered by attacker",
+      "code": "EXT-DOM",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_cert",
+      "label": "Stolen code-signing certificate obtained",
+      "code": "EXT-CERT",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_toolkit",
+      "label": "Off-the-shelf password theft toolkit staged",
+      "code": "EXT-TOOLS",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_targets_identified",
+      "label": "Academic biomedical targets identified",
+      "code": "P-TARGETS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_recon"
+      ]
+    },
+    {
+      "id": "p_ext_created",
+      "label": "Malicious Chrome extension created",
+      "code": "P-EXT",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_dev_ext"
+      ]
+    },
+    {
+      "id": "p_reviews",
+      "label": "Fabricated five-star extension reviews posted",
+      "code": "P-REV",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_fake_reviews"
+      ]
+    },
+    {
+      "id": "p_ext_published",
+      "label": "Malicious extension available on Chrome store",
+      "code": "P-PUB",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_publish_ext"
+      ]
+    },
+    {
+      "id": "p_email_sent",
+      "label": "Spear-phishing email with link delivered",
+      "code": "P-MAIL",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_phish_send"
+      ]
+    },
+    {
+      "id": "p_link_clicked",
+      "label": "User visits phishing page with lure PDF",
+      "code": "P-CLICK",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_user_click"
+      ]
+    },
+    {
+      "id": "p_prompted",
+      "label": "User prompted to install browser extension",
+      "code": "P-PROMPT",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_redirect_prompt"
+      ]
+    },
+    {
+      "id": "p_ext_installed",
+      "label": "Malicious extension installed in browser",
+      "code": "P-INST",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_install_ext"
+      ]
+    },
+    {
+      "id": "p_ext_permissions",
+      "label": "Extension able to read data on all sites",
+      "code": "P-PERM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_install_ext"
+      ]
+    },
+    {
+      "id": "p_foothold",
+      "label": "Initial foothold on victim system established",
+      "code": "P-FOOT",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_exfil_creds_cookies"
+      ]
+    },
+    {
+      "id": "p_tools_signed",
+      "label": "Toolset signed with stolen certificate",
+      "code": "P-SIGNED",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_sign_tools"
+      ]
+    },
+    {
+      "id": "p_admin_account",
+      "label": "Backdoor administrator account created",
+      "code": "P-ADMIN",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_grease_account"
+      ]
+    },
+    {
+      "id": "p_rdp_enabled",
+      "label": "RDP enabled and firewall bypassed",
+      "code": "P-RDP",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_grease_rdp"
+      ]
+    },
+    {
+      "id": "p_rdp_access",
+      "label": "Persistent RDP access to compromised host",
+      "code": "P-RDPACC",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_rdp_login"
+      ]
+    },
+    {
+      "id": "p_toolkit_deployed",
+      "label": "Password-theft toolkit deployed on host",
+      "code": "P-DEPLOY",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_deploy_toolkit"
+      ]
+    },
+    {
+      "id": "p_lsass_dump",
+      "label": "LSASS memory dumped for credentials",
+      "code": "P-LSASS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_dump_lsass"
+      ]
+    },
+    {
+      "id": "p_mimikatz_creds",
+      "label": "Passwords and hashes extracted via Mimikatz",
+      "code": "P-MIMI",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_mimikatz"
+      ]
+    },
+    {
+      "id": "p_browser_pw",
+      "label": "Saved browser passwords recovered",
+      "code": "P-BRPW",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_browser_pw"
+      ]
+    },
+    {
+      "id": "p_mail_pw",
+      "label": "Saved mail passwords recovered",
+      "code": "P-MLPW",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_mail_pw"
+      ]
+    },
+    {
+      "id": "p_net_pw",
+      "label": "Windows network passwords recovered",
+      "code": "P-NTPW",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_net_pw"
+      ]
+    },
+    {
+      "id": "p_rdp_pw",
+      "label": "Saved RDP passwords recovered",
+      "code": "P-RDPPW",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_rdp_pw"
+      ]
+    },
+    {
+      "id": "p_sniffed_pw",
+      "label": "Network-sniffed plaintext passwords captured",
+      "code": "P-SNIFF",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_sniff"
+      ]
+    },
+    {
+      "id": "p_keylog_pw",
+      "label": "Keystrokes and credentials logged",
+      "code": "P-KEYLOG",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_keylog"
+      ]
+    },
+    {
+      "id": "p_lateral_scan",
+      "label": "Internal network hosts and ports discovered",
+      "code": "P-SCAN",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_portscan"
+      ]
+    },
+    {
+      "id": "p_eternal_exploit",
+      "label": "Vulnerable SMB hosts exploited via EternalBlue",
+      "code": "P-ETERNAL",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_eternal"
+      ]
+    },
+    {
+      "id": "p_psexec_exec",
+      "label": "Remote command execution via PsExec achieved",
+      "code": "P-PSEXEC",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_psexec"
+      ]
+    },
+    {
+      "id": "p_wallet_hijack",
+      "label": "Cryptocurrency wallet addresses replaced",
+      "code": "P-WALLET",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_cryptojack"
+      ]
+    },
+    {
+      "id": "p_creds_harvested",
+      "label": "Broad credential cache harvested across sources",
+      "code": "P-CREDALL",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_mimikatz",
+        "ev_browser_pw",
+        "ev_mail_pw",
+        "ev_net_pw",
+        "ev_rdp_pw",
+        "ev_sniff",
+        "ev_keylog"
+      ]
+    },
+    {
+      "id": "p_objective",
+      "label": "Persistent access and stolen credentials retained",
+      "code": "P-OBJ",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_retain_access"
+      ]
+    },
+    {
+      "id": "a_opsec",
+      "label": "Poor OPSEC exposed Korean language artifacts",
+      "code": "ANN-OPSEC",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_rdp_login"
+      ]
+    },
+    {
+      "id": "a_mfa",
+      "label": "No detection of extension-based data theft",
+      "code": "ANN-NODATA",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_exfil_creds_cookies"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_recon",
+      "label": "Research academic targets and biomedical staff",
+      "tactic": "RE",
+      "techniques": [
+        "T1591.004"
+      ],
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "ev_dev_ext",
+      "label": "Develop malicious Chrome extension",
+      "tactic": "RS",
+      "techniques": [
+        "T1587.001"
+      ],
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "ev_fake_reviews",
+      "label": "Post fake reviews via compromised Google+ accounts",
+      "tactic": "RS",
+      "techniques": [
+        "T1586.001"
+      ],
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "ev_publish_ext",
+      "label": "Publish extension to Chrome Web Store",
+      "tactic": "RS",
+      "techniques": [
+        "T1608.001"
+      ],
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_ext_created",
+        "p_reviews"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_phish_send",
+      "label": "Send spear-phishing email with malicious link",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_domains",
+        "p_targets_identified"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_user_click",
+      "label": "User clicks link to phishing page",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_email_sent"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_redirect_prompt",
+      "label": "Redirect user to install Font Manager extension",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_link_clicked",
+        "p_ext_published"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_install_ext",
+      "label": "User installs malicious extension with broad permissions",
+      "tactic": "EX",
+      "techniques": [
+        "T1204.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1038",
+        "M1040"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_prompted"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_exfil_creds_cookies",
+      "label": "Extension reads and exfiltrates cookies/passwords",
+      "tactic": "CL",
+      "techniques": [
+        "T1005",
+        "T1539",
+        "T1555.003"
+      ],
+      "mitigations": [
+        "M1057",
+        "M1017",
+        "M1021",
+        "M1032",
+        "M1047",
+        "M1051",
+        "M1054",
+        "M1018",
+        "M1027"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_ext_installed",
+        "p_ext_permissions"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_sign_tools",
+      "label": "Sign MECHANICAL/GREASE tools with stolen certificate",
+      "tactic": "DE",
+      "techniques": [
+        "T1553.002"
+      ],
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_cert"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_grease_account",
+      "label": "Run GREASE to add backdoor admin account",
+      "tactic": "PS",
+      "techniques": [
+        "T1136.001"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1032"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_foothold",
+        "p_tools_signed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_grease_rdp",
+      "label": "Run GREASE to enable RDP and bypass firewall",
+      "tactic": "DE",
+      "techniques": [
+        "T1686"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1047"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_foothold",
+        "p_tools_signed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_rdp_login",
+      "label": "Authenticate via RDP using backdoor account",
+      "tactic": "LM",
+      "techniques": [
+        "T1021.001"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1035",
+        "M1042",
+        "M1047"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_admin_account",
+        "p_rdp_enabled"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_deploy_toolkit",
+      "label": "Deploy password-theft toolkit on compromised host",
+      "tactic": "LM",
+      "techniques": [
+        "T1570"
+      ],
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_rdp_access",
+        "p_toolkit"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_dump_lsass",
+      "label": "Dump LSASS process memory with Procdump",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1025",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1040",
+        "M1043"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_mimikatz",
+      "label": "Extract passwords/hashes with Mimikatz",
+      "tactic": "CA",
+      "techniques": [
+        "T1003.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1025",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1040",
+        "M1043"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lsass_dump"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_browser_pw",
+      "label": "Dump browser-stored passwords with Nirsoft tool",
+      "tactic": "CA",
+      "techniques": [
+        "T1555.003"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1027",
+        "M1051"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_mail_pw",
+      "label": "Dump saved mail passwords with Nirsoft tool",
+      "tactic": "CA",
+      "techniques": [
+        "T1552.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1022",
+        "M1027",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_net_pw",
+      "label": "Dump saved Windows network passwords",
+      "tactic": "CA",
+      "techniques": [
+        "T1552.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1022",
+        "M1027",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_rdp_pw",
+      "label": "Dump saved RDP passwords with Nirsoft tool",
+      "tactic": "CA",
+      "techniques": [
+        "T1552.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1022",
+        "M1027",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_sniff",
+      "label": "Sniff network traffic for cleartext passwords",
+      "tactic": "CA",
+      "techniques": [
+        "T1040"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1030",
+        "M1032",
+        "M1041"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_keylog",
+      "label": "Log keystrokes via MECHANICAL malware",
+      "tactic": "CL",
+      "techniques": [
+        "T1056.001"
+      ],
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_cryptojack",
+      "label": "Replace Ethereum wallet addresses via MECHANICAL",
+      "tactic": "IM",
+      "techniques": [
+        "T1565.001"
+      ],
+      "mitigations": [
+        "M1022",
+        "M1029",
+        "M1041"
+      ],
+      "likelihood": 5.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_portscan",
+      "label": "Scan internal network with KPortScan",
+      "tactic": "DS",
+      "techniques": [
+        "T1046"
+      ],
+      "mitigations": [
+        "M1030",
+        "M1031",
+        "M1042"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_toolkit_deployed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_eternal",
+      "label": "Exploit SMB hosts using EternalBlue suite",
+      "tactic": "LM",
+      "techniques": [
+        "T1210"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1019",
+        "M1026",
+        "M1030",
+        "M1042",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_scan"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_psexec",
+      "label": "Execute commands remotely via PsExec",
+      "tactic": "LM",
+      "techniques": [
+        "T1021.002"
+      ],
+      "mitigations": [
+        "M1026",
+        "M1027",
+        "M1035",
+        "M1037"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_scan"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "ev_retain_access",
+      "label": "Retain access using harvested credentials and backdoors",
+      "tactic": "IM",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_creds_harvested",
+        "p_admin_account"
+      ],
+      "join": "AND"
+    }
+  ]
+}

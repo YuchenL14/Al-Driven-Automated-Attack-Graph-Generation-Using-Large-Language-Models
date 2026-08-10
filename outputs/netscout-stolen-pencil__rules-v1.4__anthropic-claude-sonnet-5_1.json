@@ -1,0 +1,408 @@
+{
+  "title": "STOLEN PENCIL Campaign Targets Academia",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "Target academic institution profiles identified",
+      "code": "R",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "Phishing domains and infrastructure registered",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p3",
+      "label": "Malicious Chrome extension crafted with fake reviews",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p4",
+      "label": "Spear-phishing email delivered with link",
+      "code": "R",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Victim visits phishing site with lure PDF",
+      "code": "R",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Victim installs malicious Chrome extension",
+      "code": "R",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Extension can read/modify data on all URLs",
+      "code": "R",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Browser cookies and passwords accessible to attacker",
+      "code": "R",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Initial foothold on victim system established",
+      "code": "R",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "Password theft toolset staged on host",
+      "code": "RS",
+      "parents": []
+    },
+    {
+      "id": "p11",
+      "label": "Process memory and stored passwords dumped",
+      "code": "R",
+      "parents": [
+        "e6"
+      ]
+    },
+    {
+      "id": "p12",
+      "label": "Network-sniffed and keylogged credentials captured",
+      "code": "R",
+      "parents": [
+        "e7"
+      ]
+    },
+    {
+      "id": "p13",
+      "label": "Valid credentials and admin account available",
+      "code": "R",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p14",
+      "label": "RDP enabled and firewall rules bypassed",
+      "code": "R",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p15",
+      "label": "Persistent interactive RDP access to compromised systems",
+      "code": "R",
+      "parents": [
+        "e10"
+      ]
+    },
+    {
+      "id": "p16",
+      "label": "Lateral movement across university network achieved",
+      "code": "R",
+      "parents": [
+        "e11"
+      ]
+    },
+    {
+      "id": "p17",
+      "label": "Long-term credential scavenging and access retained",
+      "code": "R",
+      "parents": [
+        "e12"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Send spear-phishing email with malicious link",
+      "tactic": "IA",
+      "technique": "T1566.002",
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p1",
+        "p2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e2",
+      "label": "Redirect victim to phishing site with lure document",
+      "tactic": "IA",
+      "technique": "T1189",
+      "mitigations": [
+        "M1017",
+        "M1021",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e3",
+      "label": "Prompt and induce install of fake Font Manager extension",
+      "tactic": "PS",
+      "technique": "T1176.001",
+      "mitigations": [
+        "M1017",
+        "M1033",
+        "M1038",
+        "M1047",
+        "M1051"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p5",
+        "p3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Grant extension broad host permissions (all URLs)",
+      "tactic": "PS",
+      "technique": "T1098",
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p6"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Harvest browser cookies/passwords via extension",
+      "tactic": "CA",
+      "technique": "T1539",
+      "mitigations": [
+        "M1017",
+        "M1021",
+        "M1032",
+        "M1047",
+        "M1051",
+        "M1054"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p7"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Deploy Procdump/Mimikatz to dump lsass and stored passwords",
+      "tactic": "CA",
+      "technique": "T1003.001",
+      "mitigations": [
+        "M1017",
+        "M1025",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1040",
+        "M1043"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p9",
+        "p10"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e7",
+      "label": "Capture credentials via keylogger and network sniffing",
+      "tactic": "CA",
+      "technique": "T1056.001",
+      "mitigations": [],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p9",
+        "p10"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e8",
+      "label": "Create backdoor admin account (GREASE)",
+      "tactic": "PS",
+      "technique": "T1136.001",
+      "mitigations": [
+        "M1026",
+        "M1032"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p11",
+        "p12"
+      ],
+      "join": "OR"
+    },
+    {
+      "id": "e9",
+      "label": "Enable RDP and bypass firewall rules",
+      "tactic": "DE",
+      "technique": "T1686",
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1047"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p13"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Log in via RDP using stolen/backdoor credentials",
+      "tactic": "LM",
+      "technique": "T1021.001",
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1035",
+        "M1042",
+        "M1047"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p14"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e11",
+      "label": "Use PsExec and scanning tools to move across hosts",
+      "tactic": "LM",
+      "technique": "T1570",
+      "mitigations": [
+        "M1031",
+        "M1037"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p15"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e12",
+      "label": "Maintain persistent access and continue credential scavenging",
+      "tactic": "CL",
+      "technique": "T1119",
+      "mitigations": [
+        "M1029",
+        "M1041"
+      ],
+      "likelihood": null,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "parents": [
+        "p16"
+      ],
+      "join": "AND"
+    }
+  ]
+}

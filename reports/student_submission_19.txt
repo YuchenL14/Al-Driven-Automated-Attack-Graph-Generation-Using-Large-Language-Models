@@ -1,0 +1,25 @@
+Attackers first gained access to Marks and Spencer systems as early as
+February 2025. The report does not state how that access was achieved, so no
+technique is given for this step.
+
+The attackers stole the NTDS.dit file from the Windows domain controllers
+(T1003.003; mitigations M1026, M1027, M1041).
+
+The Active Directory database containing password hashes for all domain
+accounts was in the attackers' possession.
+
+The attackers deployed DragonForce ransomware against VMware ESXi hosts on
+24 April 2025 (T1486; mitigations M1040, M1053).
+
+Company servers and the virtual machines running critical business
+applications were encrypted.
+
+In-store contactless payments were disrupted.
+
+Online and app-based shopping was suspended, and Click and Collect order
+processing was paused.
+
+Operations at the Castle Donington warehouse were impacted and around 200
+agency staff were told not to attend shifts.
+
+Approximately 700 million pounds was wiped from the company's market value.

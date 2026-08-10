@@ -1,0 +1,19 @@
+From 19 February 2022, evidence suggested that a threat actor made repeated brute-force attempts against the sqluser administrator account. There were approximately 400 attempts across thirteen incidents. The report did not establish that these attempts successfully provided access.
+
+On 3 June 2022, a threat actor likely compromised an end-user laptop and used it to authenticate to DPP's network. The compromise allowed the threat actor to access the sqluser account.
+
+The sqluser account belonged to a legacy case-management system. It did not use multi-factor authentication and had unrestricted administrator access across DPP's network.
+
+After gaining access, the threat actor ran PowerShell commands. Indicators showed that Cobalt Strike was deployed on the network.
+
+The threat actor used the compromised sqluser account to move laterally across DPP's network.
+
+On 4 June 2022, logs showed that Windows Defender was disabled and a virtual-machine backup service was stopped. Forensic investigators believed that the threat actor then deployed ransomware.
+
+MegaSync and Rclone were installed during the incident. The threat actor used tools to exfiltrate data from DPP's network.
+
+Towards the end of the incident, the threat actor used the sqluser account to download and run antivirus software as a clean-up action, making the investigation more difficult.
+
+DPP's email server stopped working and staff lost access to the network. Files across DPP's servers were corrupted, and DPP's systems did not operate properly for approximately one week.
+
+The National Crime Agency later confirmed that three folders containing 32.4 GB of DPP data had been published on the dark web.

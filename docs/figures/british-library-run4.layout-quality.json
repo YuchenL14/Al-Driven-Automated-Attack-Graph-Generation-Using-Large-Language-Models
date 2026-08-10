@@ -1,0 +1,44 @@
+{
+  "page_count": 2,
+  "warning_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "node_count": 20,
+      "page_width_px": 1650,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 1.0376175548589341,
+      "page_aspect_ratio": 0.8024242424242424,
+      "occupied_width_fraction": 0.9623824451410659,
+      "occupied_height_fraction": 0.9305135951661632,
+      "node_area_density": 0.163975414105636,
+      "median_horizontal_drift_fraction": 0.08934169278996865,
+      "mean_route_detour": 1.0764790764790764,
+      "bend_count": 15,
+      "has_parallel_structure": true,
+      "warnings": [
+        "one page is 1650px wide against a 1240px budget; its labels print at about 6.0pt across a landscape page, below the 8pt figure-text floor"
+      ]
+    },
+    {
+      "page": 2,
+      "node_count": 18,
+      "page_width_px": 1580,
+      "canonical_duplicate_count": 0,
+      "downward_edge_fraction": 1.0,
+      "main_aspect_ratio": 0.8971807628524047,
+      "page_aspect_ratio": 0.6848101265822785,
+      "occupied_width_fraction": 0.9601990049751243,
+      "occupied_height_fraction": 0.9149722735674677,
+      "node_area_density": 0.18936739592242116,
+      "median_horizontal_drift_fraction": 0.0945273631840796,
+      "mean_route_detour": 1.0,
+      "bend_count": 25,
+      "has_parallel_structure": true,
+      "warnings": [
+        "one page is 1580px wide against a 1240px budget; its labels print at about 6.3pt across a landscape page, below the 8pt figure-text floor"
+      ]
+    }
+  ]
+}
