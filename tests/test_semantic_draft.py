@@ -687,6 +687,12 @@ class IncidentSemanticDraftTests(unittest.TestCase):
                     data={
                         "provider": "mock",
                         "semantic_mode": "1",
+                        # Stated rather than left to the default. The semantic
+                        # pipeline refuses v1.6, and v1.6 is now what a request
+                        # that chooses nothing gets, so this test used to pass
+                        # only because the default happened to be a version the
+                        # pipeline accepts.
+                        "ruleset": "v1.4",
                         "report": (
                             io.BytesIO(
                                 b"The attacker exploited an exposed service."

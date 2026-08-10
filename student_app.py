@@ -1,6 +1,7 @@
 """Student-facing text-entry interface for the teaching attack-graph pipeline.
 
-``app.py`` remains fixed to the professional v1.4 report baseline. This file
+``app.py`` runs the current professional rule set and keeps v1.4 as its
+frozen comparison baseline. This file
 uses an isolated student rule set: type an incident description, press Generate,
 and view the graph. Teaching fixes therefore cannot change professional results.
 
@@ -159,21 +160,37 @@ PAGE = """
   .steps li.done .n{background:var(--ink-2);color:#fff;border-color:var(--ink-2)}
   .steps li.now{color:var(--accent);border-bottom-color:var(--accent)}
   .steps li.now .n{border-width:1.6px}
-  .sec{display:flex;align-items:baseline;gap:12px;margin:34px 0 14px}
+  .sec{display:flex;align-items:baseline;gap:12px;margin:38px 0 14px}
+  .sec .num{font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--accent);
+            font-variant-numeric:tabular-nums}
   .sec h2{margin:0;font:600 11px/1 var(--mono);letter-spacing:.18em;
           text-transform:uppercase;color:var(--ink-2)}
   .sec .line{flex:1;height:1px;background:var(--rule)}
   .sec .count{font:600 10px/1 var(--mono);letter-spacing:.1em;color:#fff;
               background:var(--advisory);padding:5px 8px;border-radius:2px}
   .sec .count.clear{background:var(--ink-3)}
-  .lede{max-width:74ch;color:var(--ink-2);margin:18px 0 0}
+  /* Editorial two-column opening: what to do on the left, the notation you
+     will get back on the right. A single measure-limited paragraph left the
+     right third of the page empty, and the notation key is exactly what a
+     learner should be reading beside the instructions. */
+  .opening{display:grid;gap:28px 40px;
+           grid-template-columns:minmax(0,1.55fr) minmax(240px,1fr);
+           align-items:start;padding:26px 0 4px}
+  .lede{margin:0;max-width:62ch;color:var(--ink-2);font-size:16.5px;
+        line-height:1.6}
   .lede b{color:var(--ink)}
+  .lede .first{display:block;margin-bottom:12px;font-size:19px;line-height:1.45;
+               color:var(--ink);letter-spacing:-.008em}
   /* notation key: learn the syntax before reading the figure */
-  .key{display:flex;flex-wrap:wrap;gap:26px;align-items:center;
-       border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-       padding:14px 0}
-  .key .item{display:flex;align-items:center;gap:9px;font:11.5px/1 var(--mono);
+  .key{display:flex;flex-direction:column;border-top:2px solid var(--ink)}
+  .key .kh{font:600 9.5px/1 var(--mono);letter-spacing:.16em;
+           text-transform:uppercase;color:var(--ink-3);padding:13px 0 11px;
+           border-bottom:1px solid var(--rule)}
+  .key .item{display:flex;align-items:center;gap:11px;padding:11px 0;
+             border-bottom:1px solid var(--rule);font:11.5px/1.35 var(--mono);
              color:var(--ink-2)}
+  .key .item svg{flex:none}
+  @media(max-width:860px){.opening{grid-template-columns:1fr}}
   /* action surface */
   .panel-action{background:var(--surface);border:1px solid var(--rule-2);
                 border-radius:0;padding:22px 24px}
@@ -289,35 +306,37 @@ PAGE = """
   <li class="{% if images %}now{% endif %}"><span class="n">3</span> Review</li>
 </ol>
 
-<p class="lede">Describe a cyber incident below, and write the ATT&amp;CK
-technique and mitigation numbers you have decided on next to the step they
-belong to. <b>Numbers you supply are drawn as you wrote them:</b> whether they are the
-right ones is your judgement, not the tool&#39;s. Where you leave a step without
-a number, the results page shows the model&#39;s suggestion and a short,
-tactic-scoped candidate list for you to review. A suggestion is not silently
-treated as your confirmed choice. Anything the tool could not use, or
-disagrees with, is listed beside the figure rather than corrected silently.
-Your text and the generated figure are saved for review. The figure uses the
-fixed AGVS-SP / Stolen Pencil visual syntax, and long graphs are split
-automatically at causal state boundaries.</p>
-
-<div class="sec"><h2>The notation you will get back</h2><div class="line"></div></div>
-<div class="key">
-  <span class="item"><svg width="42" height="20" aria-hidden="true"><rect x="1" y="3"
-    width="40" height="14" fill="none" stroke="#2d5f5c" stroke-width="1.5"/></svg>
-    action taken by the attacker</span>
-  <span class="item"><svg width="42" height="20" aria-hidden="true"><ellipse cx="21" cy="10"
-    rx="20" ry="8" fill="none" stroke="#2d5f5c" stroke-width="1.5"/></svg>
-    state of the system</span>
-  <span class="item"><svg width="42" height="20" aria-hidden="true"><rect x="1" y="3"
-    width="40" height="14" fill="none" stroke="#a8631b" stroke-width="1.4"
-    stroke-dasharray="5 4"/></svg> annotation</span>
-  <span class="item"><svg width="42" height="20" aria-hidden="true"><path d="M2 10 H40"
-    stroke="#79808c" stroke-width="1.6" stroke-dasharray="2 4"/></svg>
-    uncertain branch</span>
+<div class="opening">
+  <p class="lede"><span class="first">Describe a cyber incident below, and write
+    the ATT&amp;CK technique and mitigation numbers you have decided on next to
+    the step they belong to.</span>
+    <b>Numbers you supply are drawn as you wrote them:</b> whether they are the
+    right ones is your judgement, not the tool&#39;s. Where you leave a step
+    without a number, the results page shows the model&#39;s suggestion and a
+    short, tactic-scoped candidate list for you to review. A suggestion is not
+    silently treated as your confirmed choice. Anything the tool could not use,
+    or disagrees with, is listed beside the figure rather than corrected
+    silently. Your text and the generated figure are saved for review. The
+    figure uses the fixed AGVS-SP / Stolen Pencil visual syntax, and long graphs
+    are split automatically at causal state boundaries.</p>
+  <div class="key">
+    <span class="kh">The notation you will get back</span>
+    <span class="item"><svg width="42" height="20" aria-hidden="true"><rect x="1" y="3"
+      width="40" height="14" fill="none" stroke="#2d5f5c" stroke-width="1.5"/></svg>
+      action taken<br>by the attacker</span>
+    <span class="item"><svg width="42" height="20" aria-hidden="true"><ellipse cx="21" cy="10"
+      rx="20" ry="8" fill="none" stroke="#2d5f5c" stroke-width="1.5"/></svg>
+      state of the system</span>
+    <span class="item"><svg width="42" height="20" aria-hidden="true"><rect x="1" y="3"
+      width="40" height="14" fill="none" stroke="#a8631b" stroke-width="1.4"
+      stroke-dasharray="5 4"/></svg> annotation</span>
+    <span class="item"><svg width="42" height="20" aria-hidden="true"><path d="M2 10 H40"
+      stroke="#79808c" stroke-width="1.6" stroke-dasharray="2 4"/></svg>
+      uncertain branch</span>
+  </div>
 </div>
 
-<div class="sec"><h2>Incident description</h2><div class="line"></div></div>
+<div class="sec"><span class="num">01</span><h2>Incident description</h2><div class="line"></div></div>
 <div class="panel-action">
   <form method="post" action="/generate" accept-charset="UTF-8">
     <label class="top" for="scenario">Your text</label>
@@ -341,7 +360,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if tactics %}
-<div class="sec"><h2>Tactics your graph reaches</h2><div class="line"></div>
+<div class="sec"><span class="num">02</span><h2>Tactics your graph reaches</h2><div class="line"></div>
   <span class="count clear">{{ tactics|selectattr('present')|list|length }} of {{ tactics|length }}</span></div>
 <div class="tactics">
   <div class="tbar">
@@ -360,7 +379,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if metrics and (metrics.calls or metrics.pages) %}
-<div class="sec"><h2>Measured this run</h2><div class="line"></div></div>
+<div class="sec"><span class="num">03</span><h2>Measured this run</h2><div class="line"></div></div>
 <div class="metrics">
   <div class="metric"><span class="k">Pages</span>
     <span class="v">{% if metrics.pages is none %}&mdash;{% else %}{{ metrics.pages }}{% endif %}</span>
@@ -383,7 +402,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if notes %}
-<div class="sec"><h2>Review your ATT&amp;CK choices</h2><div class="line"></div>
+<div class="sec"><span class="num">04</span><h2>Review your ATT&amp;CK choices</h2><div class="line"></div>
   <span class="count">{{ notes|length }}</span></div>
 <div class="panel-note">
   <h3>Steps that still need a decision from you</h3>
@@ -398,7 +417,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if restatement %}
-<div class="sec"><h2>What your graph says</h2><div class="line"></div>
+<div class="sec"><span class="num">05</span><h2>What your graph says</h2><div class="line"></div>
   <span class="count clear">{{ restatement|length }} lines</span></div>
 <div class="panel-note neutral">
   <h3>Read back from the arrows</h3>
@@ -412,7 +431,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if source_coverage %}
-<div class="sec"><h2>Check the source coverage</h2><div class="line"></div>
+<div class="sec"><span class="num">06</span><h2>Check the source coverage</h2><div class="line"></div>
   {% if source_coverage.warnings %}<span class="count">{{ source_coverage.warnings|length }}</span>
   {% else %}<span class="count clear">clear</span>{% endif %}</div>
 <div class="panel-note{% if not source_coverage.warnings %} neutral{% endif %}">
@@ -461,7 +480,7 @@ automatically at causal state boundaries.</p>
 {% endif %}
 
 {% if images %}
-<div class="sec"><h2>Your graph</h2><div class="line"></div></div>
+<div class="sec"><span class="num">07</span><h2>Your graph</h2><div class="line"></div></div>
 <div class="panel-state">
   <div class="figtitle"><h3>{{ title }}</h3>
     <span class="meta">{{ n_pre }} preconditions &middot; {{ n_ev }} events</span></div>

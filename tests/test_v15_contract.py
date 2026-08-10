@@ -45,7 +45,11 @@ _STAGE_B_MODELS = {
 class V15ContractTests(unittest.TestCase):
     def test_runtime_ruleset_is_discoverable(self):
         self.assertIn("Evidence threshold for an event", load_ruleset("v1.5"))
-        self.assertEqual("v1.4", app.PROFESSIONAL_RULESET)
+        # v1.4 is still the frozen comparison baseline. It is no longer the
+        # version the page runs by default, which is v1.6, so the two are now
+        # pinned separately.
+        self.assertEqual("v1.4", app.COMPARISON_BASELINE)
+        self.assertEqual("v1.6", app.DEFAULT_RULESET)
 
     def test_student_app_uses_isolated_teaching_rules(self):
         # The invariant is isolation: the teaching app must never run the

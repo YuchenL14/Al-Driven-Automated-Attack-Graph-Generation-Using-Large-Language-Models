@@ -66,17 +66,30 @@ OLLAMA_MODELS = ["qwen3:8b", "phi4-mini", "llama3.1:8b", "deepseek-r1:8b",
                  "gemma3:4b"]
 
 
-# v1.4 stays the frozen professional comparison baseline and remains the
-# default. The selector exists so a rule set can be compared against it under
-# otherwise identical conditions; the chosen version is recorded in every
-# output file name, so runs made under different rules can never be confused.
-# Teaching iterations remain isolated in student_app.py.
-PROFESSIONAL_RULESET = "v1.4"
+# Two different jobs used to share one constant, and the page said "v1.4" in
+# both senses at once.
+#
+# v1.4 is the frozen comparison baseline: the version every later rule set is
+# measured against, kept byte-identical so a v1.4 run made today is the same
+# experiment as a v1.4 run made months ago. That has not changed.
+#
+# What has changed is which version the work now uses. Every graph the
+# dissertation reports comes from v1.6, so v1.6 is what the page offers first
+# and reaching the baseline is now the deliberate act. That is the reverse of
+# the earlier arrangement, and it is why the integrity test that asserted a
+# v1.4 default was rewritten rather than left to assert something the tool no
+# longer does.
+#
+# The chosen version is recorded in every output file name either way, so runs
+# made under different rules can never be confused. Teaching iterations remain
+# isolated in student_app.py.
+COMPARISON_BASELINE = "v1.4"
+DEFAULT_RULESET = "v1.6"
 RULES_DIR = ROOT / "rules"
 
 
 def available_rulesets() -> list[str]:
-    """Return the report-oriented rule sets present on disk, baseline first.
+    """Return the report-oriented rule sets present on disk, current first.
 
     Student rule sets expect a typed narrative rather than an uploaded report,
     so they stay with the application built for them.
@@ -86,11 +99,11 @@ def available_rulesets() -> list[str]:
         for path in RULES_DIR.glob("ruleset_*.md")
         if not path.stem.startswith("ruleset_student-")
     )
-    ordered = [PROFESSIONAL_RULESET] + [
-        version for version in versions if version != PROFESSIONAL_RULESET
+    ordered = [DEFAULT_RULESET] + [
+        version for version in versions if version != DEFAULT_RULESET
     ]
     return [version for version in ordered if version in set(versions)] or [
-        PROFESSIONAL_RULESET
+        DEFAULT_RULESET
     ]
 
 
@@ -98,8 +111,8 @@ RULESETS = available_rulesets()
 
 
 def _selected_ruleset(value: str | None) -> str:
-    """Accept only a rule set that exists on disk; fall back to the baseline."""
-    return value if value in RULESETS else PROFESSIONAL_RULESET
+    """Accept only a rule set that exists on disk; fall back to the default."""
+    return value if value in RULESETS else DEFAULT_RULESET
 
 
 def _extraction_notes() -> list[str]:
@@ -296,10 +309,34 @@ PAGE = """
   .masthead .right{margin-left:auto;text-align:right;font:500 11px/1.7 var(--mono);
                    color:var(--ink-3);letter-spacing:.06em}
   .masthead .right b{color:var(--accent)}
-  .sec{display:flex;align-items:baseline;gap:12px;margin:36px 0 14px}
+  /* Numbered section rules. The number gives the page a spine the eye can
+     follow, which is what a run of identically weighted panels lacked. */
+  .sec{display:flex;align-items:baseline;gap:12px;margin:40px 0 14px}
+  .sec .num{font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--accent);
+            font-variant-numeric:tabular-nums}
   .sec h2{margin:0;font:600 11px/1 var(--mono);letter-spacing:.18em;
           text-transform:uppercase;color:var(--ink-2)}
   .sec .line{flex:1;height:1px;background:var(--rule)}
+  /* Editorial two-column opening: statement left, fixed properties right.
+     A single measure-limited paragraph left a third of the page empty, so the
+     narrow column now carries the three things the tool does not let you
+     change. Collapses to one column below 860px. */
+  .opening{display:grid;gap:28px 40px;grid-template-columns:minmax(0,1.55fr) minmax(240px,1fr);
+           align-items:start;padding:26px 0 4px}
+  .opening .lede{margin:0;max-width:62ch;font-size:16.5px;line-height:1.6;
+                 color:var(--ink-2)}
+  .opening .lede b{color:var(--ink)}
+  .opening .lede .first{font-size:19px;line-height:1.45;color:var(--ink);
+                        display:block;margin-bottom:12px;letter-spacing:-.008em}
+  .fixed-facts{display:flex;flex-direction:column;border-top:2px solid var(--ink)}
+  .fixed-facts .fact{padding:13px 0 12px;border-bottom:1px solid var(--rule)}
+  .fixed-facts .fact .k{display:block;font:600 9.5px/1 var(--mono);
+        letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+        margin-bottom:7px}
+  .fixed-facts .fact .v{font:12.5px/1.35 var(--mono);color:var(--ink)}
+  .fixed-facts .fact .n{display:block;margin-top:5px;font:11px/1.4 var(--sans);
+        color:var(--ink-3)}
+  @media(max-width:860px){.opening{grid-template-columns:1fr}}
   .sec .count{font:600 10px/1 var(--mono);letter-spacing:.1em;color:#fff;
               background:var(--advisory);padding:5px 8px;border-radius:2px}
   .sec .count.clear{background:var(--ink-3)}
@@ -355,6 +392,11 @@ PAGE = """
               padding:18px 22px;margin:0 0 16px}
   .panel-note h3{margin:0 0 4px;font:600 11px/1 var(--mono);letter-spacing:.15em;
                  text-transform:uppercase;color:var(--advisory)}
+  /* A check that found nothing is still a result, so it keeps the panel shape
+     and loses only the ochre that means "a person must look at this". */
+  .panel-note.neutral{border:1px solid var(--rule-2);border-style:solid;
+                      background:transparent}
+  .panel-note.neutral h3{color:var(--ink-2)}
   .panel-note .tail{margin:12px 0 0;font-size:12.5px;color:var(--ink-3)}
   .checklist{list-style:none;margin:10px 0 0;padding:0}
   .checklist li{padding:12px 0;border-top:1px solid #ecdfc8;font-size:14px;
@@ -417,6 +459,35 @@ PAGE = """
   <div class="right"><b>Professional</b><br>rules {{ selected_ruleset }}</div>
 </header>
 
+<!-- Statement on the left, the three properties you cannot change on the
+     right. The narrow column exists because a measure-limited paragraph on
+     its own left the right third of the page empty. -->
+<div class="opening">
+  <p class="lede"><span class="first">Upload an incident report and the tool
+    returns an ATT&amp;CK-aligned attack graph, drawn to a fixed visual
+    syntax.</span>
+    The rule set governs what the model is allowed to call a precondition, an
+    action and a logical relation, and every version is kept on disk so a run
+    can be repeated under the rules it was made with. <b>What the model decides
+    is reported, not corrected silently:</b> anything the extraction had to give
+    up, and any page that misses a legibility limit, is listed beside the figure
+    rather than hidden.</p>
+  <div class="fixed-facts">
+    <div class="fact"><span class="k">Visual syntax</span>
+      <span class="v">Layout: AGVS-SP branch-aware</span>
+      <span class="n">Rectangle for an action, ellipse for a state, dashed for
+        an annotation. Checked on every run.</span></div>
+    <div class="fact"><span class="k">Pagination</span>
+      <span class="v">Long-graph pagination: automatic</span>
+      <span class="n">Split only at causal state boundaries, so no page loses
+        a dependency.</span></div>
+    <div class="fact"><span class="k">Print floor</span>
+      <span class="v">8.0 pt at 250 mm placement</span>
+      <span class="n">A page too wide to meet it is reported, not silently
+        shipped.</span></div>
+  </div>
+</div>
+
 <!-- One form, rendered once. It is open before a run and collapsed to a single
      summary line afterwards, so the figure gets the vertical space without a
      second code path that could drift from this one. -->
@@ -427,7 +498,7 @@ PAGE = """
     <span class="seg"><span class="k">Layout</span><b>AGVS-SP</b></span>
     <span class="seg"><span class="k">Pages</span><b>{{ images|length }}</b></span>
     {% else %}
-    <span class="seg"><b>Run configuration</b></span>
+    <span class="seg"><b>01 &nbsp;Run configuration</b></span>
     {% endif %}
     <span class="toggle">Change and re-run</span>
   </summary>
@@ -458,22 +529,16 @@ PAGE = """
         <select name="ruleset" id="ruleset">
           {% for r in rulesets %}
           <option value="{{ r }}" {% if r == selected_ruleset %}selected{% endif %}>
-            {{ r }}{% if r == baseline %} (baseline){% else %} (experimental){% endif %}
+            {{ r }}{% if r == default_ruleset %} (current){% elif r == baseline %} (frozen baseline){% else %} (experimental){% endif %}
           </option>
           {% endfor %}
         </select>
         <p class="hint">{{ baseline }} is the frozen comparison baseline</p>
       </div>
-      <div class="field">
-        <label>Layout</label>
-        <div class="fixed">Layout: AGVS-SP branch-aware</div>
-        <p class="hint">fixed &middot; deterministic top-down</p>
-      </div>
-      <div class="field">
-        <label>Pagination</label>
-        <div class="fixed">Long-graph pagination: automatic</div>
-        <p class="hint">split only at causal state boundaries</p>
-      </div>
+      <!-- The layout and pagination lines used to sit here as two disabled
+           fields. They are not inputs, they are properties of the tool, so
+           they moved to the opening panel above where they read as facts
+           rather than as controls somebody forgot to enable. -->
       <!-- The semantic draft pipeline's checkbox was here. It is an
            explored alternative that is kept, tested and reachable from
            `extract_attack_graph_semantic`, but it is no longer offered in
@@ -508,7 +573,7 @@ PAGE = """
 {% endif %}
 
 {% if tactics %}
-<div class="sec"><h2>Tactics this graph reaches</h2><div class="line"></div>
+<div class="sec"><span class="num">02</span><h2>Tactics this graph reaches</h2><div class="line"></div>
   <span class="count clear">{{ tactics|selectattr('present')|list|length }} of {{ tactics|length }}</span></div>
 <div class="tactics">
   <div class="tbar">
@@ -527,7 +592,7 @@ PAGE = """
 {% endif %}
 
 {% if metrics and (metrics.calls or metrics.pages) %}
-<div class="sec"><h2>Measured this run</h2><div class="line"></div></div>
+<div class="sec"><span class="num">03</span><h2>Measured this run</h2><div class="line"></div></div>
 <div class="metrics">
   <div class="metric"><span class="k">Pages</span>
     <span class="v">{% if metrics.pages is none %}&mdash;{% else %}{{ metrics.pages }}{% endif %}</span>
@@ -549,19 +614,32 @@ PAGE = """
 </div>
 {% endif %}
 
+{% if images %}
+<!-- Rendered whether or not anything was flagged. An absent section reads as
+     a gap in the numbering; a section saying nothing was flagged is the
+     result of a check, which is what a reviewer needs to know. -->
+<div class="sec"><span class="num">04</span><h2>Needs your review</h2><div class="line"></div>
+  {% if layout_warnings %}<span class="count">{{ layout_warnings|length }}</span>
+  {% else %}<span class="count clear">nothing flagged</span>{% endif %}</div>
 {% if layout_warnings %}
-<div class="sec"><h2>Needs your review</h2><div class="line"></div>
-  <span class="count">{{ layout_warnings|length }}</span></div>
 <div class="panel-note">
   <h3>The graph was saved, but these pages miss an acceptance limit</h3>
   <ul class="checklist">{% for w in layout_warnings %}<li>{{ w }}</li>{% endfor %}</ul>
   <p class="tail">Reported rather than withheld: a reviewer still needs to see the
     page. Full metrics are in the run's <code>.layout-quality.json</code> file.</p>
 </div>
+{% else %}
+<div class="panel-note neutral">
+  <h3>Every page met the acceptance limits</h3>
+  <p class="tail">No extraction note, and no page outside the width budget or
+    below the print floor. Full metrics are in the run's
+    <code>.layout-quality.json</code> file.</p>
+</div>
+{% endif %}
 {% endif %}
 
 {% if images %}
-<div class="sec"><h2>Result</h2><div class="line"></div></div>
+<div class="sec"><span class="num">05</span><h2>Result</h2><div class="line"></div></div>
 <div class="panel-state">
   <div class="figtitle"><h3>{{ title }}</h3>
     <span class="meta">{{ n_pre }} preconditions &middot; {{ n_ev }} events</span></div>
@@ -624,8 +702,9 @@ def _page_context(**overrides) -> dict:
         "claude_models": CLAUDE_MODELS,
         "ollama_models": OLLAMA_MODELS,
         "rulesets": RULESETS,
-        "baseline": PROFESSIONAL_RULESET,
-        "selected_ruleset": PROFESSIONAL_RULESET,
+        "baseline": COMPARISON_BASELINE,
+        "default_ruleset": DEFAULT_RULESET,
+        "selected_ruleset": DEFAULT_RULESET,
     }
     context.update(overrides)
     return context

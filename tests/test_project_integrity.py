@@ -151,9 +151,14 @@ class InputAndNamingTests(unittest.TestCase):
 
 
 class WebApplicationTests(unittest.TestCase):
-    def test_professional_route_defaults_to_v14(self):
-        # v1.4 remains the baseline: a request that does not choose a rule set
-        # is run under it, so a comparison must be made deliberately.
+    def test_professional_route_defaults_to_the_current_ruleset(self):
+        # This assertion used to read v1.4, because v1.4 was both the frozen
+        # comparison baseline and the version the work used. It is still the
+        # baseline, but every graph the dissertation reports now comes from
+        # v1.6, so a request that chooses nothing must run under v1.6 and
+        # reaching the baseline must be the deliberate act. The constant and
+        # this test were changed together rather than leaving a test that
+        # asserted behaviour the tool no longer has.
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             reports = root / "reports"
@@ -179,8 +184,9 @@ class WebApplicationTests(unittest.TestCase):
             self.assertEqual(1, len(pngs))
             self.assertEqual(1, len(audits))
             self.assertEqual(1, len(quality))
-            self.assertIn("__rules-v1.4__", pngs[0].name)
-            self.assertIn("__rules-v1.4__", audits[0].name)
+            expected = f"__rules-{app.DEFAULT_RULESET}__"
+            self.assertIn(expected, pngs[0].name)
+            self.assertIn(expected, audits[0].name)
             preserved = AttackGraph.from_json_file(audits[0])
             self.assertGreaterEqual(len(preserved.events), 1)
 
@@ -240,8 +246,10 @@ class WebApplicationTests(unittest.TestCase):
 
     def test_professional_route_rejects_a_ruleset_not_on_disk(self):
         # The selector offers the rule files that exist. Anything else, whether
-        # a traversal attempt or a typo, falls back to the baseline instead of
-        # reaching load_ruleset as a path fragment.
+        # a traversal attempt or a typo, falls back to the default instead of
+        # reaching load_ruleset as a path fragment. What matters here is that
+        # the fallback is a rule set on disk, not which one, so the assertion
+        # reads the constant rather than naming a version.
         for tampered in ("../../secrets", "v9.9", "student-v1.2", ""):
             with self.subTest(ruleset=tampered):
                 with tempfile.TemporaryDirectory() as directory:
@@ -265,7 +273,8 @@ class WebApplicationTests(unittest.TestCase):
                     self.assertEqual(200, response.status_code)
                     pngs = list(outputs.glob("*.png"))
                     self.assertEqual(1, len(pngs))
-                    self.assertIn("__rules-v1.4__", pngs[0].name)
+                    self.assertIn(
+                        f"__rules-{app.DEFAULT_RULESET}__", pngs[0].name)
 
     def test_professional_route_honours_a_rule_set_on_disk(self):
         with tempfile.TemporaryDirectory() as directory:

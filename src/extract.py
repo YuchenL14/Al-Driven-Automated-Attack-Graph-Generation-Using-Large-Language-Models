@@ -1770,6 +1770,23 @@ def _call_mock(system: str, user: str, model: str,
              "mitigations": event.get("mitigations", [])}
             for event in full.get("events", [])
         ]})
+    if response_model in {
+        ConstructTechniqueAssignments, ConstructTechniqueAssignmentsWire
+    }:
+        # v1.6 asks for a list of techniques per action and derives the
+        # mitigations itself from the ATT&CK data, so the mock supplies
+        # techniques only.
+        #
+        # Without this branch the mock fell through to the finished graph
+        # below, which is not an assignment list, so every offline v1.6 run
+        # died in Stage B. The offline provider therefore could not exercise
+        # the one rule set the project actually uses, and the failure was
+        # invisible for as long as the interface offered v1.4 by default.
+        return json.dumps({"assignments": [
+            {"id": event["id"], "techniques": [event["technique"]]}
+            for event in full.get("events", [])
+            if event.get("technique")
+        ]})
     # Stage A prompt asks not to choose technique ids yet; detect it and strip
     # techniques/mitigations so the mock mimics a tactic-only skeleton.
     #
