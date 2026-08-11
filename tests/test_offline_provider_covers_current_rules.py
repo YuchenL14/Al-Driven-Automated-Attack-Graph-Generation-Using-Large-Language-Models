@@ -22,26 +22,50 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import app  # noqa: E402
+import student_app  # noqa: E402
 from extract import extract_attack_graph  # noqa: E402
 
 REPORT = ("An externally reachable service was exploited. The attacker moved "
           "to other hosts and encrypted them for ransom.")
 
+# Deliberately shares no vocabulary with the mock's canned verbs. The teaching
+# rules require the action evidence to be a verbatim substring of the source
+# evidence, so a mock that answers with a fixed verb only works when the input
+# happens to contain it. That is how the offline student path came to succeed
+# for the reports the suite used and fail for everything else.
+UNRELATED_REPORT = (
+    "A remote access gateway accepted a password with no second factor. "
+    "Someone signed in as a member of staff, opened a document store, took "
+    "copies of what was there, and left the systems unusable afterwards.")
+
 
 class OfflineProviderTests(unittest.TestCase):
+    def _assert_runs(self, ruleset: str, text: str) -> None:
+        graph = extract_attack_graph(text, provider="mock", ruleset=ruleset)
+        self.assertGreaterEqual(len(graph.events), 1)
+        for event in graph.events:
+            self.assertTrue(
+                event.technique or event.techniques,
+                f"{ruleset}: {event.id} came back with no technique")
+
     def test_every_offered_ruleset_runs_offline(self):
         # Whatever the selector offers, the offline provider must complete it.
         # A version the interface can select but the mock cannot run is a dead
         # combination the user finds only by choosing it.
         for ruleset in app.RULESETS:
-            with self.subTest(ruleset=ruleset):
-                graph = extract_attack_graph(
-                    REPORT, provider="mock", ruleset=ruleset)
-                self.assertGreaterEqual(len(graph.events), 1)
-                for event in graph.events:
-                    self.assertTrue(
-                        event.technique or event.techniques,
-                        f"{ruleset}: {event.id} came back with no technique")
+            for label, text in (("familiar", REPORT),
+                                ("unrelated", UNRELATED_REPORT)):
+                with self.subTest(ruleset=ruleset, report=label):
+                    self._assert_runs(ruleset, text)
+
+    def test_the_teaching_ruleset_also_runs_offline(self):
+        # The teaching app is wired to the hosted provider, but the offline
+        # one has to be able to run its rules too, or the teaching pipeline
+        # cannot be exercised or demonstrated without spending money.
+        for label, text in (("familiar", REPORT),
+                            ("unrelated", UNRELATED_REPORT)):
+            with self.subTest(report=label):
+                self._assert_runs(student_app.RULESET, text)
 
     def test_the_default_ruleset_is_one_of_the_offered_ones(self):
         self.assertIn(app.DEFAULT_RULESET, app.RULESETS)

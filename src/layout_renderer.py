@@ -15,8 +15,9 @@ from layout_planner import LayoutPlan, PlannedNode, plan_layout
 from layout_router import RoutedLayout, RoutedConnector, route_layout
 from schema import (ATTACK_TACTICS, AttackGraph, KILL_CHAIN_PHASES,
                     kill_chain_phase)
-from visual_syntax import (EDGE_RELATION_STYLES, EdgeStyle,  # noqa: F401
-                          active_profile, edge_relation, edge_style)
+from visual_syntax import (EDGE_RELATION_STYLES, STATE_BADGES,  # noqa: F401
+                          EdgeStyle, active_profile, edge_relation, edge_style,
+                          state_badge_code)
 
 if TYPE_CHECKING:
     from attack_lookup import AttackResolver
@@ -462,6 +463,20 @@ def _syntax_key_lines(model: AttackGraph,
                  == "kill_chain_phase" else "ATT&CK tactic")
         lines.append(f"Circle at an action's top-left corner: {badge}, keyed "
                      "below")
+    # The state vocabulary is fixed at three symbols and derived from the
+    # graph, so the same three mean the same three on every figure this tool
+    # draws. Only the ones this page uses are stated, on the same rule as
+    # every other line here.
+    drawn_state_badges = {
+        code for code in (
+            state_badge_code(node.role, bool(node.parents))
+            for node in states)
+        if code
+    }
+    for code in ("PRE", "RES", "EXT"):
+        if code in drawn_state_badges:
+            lines.append(f"Circle at a state's top-left corner reading "
+                         f"{code}: {STATE_BADGES[code]}")
     if any(event.techniques for event in events):
         lines.append("Tags at an action's top right: ATT&CK technique, keyed "
                      "below")

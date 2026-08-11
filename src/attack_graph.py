@@ -40,7 +40,7 @@ from causal_split import (DEFAULT_MAX_PARALLEL_EVENTS,
                           DEFAULT_MAX_EVENTS_PER_PART, DEFAULT_MAX_RANKS,
                           attack_objective, continuation_labels,
                           materialize_split_part, plan_causal_split,
-                          validate_lossless_split)
+                          terminal_outcomes, validate_lossless_split)
 from schema import AttackGraph
 from attack_lookup import AttackResolver
 from layout_renderer import render_new_layout_png
@@ -197,7 +197,7 @@ def _event_label(e) -> str:
 
 
 def _precondition_label(p) -> str:
-    display_code = state_badge_code(p.code)
+    display_code = state_badge_code(p.role, bool(p.parents))
     code = _badge(display_code, C_TACTIC) if display_code else ""
     body = f'<FONT POINT-SIZE="12" COLOR="{C_TEXT}">{_esc(p.label)}</FONT>'
     return (
@@ -574,6 +574,19 @@ def render_split(model, out_path: str, fmt: str = "png", dpi: int = 170,
     # cannot work this out for itself: each one converges on something, and on
     # every page but the last that something is a bridge, not the objective.
     objective_id = attack_objective(model)
+    # An absent objective and a forgotten one look identical on the page, so
+    # when the outcomes tie the key says so instead of staying silent. Decided
+    # here, from the whole graph, for the same reason the objective is: a page
+    # holds only part of the graph, and every page but the last ends in
+    # something that is a bridge rather than an ending. Computed per page this
+    # printed "no single objective" on page 1 of a run whose objective was
+    # named on page 4.
+    no_objective_note = (
+        () if objective_id is not None
+        else (f"No single objective: the attack ends in "
+              f"{len(terminal_outcomes(model))} independent outcomes, so none "
+              "is named as the objective.",)
+    )
 
     plan = plan_causal_split(
         model,
@@ -592,7 +605,7 @@ def render_split(model, out_path: str, fmt: str = "png", dpi: int = 170,
             fmt=fmt,
             dpi=dpi,
             compact=compact,
-            extra_legend_lines=extra_legend,
+            extra_legend_lines=tuple(extra_legend) + no_objective_note,
             objective_id=objective_id,
             renderer=renderer,
         )]
@@ -627,7 +640,12 @@ def render_split(model, out_path: str, fmt: str = "png", dpi: int = 170,
                 compact=compact,
                 page_header=f"Part {part.index} of {len(plan.parts)}",
                 continuation_labels_by_id=continuation_labels(plan, part),
-                extra_legend_lines=_legend_for_page(aggregated_groups, page),
+                # The tie note goes on the last page only, where the reader has
+                # seen every ending the graph claims.
+                extra_legend_lines=(
+                    tuple(_legend_for_page(aggregated_groups, page))
+                    + (no_objective_note
+                       if part.index == len(plan.parts) else ())),
                 objective_id=(objective_id
                               if part.index - 1 == objective_page else None),
                 renderer=renderer,

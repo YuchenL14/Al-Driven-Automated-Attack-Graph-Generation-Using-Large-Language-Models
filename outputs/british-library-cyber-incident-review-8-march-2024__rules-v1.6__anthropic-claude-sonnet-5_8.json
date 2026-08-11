@@ -1,0 +1,540 @@
+{
+  "title": "British Library Rhysida Ransomware Attack (October 2023)",
+  "preconditions": [
+    {
+      "id": "p_terminal_server",
+      "label": "Terminal server exposed for third-party remote access",
+      "code": "PRE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_no_mfa",
+      "label": "MFA not enabled on domain/on-premise servers",
+      "code": "PRE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_priv_creds_ext",
+      "label": "Third-party privileged account credentials existed",
+      "code": "PRE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_complex_network",
+      "label": "Complex legacy network topology with wide connectivity",
+      "code": "PRE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_recon_done",
+      "label": "Network reconnaissance activity observed",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_recon"
+      ]
+    },
+    {
+      "id": "p_creds_obtained",
+      "label": "Privileged credentials obtained",
+      "code": "RES",
+      "role": "precondition",
+      "style": "dotted",
+      "parents": [
+        "ev_phish",
+        "ev_bruteforce"
+      ]
+    },
+    {
+      "id": "p_initial_access",
+      "label": "Unauthorized access to terminal server obtained",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_login_terminal"
+      ]
+    },
+    {
+      "id": "p_lateral_access",
+      "label": "Wider network access achieved via legacy topology",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_lateral_move"
+      ]
+    },
+    {
+      "id": "p_native_tools",
+      "label": "Native admin utilities available for abuse",
+      "code": "PRE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_db_backups_created",
+      "label": "Forced backup copies of 22 databases created",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_hijack_tools"
+      ]
+    },
+    {
+      "id": "p_bulk_files_copied",
+      "label": "Entire network drive sections copied wholesale",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_wholesale_copy"
+      ]
+    },
+    {
+      "id": "p_keyword_files_copied",
+      "label": "Sensitive-keyword files and folders copied",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_keyword_scan"
+      ]
+    },
+    {
+      "id": "p_data_staged",
+      "label": "600GB of data staged for exfiltration",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_wholesale_copy",
+        "ev_keyword_scan",
+        "ev_hijack_tools"
+      ]
+    },
+    {
+      "id": "p_data_exfiltrated",
+      "label": "Data exfiltrated from Library network",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_exfiltrate"
+      ]
+    },
+    {
+      "id": "p_data_dumped",
+      "label": "Data auctioned and dumped on dark web",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_dump_data"
+      ]
+    },
+    {
+      "id": "p_logs_deleted",
+      "label": "Forensic logs and traces removed",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_antiforensics"
+      ]
+    },
+    {
+      "id": "p_encryption_done",
+      "label": "Server data encrypted",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_encrypt"
+      ]
+    },
+    {
+      "id": "p_servers_destroyed",
+      "label": "Servers destroyed to inhibit recovery",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_destroy_servers"
+      ]
+    },
+    {
+      "id": "p_users_locked_out",
+      "label": "All users locked out of network",
+      "code": "RES",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "ev_lockout"
+      ]
+    },
+    {
+      "id": "p_endpoint_av_blocked",
+      "label": "Endpoint AV blocked encryption on desktop estate",
+      "code": "ANN",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_encrypt"
+      ]
+    },
+    {
+      "id": "p_monitoring_partial",
+      "label": "Monitoring software only partially prevented intrusion",
+      "code": "ANN",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "ev_login_terminal"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_recon",
+      "label": "Conduct hostile network reconnaissance",
+      "tactic": "RE",
+      "techniques": [
+        "T1595"
+      ],
+      "mitigations": [
+        "M1056"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [],
+      "join": "AND"
+    },
+    {
+      "id": "ev_phish",
+      "label": "Phish for privileged credentials",
+      "tactic": "IA",
+      "techniques": [
+        "T1566"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1021",
+        "M1031",
+        "M1047",
+        "M1049",
+        "M1054"
+      ],
+      "likelihood": 5.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "dotted",
+      "parents": [
+        "p_terminal_server",
+        "p_recon_done",
+        "p_priv_creds_ext"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_bruteforce",
+      "label": "Brute-force privileged account credentials",
+      "tactic": "CA",
+      "techniques": [
+        "T1110"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1027",
+        "M1032",
+        "M1036"
+      ],
+      "likelihood": 5.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "dotted",
+      "parents": [
+        "p_terminal_server",
+        "p_recon_done",
+        "p_priv_creds_ext"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_login_terminal",
+      "label": "Authenticate to terminal server remotely",
+      "tactic": "IA",
+      "techniques": [
+        "T1133"
+      ],
+      "mitigations": [
+        "M1021",
+        "M1030",
+        "M1032",
+        "M1035",
+        "M1042"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_creds_obtained",
+        "p_no_mfa",
+        "p_terminal_server"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_lateral_move",
+      "label": "Move laterally across complex network",
+      "tactic": "LM",
+      "techniques": [
+        "T1021.001"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1035",
+        "M1042",
+        "M1047"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_initial_access",
+        "p_complex_network"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_wholesale_copy",
+      "label": "Copy entire Finance/Technology/People drive sections",
+      "tactic": "CL",
+      "techniques": [
+        "T1039"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_keyword_scan",
+      "label": "Scan and copy files by sensitive keyword",
+      "tactic": "CL",
+      "techniques": [
+        "T1005"
+      ],
+      "mitigations": [
+        "M1057"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_hijack_tools",
+      "label": "Hijack native utilities to back up databases",
+      "tactic": "CL",
+      "techniques": [
+        "T1560.001"
+      ],
+      "mitigations": [
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access",
+        "p_native_tools"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_exfiltrate",
+      "label": "Exfiltrate 600GB staged data from network",
+      "tactic": "EF",
+      "techniques": [
+        "T1041"
+      ],
+      "mitigations": [
+        "M1031",
+        "M1057"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_data_staged"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_dump_data",
+      "label": "Auction and dump data on dark web",
+      "tactic": "IM",
+      "techniques": [
+        "T1491.002"
+      ],
+      "mitigations": [
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_data_exfiltrated"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_antiforensics",
+      "label": "Delete logs and evade forensic tracing",
+      "tactic": "DE",
+      "techniques": [
+        "T1070.004"
+      ],
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_encrypt",
+      "label": "Encrypt data and systems across server estate",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_destroy_servers",
+      "label": "Destroy servers to inhibit recovery",
+      "tactic": "IM",
+      "techniques": [
+        "T1561.001"
+      ],
+      "mitigations": [
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_lateral_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "ev_lockout",
+      "label": "Lock out all users from network",
+      "tactic": "IM",
+      "techniques": [
+        "T1531"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_encryption_done",
+        "p_servers_destroyed"
+      ],
+      "join": "AND"
+    }
+  ]
+}

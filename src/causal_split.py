@@ -706,6 +706,22 @@ def validate_lossless_split(
         )
 
 
+def terminal_outcomes(model: AttackGraph) -> tuple[str, ...]:
+    """Labels of the causal states nothing further consumes.
+
+    Annotations sit beside the attack rather than on it, so they are not
+    endings and are not counted. A root precondition is not an ending either:
+    it is where the attack started, which is why a produced state is required.
+    """
+
+    consumed = {parent for event in model.events for parent in event.parents}
+    return tuple(
+        node.label for node in model.preconditions
+        if node.role != "annotation" and node.parents
+        and node.id not in consumed
+    )
+
+
 def attack_objective(model: AttackGraph) -> str | None:
     """The state this attack converged on, or None if the graph names no one.
 

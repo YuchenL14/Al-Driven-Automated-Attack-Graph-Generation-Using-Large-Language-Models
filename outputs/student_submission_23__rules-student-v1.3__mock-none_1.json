@@ -1,0 +1,123 @@
+{
+  "title": "Ransomware outbreak (extracted from report)",
+  "preconditions": [
+    {
+      "id": "p_unpatched",
+      "label": "Unpatched network file-sharing service",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_reachable",
+      "label": "Service reachable on internal network",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "pc_foothold",
+      "label": "Foothold on a single host",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_exploit"
+      ]
+    },
+    {
+      "id": "pc_spread",
+      "label": "Malware present on many hosts",
+      "code": "LM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_propagate"
+      ]
+    },
+    {
+      "id": "result_e_encrypt",
+      "label": "Incident impact achieved",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_encrypt"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e_exploit",
+      "label": "An externally reachable VPN lacked multi-factor authentication",
+      "tactic": "IA",
+      "techniques": [
+        "T1190"
+      ],
+      "mitigations": [
+        "M1051",
+        "M1030"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "An externally reachable VPN lacked multi-factor authentication. The attacker used stolen credentials to access the VPN. The attacker then moved laterally to file servers, collected sensitive documents, and encrypted the servers for ransom, ",
+      "evidence_status": "reported",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "An externally reachable VPN lacked multi-factor authentication",
+      "style": "solid",
+      "parents": [
+        "p_unpatched",
+        "p_reachable"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_propagate",
+      "label": "An externally reachable VPN lacked multi-factor authentication",
+      "tactic": "LM",
+      "techniques": [
+        "T1210"
+      ],
+      "mitigations": [
+        "M1051",
+        "M1030"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": "An externally reachable VPN lacked multi-factor authentication. The attacker used stolen credentials to access the VPN. The attacker then moved laterally to file servers, collected sensitive documents, and encrypted the servers for ransom, ",
+      "evidence_status": "reported",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "An externally reachable VPN lacked multi-factor authentication",
+      "style": "solid",
+      "parents": [
+        "pc_foothold"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_encrypt",
+      "label": "Encrypt files and demand ransom",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": "An externally reachable VPN lacked multi-factor authentication. The attacker used stolen credentials to access the VPN. The attacker then moved laterally to file servers, collected sensitive documents, and encrypted the servers for ransom, ",
+      "evidence_status": "reported",
+      "evidence_confidence": 85,
+      "actor": "adversary",
+      "action_evidence": "encrypted",
+      "style": "solid",
+      "parents": [
+        "pc_spread"
+      ],
+      "join": "AND"
+    }
+  ]
+}

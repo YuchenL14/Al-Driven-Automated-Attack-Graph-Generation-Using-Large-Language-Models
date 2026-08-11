@@ -214,9 +214,11 @@ class LayoutStageAIRTests(unittest.TestCase):
             node for node in layout_ir.nodes
             if node.visual_id == "p_no_mfa"
         )
+        # The stored code stays "IA" for audit; the drawing shows the derived
+        # state symbol, so an ATT&CK tactic still never reaches an ellipse.
         self.assertEqual("IA", graph.preconditions[1].code)
-        self.assertIsNone(no_mfa.semantics.badge_code)
-        self.assertEqual("none", no_mfa.semantics.badge_namespace)
+        self.assertEqual("PRE", no_mfa.semantics.badge_code)
+        self.assertEqual("state_phase", no_mfa.semantics.badge_namespace)
 
     def test_validator_rejects_semantic_edge_loss(self):
         graph = _stage_a_graph()

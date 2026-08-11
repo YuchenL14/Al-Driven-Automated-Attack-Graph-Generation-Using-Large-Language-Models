@@ -55,9 +55,21 @@ class TestMapping(unittest.TestCase):
 
 class TestProfileSelection(unittest.TestCase):
 
-    def test_the_default_is_unchanged_so_v14_output_is_unchanged(self):
+    def test_the_default_badges_the_supervisor_s_vocabulary(self):
+        # This assertion used to read AGVS_SP_V1, because the tool badged the
+        # ATT&CK tactic and the kill chain was the option. The reference
+        # diagram badges the kill-chain phase on 26 of its 32 nodes and a
+        # tactic on 2, so conformance to that figure means the kill chain is
+        # the default and the tactic is the option. The constant and this test
+        # were changed together rather than leaving a test asserting a default
+        # the tool no longer has.
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("AGVS_BADGE_SOURCE", None)
+            self.assertIs(active_profile(), AGVS_SP_V1_KILL_CHAIN)
+
+    def test_the_attack_tactic_profile_is_still_selectable(self):
+        # The v1.4/v1.6 comparison needs both vocabularies reachable.
+        with patch.dict(os.environ, {"AGVS_BADGE_SOURCE": "attack_tactic"}):
             self.assertIs(active_profile(), AGVS_SP_V1)
 
     def test_the_kill_chain_profile_is_selectable(self):
@@ -98,7 +110,13 @@ class TestProjection(unittest.TestCase):
         self.assertEqual(graph.events[0].tactic, "IA")
 
     def test_a_kill_chain_letter_is_never_drawn_on_a_state(self):
-        """Same overload argument that removed tactics from ellipses."""
+        """Same overload argument that removed tactics from ellipses.
+
+        The state now badges its own three-symbol vocabulary, so the check is
+        no longer that an ellipse badges nothing but that it never badges a
+        letter belonging to the action vocabulary. A stored ``W`` is kept in
+        the canonical graph and not drawn.
+        """
         graph = AttackGraph.model_validate({
             "title": "overload", "preconditions": [
                 {"id": "s1", "label": "Weaponised payload", "code": "W",
@@ -108,7 +126,32 @@ class TestProjection(unittest.TestCase):
                         "likelihood": 6.0, "parents": ["s1"], "join": "AND"}]})
         node = next(n for n in project_visual_nodes(
             graph, AGVS_SP_V1_KILL_CHAIN) if n.id == "s1")
-        self.assertIsNone(node.badge_code)
+        self.assertEqual("PRE", node.badge_code)
+        self.assertNotIn(node.badge_code, KILL_CHAIN_PHASES)
+        self.assertEqual("W", graph.preconditions[0].code)
+
+    def test_every_state_badge_comes_from_the_closed_vocabulary(self):
+        """Two graphs cannot disagree about what an ellipse badge means."""
+        graph = AttackGraph.model_validate({
+            "title": "vocabulary", "preconditions": [
+                {"id": "s1", "label": "Service reachable", "code": "ANYTHING",
+                 "parents": []},
+                {"id": "s2", "label": "Access obtained", "code": "RESULT7",
+                 "parents": ["e1"]},
+                {"id": "s3", "label": "Stolen certificate held",
+                 "code": "EXT-RES", "role": "external_resource",
+                 "parents": []},
+                {"id": "s4", "label": "AV blocked part of it", "code": "NOTE9",
+                 "role": "annotation", "style": "dashed",
+                 "parents": ["e1"]}],
+            "events": [{"id": "e1", "label": "Deliver payload", "tactic": "IA",
+                        "technique": "T1190", "mitigations": ["M1051"],
+                        "likelihood": 6.0, "parents": ["s1"], "join": "AND"}]})
+        badges = {node.id: node.badge_code
+                  for node in project_visual_nodes(graph)
+                  if node.kind in {"state", "annotation"}}
+        self.assertEqual(
+            {"s1": "PRE", "s2": "RES", "s3": "EXT", "s4": None}, badges)
 
 
 if __name__ == "__main__":

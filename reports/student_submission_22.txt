@@ -1,0 +1,1 @@
+An externally reachable VPN lacked multi-factor authentication. The attacker used stolen credentials to access the VPN. The attacker then moved laterally to file servers, collected sensitive documents, and encrypted the servers for ransom, leaving services unavailable to users.

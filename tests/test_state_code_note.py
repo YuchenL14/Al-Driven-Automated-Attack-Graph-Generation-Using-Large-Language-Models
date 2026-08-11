@@ -64,10 +64,17 @@ class SuppressedStateCodeNoteTests(unittest.TestCase):
             (), _suppressed_state_code_note(_graph("IA", role="annotation")))
 
     def test_the_note_matches_what_the_renderer_actually_drops(self):
-        """Two definitions of "prohibited" would drift apart."""
+        """The student note must describe what the figure really shows.
+
+        The renderer no longer reads `Precondition.code` at all: the badge is
+        derived from role and parentage, so every stored code is dropped from
+        the drawing, not only the prohibited ones. The note therefore has to
+        fire for a prohibited code, and what it fires about is that the code
+        is not drawn.
+        """
 
         for code in sorted(active_profile().prohibited_state_badges)[:5]:
-            self.assertIsNone(state_badge_code(code))
+            self.assertNotEqual(code, state_badge_code("precondition", False))
             self.assertTrue(_suppressed_state_code_note(_graph(code)))
 
     def test_a_graph_with_no_states_produces_nothing(self):

@@ -1,0 +1,125 @@
+{
+  "title": "Ransomware outbreak (extracted from report)",
+  "preconditions": [
+    {
+      "id": "p_unpatched",
+      "label": "Unpatched network file-sharing service",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_reachable",
+      "label": "Service reachable on internal network",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "pc_foothold",
+      "label": "Foothold on a single host",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_exploit"
+      ]
+    },
+    {
+      "id": "pc_spread",
+      "label": "Malware present on many hosts",
+      "code": "LM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_propagate"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e_exploit",
+      "label": "Exploit file-sharing service for initial access",
+      "tactic": "IA",
+      "techniques": [
+        "T1190"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1026",
+        "M1030",
+        "M1035",
+        "M1037",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_unpatched",
+        "p_reachable"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_propagate",
+      "label": "Self-propagate to other unpatched hosts",
+      "tactic": "LM",
+      "techniques": [
+        "T1210"
+      ],
+      "mitigations": [
+        "M1016",
+        "M1019",
+        "M1026",
+        "M1030",
+        "M1042",
+        "M1048",
+        "M1050",
+        "M1051"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "pc_foothold"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_encrypt",
+      "label": "Encrypt files and demand ransom",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "pc_spread"
+      ],
+      "join": "AND"
+    }
+  ]
+}

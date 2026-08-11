@@ -1837,7 +1837,16 @@ def _call_mock(system: str, user: str, model: str,
                 e["evidence_status"] = "reported"
                 e["evidence_confidence"] = 85
                 e["actor"] = "adversary"
-                e["action_evidence"] = mock_actions.get(e["id"], "attacked")
+                # The teaching rules require action_evidence to be a verbatim
+                # substring of source_evidence. A canned verb only satisfies
+                # that when the report happens to contain it, so the offline
+                # student path worked for some inputs and failed Stage A for
+                # the rest. Prefer the canned word when the evidence really
+                # contains it, and otherwise quote the evidence itself.
+                canned = mock_actions.get(e["id"], "attacked")
+                e["action_evidence"] = (
+                    canned if canned in evidence
+                    else evidence.split(".")[0].strip()[:80] or evidence[:40])
                 if e["id"] == "e_propagate":
                     e["label"] = "Spread to other unpatched hosts"
         return json.dumps(skel)

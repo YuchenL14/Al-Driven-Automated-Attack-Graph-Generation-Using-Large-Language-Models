@@ -129,14 +129,26 @@ AGVS_SP_V1_KILL_CHAIN = replace(
 BADGE_SOURCE_ENV = "AGVS_BADGE_SOURCE"
 
 
+# The badge vocabulary the dissertation's figures use.
+#
+# The supervisor's reference diagram badges the Lockheed Martin Cyber Kill
+# Chain phase on 26 of its 32 nodes and an ATT&CK tactic on only 2, so kill
+# chain is what conformance to that figure means. The tool badged the ATT&CK
+# tactic for most of its life, which is why the mapping is many-to-one and
+# lossy in that direction: fourteen tactics share seven phases. The tactic is
+# never discarded, only unshown. It stays in the canonical JSON, drives the
+# tactic-first technique selection, and still governs Stage B validation.
+#
+# Set AGVS_BADGE_SOURCE=attack_tactic to render the ATT&CK vocabulary instead,
+# which is how the two are compared under otherwise identical conditions.
+DEFAULT_BADGE_SOURCE: BadgeSource = "kill_chain_phase"
+
+
 def active_profile() -> VisualSyntaxProfile:
-    """The profile every renderer uses unless one is passed explicitly.
+    """The profile every renderer uses unless one is passed explicitly."""
 
-    Defaults to the ATT&CK-tactic badge, so v1.4 output is unchanged. Set
-    AGVS_BADGE_SOURCE=kill_chain_phase to badge the kill chain instead.
-    """
-
-    selected = os.environ.get(BADGE_SOURCE_ENV, "attack_tactic").strip().lower()
+    selected = os.environ.get(
+        BADGE_SOURCE_ENV, DEFAULT_BADGE_SOURCE).strip().lower()
     if selected == "kill_chain_phase":
         return AGVS_SP_V1_KILL_CHAIN
     if selected != "attack_tactic":
@@ -177,13 +189,45 @@ class VisualNodeSemantics:
         return self.techniques[0] if self.techniques else None
 
 
+# The whole vocabulary an ellipse can badge. Three values, and an annotation
+# badges nothing at all because its dashed outline already says what it is.
+#
+# The codes used to come from the model, one per node, and the model invented a
+# fresh set for every report: PRE1, RESULT2, EXT-RES, VULN, NET, COND, SVCSTOP,
+# ENC-EXEC, XFER. Lallie, Debattista and Bal (2020) name exactly that as the
+# defect in published attack graphs, and their 2018 conjoint study (n=212)
+# found the precondition attribute carries the largest share of practitioner
+# preference at 38.5%, so the least consistent notation sat on the construct
+# readers weight most.
+#
+# Deriving it removes the possibility rather than discouraging it. Role and
+# parentage are already validated by the schema, so no rule set has to remember
+# a vocabulary and no two graphs can disagree about one.
+STATE_BADGES: dict[str, str] = {
+    "PRE": "a condition that held before the attack",
+    "RES": "a state an action produced",
+    "EXT": "a resource the adversary already held",
+}
+
+
 def state_badge_code(
-    code: str,
+    role: str,
+    has_parents: bool,
     profile: VisualSyntaxProfile = AGVS_SP_V1,
 ) -> str | None:
-    """Return the display-safe state code without changing source data."""
+    """Which of the three state codes an ellipse shows, or none.
 
-    return None if code in profile.prohibited_state_badges else code
+    Derived from the graph rather than read from ``Precondition.code``. The
+    canonical code stays in the JSON for auditability, in the same way the
+    suppressed ATT&CK tactic does, so nothing is lost from the record; only the
+    badge is decided here.
+    """
+
+    if role == "annotation":
+        return None
+    if role == "external_resource":
+        return "EXT"
+    return "RES" if has_parents else "PRE"
 
 
 def project_visual_nodes(
@@ -203,10 +247,8 @@ def project_visual_nodes(
 
     for precondition in model.preconditions:
         is_annotation = precondition.role == "annotation"
-        badge = (
-            None if is_annotation
-            else state_badge_code(precondition.code, profile)
-        )
+        badge = state_badge_code(
+            precondition.role, bool(precondition.parents), profile)
         projected.append(VisualNodeSemantics(
             id=precondition.id,
             kind="annotation" if is_annotation else "state",
