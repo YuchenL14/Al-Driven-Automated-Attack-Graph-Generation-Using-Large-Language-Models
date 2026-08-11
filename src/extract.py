@@ -3817,6 +3817,19 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     # one.
                     event["mitigations"] = list(
                         _TECHNIQUE_MITIGATIONS.get(assignment.technique, ()))
+                if stated is not None and stated.mitigations:
+                    # Reached only when the student's technique was not usable,
+                    # because an accepted technique took the branch above and
+                    # left with it. Their mitigations are separately valid and
+                    # were written for this step, so they are still theirs.
+                    #
+                    # Dropping them alongside the technique made "numbers you
+                    # supply are drawn as you wrote them" untrue for a step
+                    # where only the technique was at fault, and said nothing
+                    # about it: a student who wrote T1562 with M1038 got the
+                    # retirement note for T1562 and no mention that M1038 had
+                    # gone too.
+                    event["mitigations"] = list(stated.mitigations)
 
             for event in merged["events"]:
                 event.pop("stated_technique", None)

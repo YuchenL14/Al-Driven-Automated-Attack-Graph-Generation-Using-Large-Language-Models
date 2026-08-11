@@ -44,6 +44,7 @@ NoteKind = Literal[
     "unknown_mitigation",
     "unrelated_mitigation",
     "inferred_technique",
+    "kept_mitigation_without_technique",
 ]
 
 # Retirements the rule set already names. Reported as a replacement to consider,
@@ -315,6 +316,17 @@ def classify_identifiers(
                     event_id, label, "unrelated_mitigation",
                     f"MITRE does not list {mitigation} as countering "
                     f"{technique}. It has been kept as you wrote it."))
+
+        if kept and stated and technique is None:
+            # A step where the technique was rejected but the mitigations were
+            # not. Without this line the student reads the retirement note for
+            # their technique and has no way to tell whether the mitigations
+            # they wrote beside it survived.
+            notes.append(IdentifierNote(
+                event_id, label, "kept_mitigation_without_technique",
+                f"your technique for this step was not usable, so a technique "
+                f"was suggested instead, but {', '.join(kept)} stayed as you "
+                "wrote it."))
 
         accepted[event_id] = AcceptedIdentifiers(
             technique=technique, mitigations=tuple(kept))

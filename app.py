@@ -11,6 +11,7 @@ only gives it a front end.
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -870,4 +871,10 @@ def outputs(name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Werkzeug's interactive debugger executes arbitrary Python from the
+    # browser on any unhandled exception. Bound to loopback that is only
+    # reachable locally, but this application is demonstrated on other
+    # machines, and one --host=0.0.0.0 away it is remote code execution.
+    # Tracebacks still reach the terminal through app.logger.exception, which
+    # is where they were being read from anyway.
+    app.run(debug=os.environ.get("AGVS_DEBUG") == "1", port=5000)

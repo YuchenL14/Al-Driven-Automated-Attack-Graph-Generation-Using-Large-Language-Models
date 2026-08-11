@@ -1,0 +1,551 @@
+{
+  "title": "Scattered Spider Attack on Marks & Spencer (April 2025)",
+  "preconditions": [
+    {
+      "id": "p_linkedin",
+      "label": "Employee identities found via LinkedIn",
+      "code": "RE1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_helpdesk_trust",
+      "label": "Trust placed in IT help desk staff",
+      "code": "PRE1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_rmm_tools",
+      "label": "Legitimate RMM tooling available for abuse",
+      "code": "ER1",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_social_eng_success",
+      "label": "Employee tricked into revealing credentials or installing tool",
+      "code": "C1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_vishing",
+        "e_phishing"
+      ]
+    },
+    {
+      "id": "p_foothold",
+      "label": "Initial foothold in M&S network established",
+      "code": "C3",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_remote_tool_install"
+      ]
+    },
+    {
+      "id": "p_rmm_installed",
+      "label": "Remote access tool installed on victim host",
+      "code": "C4",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_remote_tool_install"
+      ]
+    },
+    {
+      "id": "p_ad_access",
+      "label": "Access to Active Directory domain controller obtained",
+      "code": "C5",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_lateral_move"
+      ]
+    },
+    {
+      "id": "p_ntds_stolen",
+      "label": "NTDS.dit database file stolen",
+      "code": "C6",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_steal_ntds"
+      ]
+    },
+    {
+      "id": "p_creds_cracked",
+      "label": "Domain credentials and hashes cracked",
+      "code": "C7",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_crack_hashes"
+      ]
+    },
+    {
+      "id": "p_priv_access",
+      "label": "Privileged domain access obtained",
+      "code": "C8",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_use_creds"
+      ]
+    },
+    {
+      "id": "p_esxi_discovered",
+      "label": "VMware ESXi hosts identified as targets",
+      "code": "C9",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_discover_esxi"
+      ]
+    },
+    {
+      "id": "p_dragonforce_payload",
+      "label": "DragonForce ransomware payload staged",
+      "code": "ER2",
+      "role": "external_resource",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p_defenses_impaired",
+      "label": "Security tools disabled or evaded on hosts",
+      "code": "C10",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_impair_defenses"
+      ]
+    },
+    {
+      "id": "p_esxi_encrypted",
+      "label": "VMware ESXi servers encrypted",
+      "code": "RES1",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_deploy_ransomware"
+      ]
+    },
+    {
+      "id": "p_data_staged",
+      "label": "Sensitive data staged for exfiltration",
+      "code": "C11",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_collect_data"
+      ]
+    },
+    {
+      "id": "p_data_exfiltrated",
+      "label": "Stolen data transferred to attacker infrastructure",
+      "code": "RES2",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_exfiltrate"
+      ]
+    },
+    {
+      "id": "p_operations_disrupted",
+      "label": "M&S operations severely disrupted",
+      "code": "RES3",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_deploy_ransomware",
+        "e_pause_orders"
+      ]
+    },
+    {
+      "id": "p_extortion_leverage",
+      "label": "Leverage established for ransom demand",
+      "code": "RES4",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e_extort"
+      ]
+    },
+    {
+      "id": "a_no_attrib",
+      "label": "M&S has not officially confirmed ransomware or attribution",
+      "code": "AN1",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "e_deploy_ransomware"
+      ]
+    },
+    {
+      "id": "a_ncsc_support",
+      "label": "NCSC engaged to support incident response",
+      "code": "AN2",
+      "role": "annotation",
+      "style": "dashed",
+      "parents": [
+        "e_pause_orders"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e_vishing",
+      "label": "Vishing call impersonating IT helpdesk",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.004",
+        "T1684.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1019"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "dotted",
+      "parents": [
+        "p_linkedin",
+        "p_helpdesk_trust"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_phishing",
+      "label": "Phishing/smishing campaign to harvest credentials",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018",
+        "M1021",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "dotted",
+      "parents": [
+        "p_linkedin"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_remote_tool_install",
+      "label": "Trick user into installing remote access tool",
+      "tactic": "EX",
+      "techniques": [
+        "T1204.002"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1038",
+        "M1040"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_social_eng_success",
+        "p_rmm_tools"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_lateral_move",
+      "label": "Move laterally to reach domain controller",
+      "tactic": "LM",
+      "techniques": [
+        "T1021.001"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1035",
+        "M1042",
+        "M1047"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_foothold",
+        "p_rmm_installed"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_steal_ntds",
+      "label": "Steal NTDS.dit Active Directory database",
+      "tactic": "CL",
+      "techniques": [
+        "T1074.001",
+        "T1003.003"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1026",
+        "M1027",
+        "M1041"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_ad_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_crack_hashes",
+      "label": "Crack password hashes from stolen NTDS.dit",
+      "tactic": "CA",
+      "techniques": [
+        "T1110.002"
+      ],
+      "mitigations": [
+        "M1027",
+        "M1032"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_ntds_stolen"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_use_creds",
+      "label": "Authenticate using cracked domain credentials",
+      "tactic": "LM",
+      "techniques": [
+        "T1550.002"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1026",
+        "M1051",
+        "M1052"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_creds_cracked"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_discover_esxi",
+      "label": "Discover VMware ESXi infrastructure",
+      "tactic": "DS",
+      "techniques": [
+        "T1018"
+      ],
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_priv_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_impair_defenses",
+      "label": "Disable or evade security tools on hosts",
+      "tactic": "DE",
+      "techniques": [
+        "T1685"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1038",
+        "M1042",
+        "M1047",
+        "M1054"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_priv_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_collect_data",
+      "label": "Gather and stage sensitive data for theft",
+      "tactic": "CL",
+      "techniques": [
+        "T1074.001"
+      ],
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_priv_access"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_exfiltrate",
+      "label": "Exfiltrate staged data to external infrastructure",
+      "tactic": "EF",
+      "techniques": [
+        "T1048"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1030",
+        "M1031",
+        "M1037",
+        "M1057"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_data_staged"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_deploy_ransomware",
+      "label": "Deploy DragonForce ransomware against ESXi hosts",
+      "tactic": "IM",
+      "techniques": [
+        "T1486"
+      ],
+      "mitigations": [
+        "M1040",
+        "M1053"
+      ],
+      "likelihood": 8.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_esxi_discovered",
+        "p_dragonforce_payload",
+        "p_defenses_impaired"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_pause_orders",
+      "label": "Halt online orders and operations to contain damage",
+      "tactic": "IM",
+      "techniques": [
+        "T1489"
+      ],
+      "mitigations": [
+        "M1018",
+        "M1022",
+        "M1024",
+        "M1030",
+        "M1060"
+      ],
+      "likelihood": 9.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_esxi_encrypted"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e_extort",
+      "label": "Demand ransom for decryption and non-disclosure",
+      "tactic": "IM",
+      "techniques": [
+        "T1657"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1018"
+      ],
+      "likelihood": 6.0,
+      "source_evidence": null,
+      "evidence_status": null,
+      "evidence_confidence": null,
+      "actor": null,
+      "action_evidence": null,
+      "style": "solid",
+      "parents": [
+        "p_esxi_encrypted",
+        "p_data_exfiltrated"
+      ],
+      "join": "AND"
+    }
+  ]
+}

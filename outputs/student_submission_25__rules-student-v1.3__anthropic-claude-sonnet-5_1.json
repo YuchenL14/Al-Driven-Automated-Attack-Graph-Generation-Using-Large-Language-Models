@@ -1,0 +1,315 @@
+{
+  "title": "Attack graph",
+  "preconditions": [
+    {
+      "id": "p1",
+      "label": "File transfer server internet-reachable",
+      "code": "E",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p2",
+      "label": "MFA not enabled on staff accounts",
+      "code": "C",
+      "role": "precondition",
+      "style": "solid",
+      "parents": []
+    },
+    {
+      "id": "p3",
+      "label": "Employee email list bought from forum",
+      "code": "R",
+      "role": "external_resource",
+      "style": "dotted",
+      "parents": []
+    },
+    {
+      "id": "p4",
+      "label": "Malicious attachment delivered to finance staff",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e1"
+      ]
+    },
+    {
+      "id": "p5",
+      "label": "Remote access tool installed on workstation",
+      "code": "RS",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e2"
+      ]
+    },
+    {
+      "id": "p6",
+      "label": "Valid staff credentials obtained",
+      "code": "CA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e3"
+      ]
+    },
+    {
+      "id": "p7",
+      "label": "Logged in to file transfer server",
+      "code": "IA",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e4"
+      ]
+    },
+    {
+      "id": "p8",
+      "label": "Endpoint security agent disabled",
+      "code": "DE",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e5"
+      ]
+    },
+    {
+      "id": "p9",
+      "label": "Reached finance file share (path uncertain)",
+      "code": "LM",
+      "role": "precondition",
+      "style": "dotted",
+      "parents": [
+        "e6",
+        "e7"
+      ]
+    },
+    {
+      "id": "p10",
+      "label": "40GB finance records copied",
+      "code": "CL",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e8"
+      ]
+    },
+    {
+      "id": "p11",
+      "label": "Records uploaded to external cloud account",
+      "code": "EF",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e9"
+      ]
+    },
+    {
+      "id": "p13",
+      "label": "Stolen records published",
+      "code": "IM",
+      "role": "precondition",
+      "style": "solid",
+      "parents": [
+        "e10"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "label": "Sent a spearphishing email carrying a malicious attachment",
+      "tactic": "IA",
+      "techniques": [
+        "T1566.001"
+      ],
+      "mitigations": [
+        "M1017",
+        "M1053"
+      ],
+      "likelihood": 7.0,
+      "source_evidence": "The attacker sent a spearphishing email carrying a malicious attachment to finance staff (T1566.001, M1017, M1053).",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 95,
+      "actor": "adversary",
+      "action_evidence": "sent a spearphishing email carrying a malicious attachment",
+      "style": "solid",
+      "parents": [
+        "p3"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e2",
+      "label": "Install remote access tool on workstation",
+      "tactic": "EX",
+      "techniques": [
+        "T1204.002"
+      ],
+      "mitigations": [],
+      "likelihood": 7.0,
+      "source_evidence": "An employee opened the attachment, which installed a remote access tool on the workstation.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 80,
+      "actor": "adversary",
+      "action_evidence": "installed a remote access tool",
+      "style": "solid",
+      "parents": [
+        "p4"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e3",
+      "label": "Obtain valid staff credentials",
+      "tactic": "CA",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "The attacker then obtained valid staff credentials.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "obtained valid staff credentials",
+      "style": "solid",
+      "parents": [
+        "p5"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e4",
+      "label": "Log in to file transfer server using stolen credentials",
+      "tactic": "IA",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": "Using those credentials, and because multi-factor authentication was absent, the attacker logged in to the file transfer server.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "logged in to the file transfer server",
+      "style": "solid",
+      "parents": [
+        "p6",
+        "p1",
+        "p2"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e5",
+      "label": "Disable endpoint security agent",
+      "tactic": "DE",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 6.0,
+      "source_evidence": "The attacker disabled the endpoint security agent before continuing (T1562, M1038).",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "disabled the endpoint security agent",
+      "style": "solid",
+      "parents": [
+        "p7"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e6",
+      "label": "Move laterally to finance file share",
+      "tactic": "LM",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 4.0,
+      "source_evidence": "The attacker then possibly moved laterally to the finance file share, or possibly reached it directly from the transfer server; the investigation could not determine which.",
+      "evidence_status": "possible",
+      "evidence_confidence": 40,
+      "actor": "adversary",
+      "action_evidence": "possibly moved laterally to the finance file share",
+      "style": "solid",
+      "parents": [
+        "p8"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e7",
+      "label": "Reach finance file share directly from transfer server",
+      "tactic": "LM",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 4.0,
+      "source_evidence": "The attacker then possibly moved laterally to the finance file share, or possibly reached it directly from the transfer server; the investigation could not determine which.",
+      "evidence_status": "possible",
+      "evidence_confidence": 40,
+      "actor": "adversary",
+      "action_evidence": "possibly reached it directly from the transfer server",
+      "style": "solid",
+      "parents": [
+        "p8"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e8",
+      "label": "Copy 40GB of finance records",
+      "tactic": "CL",
+      "techniques": [
+        "T1005"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": "The attacker copied 40GB of finance records and uploaded them to an external cloud account.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "copied 40GB of finance records",
+      "style": "solid",
+      "parents": [
+        "p9"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e9",
+      "label": "Upload finance records to external cloud account",
+      "tactic": "EF",
+      "techniques": [
+        "T1537"
+      ],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": "The attacker copied 40GB of finance records and uploaded them to an external cloud account.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "uploaded them to an external cloud account",
+      "style": "solid",
+      "parents": [
+        "p10"
+      ],
+      "join": "AND"
+    },
+    {
+      "id": "e10",
+      "label": "Publish stolen records",
+      "tactic": "IM",
+      "techniques": [],
+      "mitigations": [],
+      "likelihood": 8.0,
+      "source_evidence": "The attacker published the stolen records and demanded payment.",
+      "evidence_status": "confirmed",
+      "evidence_confidence": 90,
+      "actor": "adversary",
+      "action_evidence": "published the stolen records",
+      "style": "solid",
+      "parents": [
+        "p11"
+      ],
+      "join": "AND"
+    }
+  ]
+}

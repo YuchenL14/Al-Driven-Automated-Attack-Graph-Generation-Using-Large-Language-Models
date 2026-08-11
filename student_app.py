@@ -12,6 +12,7 @@ Then open http://127.0.0.1:5001
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -628,4 +629,7 @@ def outputs(name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    # See the note in app.py: the interactive debugger is arbitrary code
+    # execution for anyone who can reach the port, and a teaching tool is the
+    # one most likely to be run on a shared machine.
+    app.run(debug=os.environ.get("AGVS_DEBUG") == "1", port=5001)

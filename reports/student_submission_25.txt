@@ -1,0 +1,17 @@
+An externally facing file transfer server was reachable from the internet, and multi-factor authentication was not enabled on staff accounts. The attacker already held a list of employee email addresses bought from a criminal forum.
+
+The attacker sent a spearphishing email carrying a malicious attachment to finance staff (T1566.001, M1017, M1053).
+
+An employee opened the attachment, which installed a remote access tool on the workstation. The attacker then obtained valid staff credentials.
+
+Using those credentials, and because multi-factor authentication was absent, the attacker logged in to the file transfer server.
+
+The attacker disabled the endpoint security agent before continuing (T1562, M1038).
+
+The attacker then possibly moved laterally to the finance file share, or possibly reached it directly from the transfer server; the investigation could not determine which.
+
+The attacker copied 40GB of finance records and uploaded them to an external cloud account.
+
+Backup snapshots on a separate network were untouched and were later used to restore service.
+
+The attacker published the stolen records and demanded payment.

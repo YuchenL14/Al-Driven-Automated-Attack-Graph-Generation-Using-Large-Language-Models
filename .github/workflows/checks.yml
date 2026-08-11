@@ -25,10 +25,16 @@ jobs:
           python-version: "3.12"
           cache: pip
 
+      # The lock file, not requirements.txt. requirements.txt asks for ">=",
+      # so CI would install whatever released this morning, and a change in
+      # the PDF converter changes the text extracted from the same report,
+      # which changes the graph. This project measures how much the graph
+      # varies between runs, so the dependency set has to be one of the things
+      # that does not vary.
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.lock
 
       # Catches a file that cannot be imported before anything tries to run it,
       # which is how an encoding accident once reached the test run as a
