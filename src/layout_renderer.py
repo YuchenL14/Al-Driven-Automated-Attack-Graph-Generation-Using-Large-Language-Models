@@ -49,7 +49,24 @@ LEGEND_TEXT_WIDTH = 240
 LEGEND_MIN_WIDTH = LEGEND_TEXT_WIDTH + 24
 LEGEND_LINE_HEIGHT = 13
 LEGEND_MARGIN = 14
-MIN_CANVAS_HEIGHT = 710
+# The canvas follows its content. A fixed floor of 710px sat here for most of
+# the project, and on a small graph it was most of the figure: a page whose
+# graph and key both ended around 420px was padded to 710, so 40% of what went
+# into the document was blank.
+#
+# Nothing measured noticed, which is the part worth recording. The acceptance
+# limit named "graph content leaves excessive vertical whitespace" reads
+# `occupied_height_fraction`, and that is computed from the plan rather than
+# from the canvas, so the check with exactly the right name could not see the
+# whitespace a reader sees. Page width, and therefore the printed point size
+# every figure is judged on, is unaffected by this constant, so removing the
+# floor changes how the figures look without changing what was measured.
+#
+# The margin is zero because the planner already leaves room below the last
+# rank, which is why the previous rule could take the plan height unchanged on
+# every page tall enough to clear the floor and never clipped anything. A
+# margin added on top of that padded the pages that were already correct.
+CANVAS_BOTTOM_MARGIN = 0
 # Technique and mitigation tags are drawn just outside the planned node box.
 # The planner does not reserve that space, so the canvas adds it once.
 GRAPH_RIGHT_PAD = 76
@@ -810,11 +827,7 @@ def render_layout_plan_png(
     legend_x = LEGEND_MARGIN
     legend_height = len(legend_lines) * LEGEND_LINE_HEIGHT + 88
     canvas_width = graph_offset_x + plan.width + GRAPH_RIGHT_PAD
-    canvas_height = max(
-        MIN_CANVAS_HEIGHT,
-        plan.height,
-        legend_height,
-    )
+    canvas_height = max(plan.height, legend_height) + CANVAS_BOTTOM_MARGIN
 
     image = Image.new("RGBA", (canvas_width, canvas_height), WHITE)
     draw = ImageDraw.Draw(image)

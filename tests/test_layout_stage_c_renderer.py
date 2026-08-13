@@ -18,7 +18,8 @@ from causal_split import (continuation_labels, materialize_split_part,  # noqa: 
                           plan_causal_split)
 from layout_ir import build_layout_ir  # noqa: E402
 from layout_planner import plan_layout  # noqa: E402
-from layout_renderer import legend_geometry, render_new_layout_png  # noqa: E402
+from layout_renderer import (LEGEND_LINE_HEIGHT,  # noqa: E402
+                             legend_geometry, render_new_layout_png)
 from test_phase3_causal_split import (_british_library_shape,  # noqa: E402
                                       _mands_shape,
                                       _wannacry_shape)
@@ -43,7 +44,15 @@ class LayoutStageCRendererTests(unittest.TestCase):
                 self.assertGreaterEqual(
                     image.width, graph_offset_x + plan.width
                 )
-                self.assertGreaterEqual(image.height, 710)
+                # This assertion used to read 710, a fixed floor that padded a
+                # small graph with blank space amounting to much of the figure.
+                # The height now follows the content, so what is asserted is
+                # that the content fits and that the padding is bounded.
+                legend_lines, _, _ = legend_geometry(graph)
+                needed = max(plan.height,
+                             len(legend_lines) * LEGEND_LINE_HEIGHT + 88)
+                self.assertGreaterEqual(image.height, needed)
+                self.assertLessEqual(image.height - needed, 32)
         self.assertEqual(before, graph.model_dump())
 
     def test_renderer_keeps_main_graph_and_legend_separated(self):

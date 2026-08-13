@@ -18,9 +18,10 @@ from typing import Mapping, Sequence, TYPE_CHECKING
 
 from layout_ir import LayoutIR, build_layout_ir
 from layout_planner import LayoutPlan, PlannedNode, plan_layout
-from layout_renderer import (BADGE_DIAMETER, BORDER, GRAPH_RIGHT_PAD,
+from layout_renderer import (BADGE_DIAMETER, BORDER, CANVAS_BOTTOM_MARGIN,
+                             GRAPH_RIGHT_PAD,
                              LEGEND_LINE_HEIGHT, LEGEND_MARGIN,
-                             LIKELIHOOD, MIN_CANVAS_HEIGHT, MITIGATION,
+                             LIKELIHOOD, MITIGATION,
                              STATE_PHASE, TACTIC, TAG_BORDER, TECHNIQUE,
                              TEXT, WHITE,
                              _load_fonts, _stroked_once, _text_size, _wrap,
@@ -247,7 +248,10 @@ def render_layout_plan_svg(
     )
     legend_height = len(legend_lines) * LEGEND_LINE_HEIGHT + 88
     width = graph_offset_x + plan.width + GRAPH_RIGHT_PAD
-    height = max(MIN_CANVAS_HEIGHT, plan.height, legend_height)
+    # The vector page and the raster page come from one geometry, so the
+    # height rule has to be the same one. See the note beside
+    # CANVAS_BOTTOM_MARGIN.
+    height = max(plan.height, legend_height) + CANVAS_BOTTOM_MARGIN
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" '

@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="826" height="1254" viewBox="0 0 826 1254">
+<defs><marker id="agvs-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#303030"/></marker></defs>
+<rect width="826" height="1254" fill="#FFFFFF"/>
+<text x="736.0" y="25.0" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Part 1 of 3</text>
+<polyline points="524,134 524,170" fill="none" stroke="#303030" stroke-width="1" stroke-dasharray="2 3" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,278 524,314" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,406 524,442" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,520 524,556" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,634 524,670" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,748 524,784" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,862 524,994" fill="none" stroke="#303030" stroke-width="1"/>
+<polyline points="410,976 410,994" fill="none" stroke="#303030" stroke-width="1"/>
+<polyline points="638,976 638,994" fill="none" stroke="#303030" stroke-width="1"/>
+<polyline points="410,994 638,994" fill="none" stroke="#303030" stroke-width="1"/>
+<polyline points="524,994 524,1012" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<polyline points="524,1104 524,1140" fill="none" stroke="#303030" stroke-width="1" marker-end="url(#agvs-arrow)"/>
+<ellipse cx="524.0" cy="95.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1" stroke-dasharray="2 3"/>
+<text x="524.0" y="94.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Employee email list</text>
+<text x="524.0" y="110.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">bought from forum</text>
+<circle cx="434.0" cy="52.0" r="13.0" fill="#CFCFC7"/>
+<text x="434.0" y="56.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">EXT</text>
+<rect x="436.0" y="170.0" width="176" height="108" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="217.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Sent a spearphishing</text>
+<text x="524.0" y="232.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">email carrying a</text>
+<text x="524.0" y="245.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">malicious attachment</text>
+<circle cx="434.0" cy="166.0" r="13.0" fill="#B8B5EA"/>
+<text x="434.0" y="170.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">D</text>
+<rect x="613.0" y="162.0" width="52.0" height="11.0" fill="#F3B2B2" stroke="#8D6B57" stroke-width="0.6"/>
+<text x="617.0" y="171.0" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#222222">T1566.001</text>
+<circle cx="437.0" cy="277.0" r="13.0" fill="#31A8C4"/>
+<text x="437.0" y="281.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">7.0</text>
+<rect x="613.0" y="266.0" width="36.0" height="11.0" fill="#E7BE9B" stroke="#8D6B57" stroke-width="0.6"/>
+<text x="617.0" y="275.0" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#222222">M1017</text>
+<rect x="613.0" y="278.0" width="36.0" height="11.0" fill="#E7BE9B" stroke="#8D6B57" stroke-width="0.6"/>
+<text x="617.0" y="287.0" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#222222">M1053</text>
+<ellipse cx="524.0" cy="360.0" rx="88.0" ry="46.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="352.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Malicious attachment</text>
+<text x="524.0" y="365.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">delivered to finance</text>
+<text x="524.0" y="378.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">staff</text>
+<circle cx="434.0" cy="310.0" r="13.0" fill="#CFCFC7"/>
+<text x="434.0" y="314.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">RES</text>
+<rect x="436.0" y="442.0" width="176" height="78" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="480.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Install remote access</text>
+<text x="524.0" y="493.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">tool on workstation</text>
+<circle cx="434.0" cy="438.0" r="13.0" fill="#B8B5EA"/>
+<text x="434.0" y="442.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">E</text>
+<rect x="613.0" y="434.0" width="52.0" height="11.0" fill="#F3B2B2" stroke="#8D6B57" stroke-width="0.6"/>
+<text x="617.0" y="443.0" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#222222">T1204.002</text>
+<circle cx="437.0" cy="519.0" r="13.0" fill="#31A8C4"/>
+<text x="437.0" y="523.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">7.0</text>
+<ellipse cx="524.0" cy="595.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="587.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Remote access tool</text>
+<text x="524.0" y="600.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">installed on</text>
+<text x="524.0" y="613.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">workstation</text>
+<circle cx="434.0" cy="552.0" r="13.0" fill="#CFCFC7"/>
+<text x="434.0" y="556.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">RES</text>
+<rect x="436.0" y="670.0" width="176" height="78" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="708.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Obtain valid staff</text>
+<text x="524.0" y="721.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">credentials</text>
+<circle cx="434.0" cy="666.0" r="13.0" fill="#B8B5EA"/>
+<text x="434.0" y="670.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">E</text>
+<circle cx="437.0" cy="747.0" r="13.0" fill="#31A8C4"/>
+<text x="437.0" y="751.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">6.0</text>
+<ellipse cx="524.0" cy="823.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="822.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Valid staff credentials</text>
+<text x="524.0" y="835.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">obtained</text>
+<circle cx="434.0" cy="780.0" r="13.0" fill="#CFCFC7"/>
+<text x="434.0" y="784.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">RES</text>
+<ellipse cx="410.0" cy="937.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="410.0" y="936.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">File transfer server</text>
+<text x="410.0" y="949.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">internet-reachable</text>
+<circle cx="320.0" cy="894.0" r="13.0" fill="#CFCFC7"/>
+<text x="320.0" y="898.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">PRE</text>
+<ellipse cx="638.0" cy="937.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="638.0" y="936.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">MFA not enabled on</text>
+<text x="638.0" y="949.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">staff accounts</text>
+<circle cx="548.0" cy="894.0" r="13.0" fill="#CFCFC7"/>
+<text x="548.0" y="898.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">PRE</text>
+<rect x="436.0" y="1012.0" width="176" height="92" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="1050.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Log in to file transfer</text>
+<text x="524.0" y="1066.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">server using stolen</text>
+<text x="524.0" y="1079.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">credentials</text>
+<circle cx="434.0" cy="1008.0" r="13.0" fill="#B8B5EA"/>
+<text x="434.0" y="1012.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">D</text>
+<circle cx="437.0" cy="1103.0" r="13.0" fill="#31A8C4"/>
+<text x="437.0" y="1107.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">8.0</text>
+<ellipse cx="524.0" cy="1179.0" rx="88.0" ry="39.0" fill="#FFFFFF" stroke="#303030" stroke-width="1"/>
+<text x="524.0" y="1171.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">Logged in to file</text>
+<text x="524.0" y="1184.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#222222">transfer server</text>
+<text x="524.0" y="1211.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9" fill="#666666">continues in part 2</text>
+<circle cx="434.0" cy="1136.0" r="13.0" fill="#CFCFC7"/>
+<text x="434.0" y="1140.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222222">RES</text>
+<text x="14" y="79.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">How to read this figure</text>
+<text x="14" y="92.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Rectangle: an action the adversary performed</text>
+<text x="14" y="105.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Ellipse: a state the attack required or established</text>
+<text x="14" y="118.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Dotted outline: the source reports this as uncertain</text>
+<text x="14" y="131.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Arrows read downward: the node below depends</text>
+<text x="14" y="142.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   on the node above</text>
+<text x="14" y="157.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Shared horizontal line into an action: every input</text>
+<text x="14" y="170.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   was needed (AND)</text>
+<text x="14" y="183.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Circle at an action&#x27;s top-left corner: kill-chain phase,</text>
+<text x="14" y="196.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   keyed below</text>
+<text x="14" y="209.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Circle at a state&#x27;s top-left corner reading PRE: a</text>
+<text x="14" y="220.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   condition that held before the attack</text>
+<text x="14" y="235.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Circle at a state&#x27;s top-left corner reading RES: a</text>
+<text x="14" y="248.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   state an action produced</text>
+<text x="14" y="261.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Circle at a state&#x27;s top-left corner reading EXT: a</text>
+<text x="14" y="274.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   resource the adversary already held</text>
+<text x="14" y="287.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Tags at an action&#x27;s top right: ATT&amp;CK technique,</text>
+<text x="14" y="300.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   keyed below</text>
+<text x="14" y="313.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Tags at an action&#x27;s bottom right: mitigation, keyed</text>
+<text x="14" y="324.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   below</text>
+<text x="14" y="337.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">Number at an action&#x27;s bottom-left corner: how</text>
+<text x="14" y="352.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">   feasible the step was judged to be, 0 to 10</text>
+<text x="14" y="376.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">T1204.002: Malicious File</text>
+<text x="14" y="391.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">T1566.001: Spearphishing Attachment</text>
+<text x="14" y="417.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">M1017: User Training</text>
+<text x="14" y="430.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">M1053: Data Backup</text>
+<text x="14" y="456.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">D: Delivery</text>
+<text x="14" y="469.0" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#222222">E: Exploitation</text>
+</svg>
