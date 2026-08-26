@@ -40,7 +40,7 @@ def _chain(n: int) -> dict:
         graph["events"].append(
             {"id": f"e{i}", "label": f"Step {i}", "tactic": "IA",
              "likelihood": 5.0, "style": "solid", "parents": [f"p{i}"],
-             "join": "AND"})
+             "join": "AND", "terminal_goal": i == n - 1})
     return graph
 
 

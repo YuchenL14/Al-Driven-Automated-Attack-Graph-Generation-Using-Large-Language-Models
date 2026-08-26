@@ -1,15 +1,3 @@
-"""
-app.py -- a small web interface for the attack-graph tool.
-
-Run it, open the page in a browser, upload a report, choose a model, and the
-generated attack graph appears on the page. This wraps the same pipeline used on
-the command line (ingest -> extract -> render); it does not change the tool, it
-only gives it a front end.
-
-    python app.py
-    then open http://127.0.0.1:5000 in a browser
-"""
-
 import json
 import os
 import re
@@ -66,35 +54,13 @@ CLAUDE_MODELS = list_claude_models()
 OLLAMA_MODELS = ["qwen3:8b", "phi4-mini", "llama3.1:8b", "deepseek-r1:8b",
                  "gemma3:4b"]
 
-
-# Two different jobs used to share one constant, and the page said "v1.4" in
-# both senses at once.
-#
-# v1.4 is the frozen comparison baseline: the version every later rule set is
-# measured against, kept byte-identical so a v1.4 run made today is the same
-# experiment as a v1.4 run made months ago. That has not changed.
-#
-# What has changed is which version the work now uses. Every graph the
-# dissertation reports comes from v1.6, so v1.6 is what the page offers first
-# and reaching the baseline is now the deliberate act. That is the reverse of
-# the earlier arrangement, and it is why the integrity test that asserted a
-# v1.4 default was rewritten rather than left to assert something the tool no
-# longer does.
-#
-# The chosen version is recorded in every output file name either way, so runs
-# made under different rules can never be confused. Teaching iterations remain
-# isolated in student_app.py.
 COMPARISON_BASELINE = "v1.4"
 DEFAULT_RULESET = "v1.6"
 RULES_DIR = ROOT / "rules"
 
 
 def available_rulesets() -> list[str]:
-    """Return the report-oriented rule sets present on disk, current first.
 
-    Student rule sets expect a typed narrative rather than an uploaded report,
-    so they stay with the application built for them.
-    """
     versions = sorted(
         path.stem.replace("ruleset_", "")
         for path in RULES_DIR.glob("ruleset_*.md")
@@ -117,13 +83,6 @@ def _selected_ruleset(value: str | None) -> str:
 
 
 def _extraction_notes() -> list[str]:
-    """Report anything the extraction had to give up to return a graph.
-
-    Both of these keep a paid, valid answer that would otherwise have been
-    discarded, and both change what the graph asserts. Showing them is the
-    condition on doing them at all: a silent drop would put nodes in the
-    dissertation's figures that nobody chose to remove.
-    """
 
     notes: list[str] = []
     dropped = get_last_salvaged_nodes()
@@ -147,12 +106,6 @@ def _extraction_notes() -> list[str]:
 
 
 def _layout_warnings(out_path: Path) -> list[str]:
-    """Read the per-page visual metrics the renderer recorded for this run.
-
-    A page that misses an acceptance limit is reported rather than withheld: a
-    sparse report can legitimately produce a thin page, and the reviewer still
-    needs to see it. The full metrics stay in the sidecar JSON.
-    """
 
     report_path = quality_report_path(str(out_path))
     if not report_path.is_file():
@@ -169,14 +122,6 @@ def _layout_warnings(out_path: Path) -> list[str]:
 
 
 def _friendly_error(e: Exception, provider: str) -> str:
-    """Turn a raw exception into a precise, non-secret diagnostic.
-
-    Failures raised by this pipeline are classified before any provider
-    failure. Provider messages are matched on whole words, because the loose
-    substring tests used previously misread our own text: "quota" matched
-    inside "quotation", so a rejected evidence quote was reported to the user
-    as an Anthropic spend limit.
-    """
 
     msg = str(e)
     low = msg.lower()
@@ -757,19 +702,10 @@ def generate():
 
     usage = None
     graph_audit_path = None
-    # Bound before the try so the failure path can report what was extracted
-    # before the failure. A run that validated a graph and then failed to draw
-    # it still knows its own shape, and hiding that would misreport the run as
-    # having produced nothing.
     graph = None
     try:
         text = ingest(report_path)
         if semantic_mode and is_construct_ruleset(ruleset):
-            # The semantic draft pipeline takes no rule set at all: it has no
-            # vocabulary for external resources, annotations or dotted
-            # branches, which is the entire content of v1.6. Silently ignoring
-            # the selection would return a graph the user believes follows
-            # rules it never saw.
             raise ValueError(
                 "the semantic draft pipeline cannot express the v1.6 "
                 "constructs (external resources, annotations, dotted "
@@ -792,9 +728,6 @@ def generate():
                 ruleset=ruleset,
             )
         usage = get_last_api_usage()
-        # Persist the already-paid, schema-validated semantic result before
-        # layout/rendering. A visual failure can then be reproduced and fixed
-        # offline without purchasing another model generation.
         graph_audit_path = out_path.with_suffix(
             ".semantic.json" if semantic_mode else ".json")
         graph_audit_path.write_text(
@@ -805,10 +738,6 @@ def generate():
             ),
             encoding="utf-8",
         )
-        # The causal planner returns one unchanged page for a small graph and
-        # multiple lossless state-boundary pages for a long graph. Running it
-        # unconditionally prevents a user from accidentally bypassing Phase 3
-        # and producing an unreadable full-height strip.
         paths = (
             render_semantic_layout(
                 graph,
@@ -820,10 +749,6 @@ def generate():
             else render_split(graph, str(out_path), dpi=170)
         )
         images = [Path(p).name for p in paths]
-        # The same pages in vector form. A PNG placed in a dissertation is
-        # resampled to whatever width the page gives it; an SVG is not, and
-        # both come from one geometry, so the figure in the document is the
-        # figure the application showed.
         vectors = (
             [Path(p).name for p in
              render_split(graph, str(out_path.with_suffix(".svg")), fmt="svg")]
@@ -848,9 +773,6 @@ def generate():
         return render_template_string(
             PAGE, **_page_context(
                 error=error, usage=usage, selected_ruleset=ruleset,
-                # No pages were drawn, so no width was measured. The metrics
-                # strip prints an em dash for each absent measurement rather
-                # than a zero, which would read as a page inside the budget.
                 metrics=run_metrics(graph, None, None, usage),
                 tactics=tactic_progression(graph) if graph else None))
 
@@ -871,10 +793,4 @@ def outputs(name):
 
 
 if __name__ == "__main__":
-    # Werkzeug's interactive debugger executes arbitrary Python from the
-    # browser on any unhandled exception. Bound to loopback that is only
-    # reachable locally, but this application is demonstrated on other
-    # machines, and one --host=0.0.0.0 away it is remote code execution.
-    # Tracebacks still reach the terminal through app.logger.exception, which
-    # is where they were being read from anyway.
     app.run(debug=os.environ.get("AGVS_DEBUG") == "1", port=5000)

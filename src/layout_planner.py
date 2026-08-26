@@ -1,17 +1,3 @@
-"""Stage-B branch-aware layout planning for the AGVS-SP Visual IR.
-
-This module calculates geometry but draws no pixels.  It treats the atomic
-event/result blocks from :mod:`layout_ir` as the units of macro layout, then
-expands each block into local input-state, event, and result-state rows.
-
-The separation is intentional:
-
-* extraction decides attack meaning;
-* ``layout_ir`` preserves and groups that meaning;
-* this planner assigns deterministic top-down geometry;
-* a later renderer will route and draw the plan.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass

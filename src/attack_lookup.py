@@ -1,20 +1,3 @@
-"""
-attack_lookup.py -- resolve ATT&CK codes to human-readable names, and build the
-legend that decodes every code appearing in a graph.
-
-DESIGN NOTE
------------
-The supervisor's Figure 5.0.2 shows *codes* on the nodes (T1190, M1051, RS...)
-and a side legend that decodes them. We reproduce that: nodes stay compact and
-readable, and the legend is generated automatically from whatever codes are
-actually used -- never hand-maintained, never out of sync.
-
-The resolver is deliberately hidden behind three tiny functions
-(resolve_technique / resolve_mitigation / resolve_tactic). Today they read a
-bundled JSON file. In the RAG grounding stage the same three functions can be
-re-pointed at the full MITRE ATT&CK STIX dataset without touching the renderer.
-"""
-
 from __future__ import annotations
 
 import json

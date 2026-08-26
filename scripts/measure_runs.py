@@ -1,34 +1,3 @@
-"""Measure generated attack graphs, reproducibly.
-
-Every figure this project has reported so far -- dead-end counts, reachability,
-page proportions, the cross-report comparison -- was produced by a script
-written on the spot and then thrown away. That is not a reproducible method,
-and it is not safe either: one such script measured a badge stack with the
-wrong line pitch and reported an overflow that did not exist, which then had
-code written for it.
-
-So this reads the same functions the pipeline reads. It defines no metric of
-its own. If a number here is wrong, the product is wrong too, which is the
-point.
-
-    python scripts/measure_runs.py outputs/*.json
-    python scripts/measure_runs.py outputs/run.json --markdown
-    python scripts/measure_runs.py outputs/stolen*.json --gold
-
-Three blocks are reported for each graph:
-
-  structure   what the graph claims: how many actions and states, how much of
-              it lies on one dependency path, how much reaches an ending, and
-              how many states nothing ever consumes;
-  syntax      the visual contract, checked against the supervisor's reference
-              specification rather than against opinion;
-  layout      what the pages came out like, read from the run's own
-              layout-quality report.
-
-`--gold` adds a technique comparison against the supervisor's transcribed
-figure. Read the caveats printed with it before quoting the number.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -144,12 +113,6 @@ def measure_structure(data: dict) -> Structure:
 # --------------------------------------------------------------------------
 # visual syntax
 # --------------------------------------------------------------------------
-# Checks the professional rule sets impose and the teaching ones do not. v1.6
-# Rule 2 requires a technique on every action; the student rule sets answer the
-# same question with abstention, because a narrative a student wrote may
-# genuinely not support a defensible mapping and a blank badge is the honest
-# result. Measuring a teaching graph against the professional contract reports
-# that difference as a fault, which it is not.
 PROFESSIONAL_ONLY_CHECKS = ("every action has a technique",)
 
 SYNTAX_CHECKS = (
@@ -248,14 +211,6 @@ class Layout:
 
 
 def read_layout(path: Path, model: AttackGraph | None = None) -> Layout:
-    """Read the run's own report rather than re-deriving the geometry.
-
-    Width is the exception. It is measured here from the model, because a run
-    saved before the width budget existed has no width in its report, and a
-    figure's width is the thing that decides whether it can be printed at a
-    readable size at all. It uses the pagination's own measurement, so it
-    cannot disagree with what the renderer produces.
-    """
 
     report = path.with_suffix("").with_suffix(".layout-quality.json")
     if not report.is_file():
@@ -298,15 +253,6 @@ def _parent_technique(identifier: str) -> str:
 
 
 def score_against_gold(model: AttackGraph, gold_path: Path) -> list[GoldScore]:
-    """Compare the technique SETS, under stated parent/child rules.
-
-    Set comparison, not node alignment: the two graphs make different
-    abstraction choices, so there is no node correspondence to align on. The
-    reference omits the credential toolkit entirely, for instance, and every
-    technique the tool reads from it therefore counts against precision for a
-    reason that is not an error. This measures agreement with one expert's
-    abstraction, not correctness, and the caveat has to travel with the number.
-    """
 
     gold = json.loads(gold_path.read_text(encoding="utf-8"))
     gold_ids = {t for node in gold["nodes"] for t in node.get("techniques") or []}
@@ -457,7 +403,8 @@ def report(paths: list[Path], markdown: bool, gold: Path | None,
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    description = (__doc__ or "Measure generated attack-graph runs.")
+    parser = argparse.ArgumentParser(description=description.splitlines()[0])
     parser.add_argument("graphs", nargs="+", type=Path)
     parser.add_argument("--student", action="store_true",
                         help="measure against the teaching contract, which "

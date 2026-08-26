@@ -1,15 +1,3 @@
-"""Vector AGVS-SP output for the same plan the PNG renderer draws.
-
-SVG and PDF previously fell through to Graphviz, which uses an unrelated
-visual syntax. A figure exported for the dissertation therefore looked nothing
-like the PNG shown in the application. This module consumes the identical
-Stage-A semantics, Stage-B geometry and Stage-C routes, so the vector output
-is the same drawing rather than a second interpretation of the graph.
-
-Line breaking reuses the PNG renderer's font metrics, which keeps the two
-backends character-for-character identical.
-"""
-
 from __future__ import annotations
 
 import html

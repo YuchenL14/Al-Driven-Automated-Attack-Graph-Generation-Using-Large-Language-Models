@@ -1,15 +1,3 @@
-"""Versioned visual-semantics contract for attack-graph renderers.
-
-The LLM and the professional v1.4 rules decide *what* the graph contains.
-This module decides only *how an already validated object is represented*.
-Keeping the projection deterministic prevents a renderer from reclassifying
-events, changing ATT&CK metadata, or treating a state badge as an event tactic.
-
-AGVS-SP 1.0 combines the practitioner-preferred ``tre`` configuration
-(top-down flow, rectangle exploits/actions, ellipse preconditions/states) with
-the supervisor-provided Stolen Pencil notation.
-"""
-
 from __future__ import annotations
 
 import os

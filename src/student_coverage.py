@@ -1,12 +1,3 @@
-"""Read-only source coverage feedback for the student application.
-
-This module deliberately does not participate in extraction, validation, or
-rendering.  It compares a completed student graph with the submitted prose so
-that a learner can see which source statements became events, which became
-states, and which may need another look.  The professional applications do not
-import this module.
-"""
-
 from __future__ import annotations
 
 import re

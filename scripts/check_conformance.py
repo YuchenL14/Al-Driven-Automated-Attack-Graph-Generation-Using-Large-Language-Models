@@ -1,14 +1,3 @@
-"""Re-render every saved graph and fail if any figure breaks the visual syntax.
-
-Run by CI on every push. It buys nothing that the unit tests do not already
-assert about the code; what it adds is the same assertions made against every
-graph the project has actually produced, which is where a rule set change or a
-renderer change shows up first.
-
-No API key and no network: every graph is read from ``outputs/`` and drawn by
-the local renderer.
-"""
-
 from __future__ import annotations
 
 import glob
@@ -33,13 +22,6 @@ from measure_runs import check_syntax, checks_for  # noqa: E402
 
 ACTION_VOCABULARY = frozenset(ATTACK_TACTICS) | frozenset(KILL_CHAIN_PHASES)
 
-# Saved runs already known not to conform, and why. Listed rather than deleted:
-# a nonconformant run is a measurement the dissertation reports, and removing
-# it to keep a build green would be removing the evidence. Listing it keeps the
-# check useful, because anything not on this list is a new regression.
-#
-# Each entry must name the run and the check it fails, so a run that starts
-# failing a *different* check is still caught.
 KNOWN_NONCONFORMANT: dict[str, set[str]] = {
     "netscout-stolen-pencil__rules-v1.6__anthropic-claude-sonnet-5_4":
         {"every action has a technique"},
@@ -83,8 +65,6 @@ def main() -> int:
                 continue
             failures.append(f"{stem}: syntax check failed: {name}")
 
-        # Every ellipse badge must come from the closed state vocabulary, and
-        # none may borrow a symbol that means something else on a rectangle.
         for node in project_visual_nodes(model):
             if node.kind not in {"state", "annotation"}:
                 continue
@@ -99,8 +79,7 @@ def main() -> int:
                     f"{stem}: state {node.id} badges {node.badge_code!r}, "
                     "which belongs to the action vocabulary")
 
-        # Every page must still plan and route, and its printed size is
-        # reported so a regression in width is visible in the log.
+
         drawn, _ = aggregate_for_drawing(model)
         plan = plan_causal_split(drawn)
         for part in plan.parts:

@@ -1,9 +1,3 @@
-"""Stage-C PNG renderer for the new AGVS-SP layout pipeline.
-
-The renderer consumes only validated Stage-A semantics, Stage-B geometry and
-Stage-C routes.  It never infers attack content or changes canonical data.
-"""
-
 from __future__ import annotations
 
 import math

@@ -1,11 +1,3 @@
-"""Perceptual and structural quality metrics for rendered attack-graph plans.
-
-The metrics are intentionally independent from attack extraction.  They make
-the visual acceptance criteria quantitative: semantic preservation, strictly
-downward causal flow, use of the available graph region, compactness and route
-complexity can be regression-tested without asking an LLM to judge an image.
-"""
-
 from __future__ import annotations
 
 import os

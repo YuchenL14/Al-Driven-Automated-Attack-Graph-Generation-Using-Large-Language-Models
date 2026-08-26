@@ -1,28 +1,3 @@
-"""Explain the graph back to the student, and frame the choices they left open.
-
-Two scaffolds, both additions to what is said beside the figure. Neither
-changes the graph, and neither makes a decision the student did not make.
-
-The design follows the finding rather than the intuition. Sherzhanov, Atlam,
-Azad and Lallie (2024) built a visually enhanced attack graph -- brighter hues,
-denser lines, varied shapes -- and evaluated it with 83 participants, 37 expert
-and 46 not. The enhancements did not significantly improve comprehension for
-the non-experts, and the paper's own recommendation is to work on structural
-clarity and conceptual scaffolding instead of appearance. So the teaching
-version keeps the professional visual syntax exactly and adds explanation.
-
-  shortlist   for a step the student left unmapped, name a few candidate
-              techniques and say why those ones;
-  restatement say what the drawn graph claims, in ordinary sentences, so the
-              student can check it against what they meant.
-
-The shortlist is deliberately not the whole candidate list. Persistence carries
-113 techniques in this catalogue; printing them would be noise, and noise is
-what the paper above says does not help. It is narrowed by a rule the student
-can see and disagree with: the candidates whose names share a word with what
-they themselves wrote.
-"""
-
 from __future__ import annotations
 
 import re

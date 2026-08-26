@@ -1,20 +1,3 @@
-"""Presentation-only intermediate representation for AGVS-SP layouts.
-
-Layout Stage A deliberately sits between the validated :class:`AttackGraph`
-and any concrete renderer.  It does not infer, delete, relabel, or reclassify
-attack content.  Its responsibilities are limited to:
-
-* preserving the canonical nodes and causal edges exactly;
-* grouping event/result units that must remain visually atomic;
-* making multi-input AND/OR convergence explicit;
-* keeping one visual occurrence of each canonical state on a page, including
-  reused prerequisites that feed several events.
-
-Cross-page continuation states are materialised by :mod:`causal_split`, not
-duplicated inside this IR.  :func:`validate_layout_ir` proves that the page IR
-reconstructs the canonical graph exactly before a renderer may consume it.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass

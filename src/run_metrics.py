@@ -1,19 +1,3 @@
-"""Numbers the two web front ends show about a run they have just finished.
-
-Nothing here measures anything. Every value is read from whatever already owns
-it: the tactic order and membership come from ``schema.ATTACK_TACTICS``, which
-is what validation enforces; the width budget and the print floor come from
-``layout_renderer``; the per-page widths come from the ``.layout-quality.json``
-sidecar the renderer writes for every run; and the printed point size comes
-from ``layout_quality``. A constant restated here would be a second definition
-free to disagree with the first, and the disagreement would surface as a page
-reported legible on screen and illegible in the document.
-
-A measurement that is absent stays absent. A run that failed before rendering
-has no page width, and reporting that as ``0`` would print as a page
-comfortably inside the budget.
-"""
-
 from __future__ import annotations
 
 import json

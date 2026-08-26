@@ -35,7 +35,7 @@ def _chain(n: int, prefix: str = "c") -> tuple[list, list]:
     events = [
         {"id": f"{prefix}e{i}", "label": f"Step {i}", "tactic": "IA",
          "likelihood": 5.0, "style": "solid", "parents": [f"{prefix}p{i}"],
-         "join": "AND"}
+         "join": "AND", "terminal_goal": i == n - 1}
         for i in range(n)]
     return preconditions, events
 

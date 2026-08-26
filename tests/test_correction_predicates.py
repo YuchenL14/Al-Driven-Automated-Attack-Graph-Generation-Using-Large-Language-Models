@@ -19,7 +19,10 @@ sys.path.insert(0, str(ROOT / "src"))
 from extract import (AttackGraphSkeleton, ConstructAttackGraphSkeleton,
                      EvidenceGraphWire, is_empty_graph_fault,
                      is_grounded_action_fault, is_structural_stage_a_fault,
+                     is_student_actor_fault,
+                     is_student_disconnected_fault,
                      is_student_identifier_coverage_fault,
+                     is_terminal_result_fault,
                      is_verbatim_evidence_fault)
 
 # Copied from the raise sites, so a reworded message fails this file rather
@@ -94,6 +97,32 @@ class TestOtherSelectors(unittest.TestCase):
         structural = "the skeleton contains a cycle: e1 -> s1 -> e1"
         self.assertTrue(is_structural_stage_a_fault(structural))
         self.assertFalse(is_empty_graph_fault(structural))
+
+    def test_student_disconnected_components_get_structural_repair(self):
+        message = (
+            "the student graph has 2 disconnected components; connect every "
+            "supported branch to the main attack graph"
+        )
+        self.assertTrue(is_structural_stage_a_fault(message))
+        self.assertTrue(is_student_disconnected_fault(message))
+        self.assertFalse(is_student_disconnected_fault(
+            "the professional graph has disconnected pieces"))
+
+    def test_student_non_adversary_actor_has_a_named_route(self):
+        message = (
+            "e12: actor must be adversary; victim, defender, investigator, "
+            "and recovery actions are not attack events")
+        self.assertTrue(is_student_actor_fault(message))
+        self.assertFalse(is_student_actor_fault(
+            "e12: actor must be adversary"))
+
+    def test_terminal_result_fault_has_a_named_route(self):
+        self.assertTrue(is_terminal_result_fault(
+            "event e9 produces no resulting state"))
+        self.assertTrue(is_terminal_result_fault(
+            "terminal_goal may identify at most one final objective"))
+        self.assertFalse(is_terminal_result_fault(
+            "the student graph has 2 disconnected components"))
 
 
 class TestNoRawSubstringRoutingRemains(unittest.TestCase):

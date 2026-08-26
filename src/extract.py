@@ -1,19 +1,3 @@
-"""
-extract.py -- Stage 3 of the pipeline: read report text and produce a
-validated AttackGraph, with a language model finding the preconditions,
-events, ATT&CK technique (T) numbers, and mitigation (M) numbers.
-
-The provider is pluggable, because the choice of model is still open:
-  * "ollama"    -- a local model, nothing leaves the machine (BSREC low risk)
-  * "anthropic" -- the Claude API, stronger extraction, needs an API key
-
-Both are made to emit JSON that conforms to the schema contract. The contract
-is the safety net: whatever the model produces has to pass validation before a
-graph is drawn, so a hallucinated or malformed element is rejected rather than
-rendered. When validation fails, the error is fed back and the model is asked
-to correct itself, up to a small number of attempts.
-"""
-
 from __future__ import annotations
 
 import json
@@ -47,13 +31,6 @@ from semantic_draft import (
     validate_evidence_against_report,
 )
 
-# --- cleaning the model's output before validation -------------------------
-# A model trained on an older ATT&CK release will sometimes use a tactic id
-# (TA0001) or a full tactic name instead of the abbreviation this tool expects,
-# or a technique id that has since been revoked. Rather than fail on these, we
-# clean them up: map the tactic to its abbreviation, and drop any technique or
-# mitigation id the current ATT&CK data no longer contains. The graph is still
-# produced, just without the identifiers that no longer exist.
 _TACTIC_ID_MAP = {
     "TA0043": "RE", "TA0042": "RS", "TA0001": "IA", "TA0002": "EX",
     "TA0003": "PS", "TA0004": "PE", "TA0005": "DE", "TA0006": "CA",
@@ -80,17 +57,10 @@ def _sanitize(raw_json: str) -> str:
     except json.JSONDecodeError:
         return raw_json                     # let validation report the parse error
 
-    # If the model did not return the expected object shape, do not try to clean
-    # it. Hand it to validation unchanged so the schema reports the real problem
-    # and the retry loop can ask the model to correct itself.
     if not isinstance(data, dict):
         return raw_json
 
-    # Recover from double wrapping. A model sometimes returns the value of
-    # "preconditions" or "events" as a JSON STRING that itself contains the whole
-    # object, for example {"preconditions": "{\"preconditions\": [ ... ]}"}. Parse
-    # such a string and lift out the array it holds, so a recoverable formatting
-    # slip does not fail the graph.
+
     for key in ("preconditions", "events"):
         val = data.get(key)
         if isinstance(val, str):
@@ -130,16 +100,12 @@ def _sanitize(raw_json: str) -> str:
 # --- grounding: what the model must obey -----------------------------------
 _TACTIC_LINES = "\n".join(f"  {abbr} = {name}" for abbr, name in ATTACK_TACTICS.items())
 
-# The tool supports a fixed catalogue of ATT&CK ids. Giving the model that
-# catalogue keeps it from inventing ids and lets the legend always resolve.
+
 _resolver = AttackResolver()
 _TECH_LINES = "\n".join(f"  {tid} = {name}" for tid, name in sorted(_resolver._techniques.items()))
 _MITI_LINES = "\n".join(f"  {mid} = {name}" for mid, name in sorted(_resolver._mitigations.items()))
 
-# --- tactic-scoped technique index (for hierarchical retrieval, v1.4) --------
-# Load the technique -> tactic mapping added to the dictionary, and invert it to
-# tactic -> techniques. This lets stage B offer the model only the techniques
-# under a given tactic, rather than the whole catalogue.
+
 _lookup_raw = json.loads(
     (Path(__file__).resolve().parent.parent / "data" / "attack_lookup.json")
     .read_text(encoding="utf-8"))
@@ -156,12 +122,7 @@ def _tech_lines_for_tactic(tactic: str) -> str:
     ids = sorted(_TACTIC_TECHNIQUES.get(tactic, []))
     return "\n".join(f"  {tid} = {_resolver._techniques.get(tid, '')}" for tid in ids)
 
-# --- rule set: loaded from a versioned file so it can be iterated -----------
-# The judgement rules that decide what a precondition, an event, and a logical
-# element are, live in rules/ruleset_v<version>.md rather than in this file. This
-# keeps the rule set explicit and version controlled: each iteration is a new
-# file, and the tool can be pointed at a specific version for comparison. The
-# ATT&CK catalogue is injected into the placeholders at load time.
+
 _RULES_DIR = Path(__file__).resolve().parent.parent / "rules"
 DEFAULT_RULESET = "v1"
 
@@ -171,11 +132,7 @@ _COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 
 def load_ruleset(version: str = DEFAULT_RULESET, *,
                  include_full_catalogue: bool = True) -> str:
-    """Read rules/ruleset_<version>.md and fill in the ATT&CK catalogue.
 
-    Raises FileNotFoundError with a clear message if the version is missing, so
-    a mistyped version fails loudly rather than silently using stale rules.
-    """
     if not re.fullmatch(r"(?:v\d+(?:\.\d+)*|student-v\d+(?:\.\d+)*)", version):
         raise ValueError(
             f"invalid rule set version {version!r}; expected v1, v1.5, "
@@ -189,20 +146,9 @@ def load_ruleset(version: str = DEFAULT_RULESET, *,
             f"available versions: {available or 'none'}"
         )
     text = path.read_text(encoding="utf-8")
-    # Strip the maintainer commentary before the file becomes a system prompt.
-    # Every rule file opens with an HTML comment holding the changelog, notes
-    # to whoever edits the file next, and the history of abandoned versions.
-    # None of it is addressed to the model, and it was 34% of what v1.4 sent:
-    # the model read "Why v1.2 was set aside... it returned an empty graph"
-    # and this project's dissertation notes before it read Rule 1. The file on
-    # disk keeps the commentary, which is where it belongs.
+
     text = _COMMENT_RE.sub("", text).lstrip()
-    # The old single-stage pipeline needs the complete catalogue in its system
-    # prompt. The hierarchical v1.4/student pipelines do not: Stage A chooses
-    # only a tactic and Stage B receives the short candidate lists for the
-    # tactics actually used. Omitting the duplicate full catalogue here cuts
-    # tens of thousands of input tokens without changing the rule text on disk
-    # or the set of techniques the model may select.
+
     tech_lines = (_TECH_LINES if include_full_catalogue else
                   "[Supplied by the application as tactic-scoped Stage B candidates]")
     miti_lines = (_MITI_LINES if include_full_catalogue else
@@ -220,11 +166,7 @@ REPORT:
 {report}"""
 
 
-# --- hierarchical (two-stage) prompts, used by rule set v1.4 ----------------
-# Stage A asks only for the graph skeleton with a tactic per event, choosing from
-# the 14 tactics. Stage B then offers, per event, only the techniques under that
-# event's tactic, and asks the model to pick the technique and mitigations. This
-# keeps the model from searching the whole 700-technique catalogue at once.
+
 
 STAGE_A_USER = """Here is a cyber incident report. Identify the attack as a graph
 of alternating preconditions (ellipse states) and events (adversary actions).
@@ -699,35 +641,67 @@ NARRATIVE:
 {report}""")
 
 
+# Student v1.4 answers the supervisor's post-evaluation observation that the
+# teaching runs almost never exposed the v1.6 visual constructs. The constructs
+# are evidence-triggered rather than quotas: zero remains the correct answer
+# when the student's narrative contains none of them.
+STAGE_A_STUDENT_V14_USER = STAGE_A_STUDENT_V12_USER.replace(
+    "\nNARRATIVE:\n{report}",
+    """
+
+Before returning JSON, perform this VISUAL-CONSTRUCT COVERAGE CHECK. These
+constructs teach the same notation as the professional edition, but they must
+never be invented merely to make the diagram look richer.
+
+1. EXTERNAL RESOURCE. When the narrative explicitly names something the
+   adversary already possesses or can obtain independently of this attack path
+   (for example an attacker-controlled server, malware/toolkit, purchased or
+   stolen credentials, certificate, exploit, prepared lure, or delivery
+   infrastructure), include it as an ellipse with role external_resource,
+   style solid, no producing parents, and let the relevant event consume it.
+   An ordinary system condition, access state, or result is role precondition,
+   not an external resource.
+2. ANNOTATION. When the narrative explicitly gives a defensive recommendation,
+   detection/control observation, or contextual note that explains an event
+   but is not required for the event to occur, include it as role annotation,
+   style dashed, with that event id in the annotation's parents list. An
+   annotation never appears in an event's parents and never becomes part of
+   the causal attack path. Do not turn a victim response or impact into an
+   annotation when it is actually a stated result state.
+3. UNCERTAIN OR ALTERNATIVE BRANCH. Preserve possible, suspected, alleged, or
+   explicitly alternative attacker behaviour as an event rather than deleting
+   it or presenting it as confirmed. Give that event style dotted. Give a state
+   produced only by dotted events style dotted as well. Use OR only when at
+   least two parent states are independently sufficient routes; uncertainty
+   alone does not make a join OR.
+4. If the narrative contains none of a construct, return none of that
+   construct. A zero count is valid and more honest than an unsupported node.
+
+NARRATIVE:
+{report}""")
+
+
 class SkeletonEvent(BaseModel):
     """Stage A event before a tactic-scoped T/M assignment is made."""
 
     id: str = Field(min_length=1)
     label: str = Field(min_length=1)
     tactic: Literal[tuple(ATTACK_TACTICS)]
-    # The reference sample carries a cyan likelihood badge on every action, and
-    # Rule 2 asks for one. Left optional it was simply omitted: the Stolen
-    # Pencil run returned no likelihood at all, so every action lost its badge.
+
     likelihood: float = Field(ge=0, le=10)
-    # Not constrained to be non-empty. The reference sample opens with four
-    # attacker actions that consume nothing at all - creating the extension,
-    # building the lure PDF, gathering addresses, configuring the website -
-    # and those root events are what give it its wide top. Requiring a parent
-    # here made them impossible to express and flattened the fan. The graph as
-    # a whole is still held together, by the connectivity and chaining checks
-    # in _skeleton_graph_problems, which reject a set of isolated pairs
-    # without dictating that every single event consume something.
+
     parents: list[str] = Field(default_factory=list)
     join: Literal["AND", "OR"] = "AND"
+    terminal_goal: bool = Field(
+        False,
+        description=(
+            "true only for the one terminal action that is itself the final "
+            "attacker objective and has no separate result state"),
+    )
 
 
 class ProjectedSkeletonEvent(SkeletonEvent):
-    """A skeleton event that may legitimately open the graph.
 
-    The evidence-first pathway keeps a root event when the source supplies no
-    surrounding state to invent, so its projected skeleton is checked against
-    the permissive shape rather than the professional wire contract.
-    """
 
     parents: list[str] = Field(default_factory=list)
 
@@ -736,10 +710,7 @@ class AttackGraphSkeleton(BaseModel):
     """Non-empty Stage A graph whose events intentionally have no T/M fields."""
 
     title: str = "Attack graph"
-    # Every event must name at least one precondition parent, so a graph with
-    # no preconditions cannot be satisfiable. Stating the minimum here puts it
-    # in the schema the provider enforces instead of leaving it to be detected
-    # afterwards as a set of dangling references.
+
     preconditions: list[Precondition] = Field(min_length=1)
     events: list[SkeletonEvent] = Field(min_length=1)
 
@@ -748,17 +719,6 @@ class ProjectedAttackGraphSkeleton(AttackGraphSkeleton):
     """The permissive counterpart used for locally projected skeletons."""
 
     events: list[ProjectedSkeletonEvent] = Field(min_length=1)
-
-
-# --- v1.6: the constructs the reference diagram uses -------------------------
-# The canonical Precondition already carries role and style, so those fields
-# would technically reach the provider through AttackGraphSkeleton. They are
-# restated here as a plain wire model for the reason the rest of this module
-# was rewritten: the canonical model raises its cross-field rules *inside* the
-# SDK call, where a merely cosmetic disagreement (an annotation the model drew
-# solid) would cost a paid retry. The wire model states what the schema can
-# enforce as a hard constraint and leaves what it cannot to the normaliser
-# below, which repairs locally instead of asking again.
 
 
 class ConstructTechniqueAssignment(BaseModel):
@@ -796,12 +756,6 @@ class ConstructPreconditionWire(BaseModel):
 
 
 class ConstructSkeletonEvent(SkeletonEvent):
-    """A Stage A event that may sit on a dotted alternative branch.
-
-    Dashed is absent from the enum rather than rejected by a validator: an
-    event is never commentary, and a value the schema does not offer cannot be
-    returned at all.
-    """
 
     style: Literal["solid", "dotted"] = "solid"
 
@@ -815,14 +769,6 @@ class ConstructAttackGraphSkeleton(BaseModel):
 
 
 def _normalise_constructs(data: dict) -> dict:
-    """Reconcile role with outline style, returning a repaired copy.
-
-    Role is the decision that carries meaning; style is how that decision is
-    drawn. When the two disagree the role is authoritative, so the disagreement
-    is a drawing error and is corrected here rather than sent back to the model.
-    Spending a paid call to be told again what the role already says would be
-    the expensive way to learn nothing.
-    """
 
     def repaired(node: dict) -> dict:
         role = node.get("role", "precondition")
@@ -841,13 +787,6 @@ def _normalise_constructs(data: dict) -> dict:
         return node
 
     def deduplicated(node: dict) -> dict:
-        """Drop repeated and blank parent ids.
-
-        A precondition listed twice is the same dependency twice: the set is
-        unchanged, so there is nothing to ask the model about. schema.py
-        rejects the duplicate, but only after Stage B has been paid for, so
-        without this a meaningless repetition discarded a complete graph.
-        """
         seen, ordered = set(), []
         for parent in node.get("parents", []):
             cleaned = str(parent).strip()
@@ -873,16 +812,6 @@ def _normalise_constructs(data: dict) -> dict:
 
 
 class StudentEvidenceEvent(Event):
-    """A student Stage A event, carrying the identifiers they already chose.
-
-    The teaching workflow puts the ATT&CK mapping with the student: they
-    research the incident, decide the technique and mitigation numbers, and
-    write them into the narrative. Stage A copies those out rather than
-    choosing its own, so the fields are deliberately unconstrained strings: a
-    mistyped identifier has to reach the checker, which reports it against the
-    step it came from, instead of the provider rejecting the whole payload
-    with a message that names neither the step nor the number.
-    """
 
     stated_technique: str | None = None
     stated_mitigations: list[str] = Field(default_factory=list)
@@ -895,25 +824,6 @@ class StudentEvidenceGraph(AttackGraph):
 
 
 class StudentEvidenceEventWire(BaseModel):
-    """API-visible Stage A event for the student rule sets.
-
-    The student path sent a strict model straight to the provider, which is
-    what the wire/strict split in this file exists to avoid. Six of its fields
-    carried defaults, so each reached the API as an optional property inside an
-    ``anyOf`` with null: the evidence contract the rules insist on was, to the
-    provider, entirely skippable, and the grammar carried six branches nobody
-    wanted. Requiring them here is the same correction ``EvidenceEventWire``
-    already made for the professional evidence rule set.
-
-    ``stated_technique`` is an ordinary string rather than a nullable one, for
-    the same reason: a step the student left unnumbered is an empty string,
-    which needs no branch in the grammar and no null in the payload. It carries
-    no default, so it is required, and this is the whole point. Giving it a
-    default made it optional to the provider, the model omitted it on every
-    event, and a student's own T1213 was silently discarded on the first real
-    run -- exactly the failure the paragraph above describes, walked into while
-    writing the paragraph above.
-    """
 
     id: str = Field(min_length=1)
     label: str = Field(min_length=1)
@@ -942,20 +852,176 @@ class StudentEvidenceGraphWire(BaseModel):
     events: list[StudentEvidenceEventWire] = Field(min_length=1)
 
 
-class EvidenceEventWire(BaseModel):
-    """API-visible Stage A event for the evidence rule set.
+class StudentConstructEvidenceEventWire(StudentEvidenceEventWire):
+    """Student v1.4 event with the reference diagram's outline texture."""
 
-    The evidence fields are required here, not optional. Rule 1 asks for all
-    three in prose, and the Stage A prompt lists them again, but a field with a
-    default reaches the provider as an optional property, and the model
-    returned events with none of them. A rule the schema does not carry is a
-    request, not a constraint.
+    style: Literal["solid", "dotted"] = "solid"
 
-    Technique and mitigation are deliberately absent: Stage A must not choose
-    them, and omitting them also removes a whole class of provider-side
-    rejection, since the tactic/technique consistency check is a model
-    validator that no JSON Schema can express.
+
+class StudentConstructEvidenceGraphWire(BaseModel):
+    """Student v1.4 Stage A shape exposing the three visual constructs."""
+
+    title: str = "Attack graph"
+    preconditions: list[ConstructPreconditionWire] = Field(min_length=1)
+    events: list[StudentConstructEvidenceEventWire] = Field(min_length=1)
+
+
+def _normalise_student_constructs(data: dict) -> dict:
+    """Apply evidence-derived outline conventions without adding a node.
+
+    The model still decides whether the source contains an external resource
+    or annotation. Locally we only make the visual encoding agree with facts it
+    has already returned: possible/alleged actions are dotted, annotations are
+    dashed, and a state produced solely by uncertain actions inherits the
+    dotted branch. This changes presentation, never graph content.
     """
+
+    data = _normalise_constructs(data)
+    events = []
+    uncertain_ids: set[str] = set()
+    for event in data.get("events", []):
+        repaired = dict(event)
+        if event.get("evidence_status") in {"possible", "alleged"}:
+            repaired["style"] = "dotted"
+        if repaired.get("style") == "dotted":
+            uncertain_ids.add(str(repaired.get("id", "")))
+        events.append(repaired)
+
+    preconditions = []
+    for node in data.get("preconditions", []):
+        repaired = dict(node)
+        parents = [str(parent) for parent in repaired.get("parents", [])]
+        if (repaired.get("role", "precondition") == "precondition"
+                and parents
+                and all(parent in uncertain_ids for parent in parents)):
+            repaired["style"] = "dotted"
+        preconditions.append(repaired)
+    return {**data, "preconditions": preconditions, "events": events}
+
+
+def _normalise_student_non_adversary_events(data: dict) -> dict:
+    """Remove non-adversary actions from the Student v1.4 causal chain.
+
+    Stage A occasionally turns a victim response (for example, opening an
+    attachment) or a recovery operation into an attack-event rectangle even
+    though the Student contract reserves rectangles for adversary actions.
+    Asking the provider to try again proved non-deterministic: the same source
+    fact merely moved from one event id to another. This Student-v1.4-only
+    normaliser therefore performs the safe, mechanical part locally.
+
+    A victim action is collapsed into its explicitly returned result state.
+    The result inherits the adversary events that produced the victim action's
+    input state; if there is no such producer it becomes an evidence-backed
+    root condition. A defensive or investigative action is removed only when
+    none of its results feeds a later adversary action. Isolated root context
+    used solely by that removed operation is removed as well. We deliberately
+    refuse to touch an unknown actor or a non-adversary event carrying a
+    student-supplied T/M identifier: those cases still require review rather
+    than silent reinterpretation.
+    """
+
+    preconditions = [dict(node) for node in data.get("preconditions", [])]
+    events = [dict(event) for event in data.get("events", [])]
+    removed_parent_states: set[str] = set()
+
+    def state_map() -> dict[str, dict]:
+        return {str(node.get("id", "")): node for node in preconditions}
+
+    for candidate in list(events):
+        actor = candidate.get("actor")
+        if actor not in {"victim", "defender", "investigator"}:
+            continue
+        # A supplied identifier is an explicit student assertion. Do not
+        # discard or migrate it to a different semantic node automatically.
+        if (candidate.get("stated_technique")
+                or candidate.get("stated_mitigations")):
+            continue
+
+        event_id = str(candidate.get("id", ""))
+        if not event_id:
+            continue
+        outputs = [
+            node for node in preconditions
+            if event_id in [str(parent) for parent in node.get("parents", [])]
+        ]
+        remaining_events = [event for event in events if event is not candidate]
+
+        if actor in {"defender", "investigator"}:
+            output_ids = {str(node.get("id", "")) for node in outputs}
+            if any(
+                    output_ids.intersection(
+                        str(parent) for parent in event.get("parents", []))
+                    for event in remaining_events):
+                # The proposed repair would alter a later attacker dependency;
+                # leave the node intact so the ordinary validator names it.
+                continue
+
+            candidate_parent_ids = {
+                str(parent) for parent in candidate.get("parents", [])
+            }
+            removed_parent_states.update(candidate_parent_ids)
+            for node in list(outputs):
+                other_parents = [
+                    str(parent) for parent in node.get("parents", [])
+                    if str(parent) != event_id
+                ]
+                if other_parents:
+                    node["parents"] = list(dict.fromkeys(other_parents))
+                else:
+                    preconditions.remove(node)
+            events.remove(candidate)
+            continue
+
+        # Victim behaviour is not an attack event. Preserve the factual
+        # result already returned by the model and bypass only the invalid
+        # victim rectangle. This does not invent a state or an attacker act.
+        by_state = state_map()
+        upstream_event_ids: list[str] = []
+        for parent_id in candidate.get("parents", []):
+            parent_state = by_state.get(str(parent_id))
+            if parent_state is None:
+                continue
+            for producer_id in parent_state.get("parents", []):
+                producer_id = str(producer_id)
+                if (producer_id
+                        and producer_id not in upstream_event_ids
+                        and any(str(event.get("id", "")) == producer_id
+                                and event.get("actor") == "adversary"
+                                for event in remaining_events)):
+                    upstream_event_ids.append(producer_id)
+        for node in outputs:
+            replacement: list[str] = []
+            for parent in node.get("parents", []):
+                parent = str(parent)
+                if parent == event_id:
+                    replacement.extend(upstream_event_ids)
+                else:
+                    replacement.append(parent)
+            node["parents"] = list(dict.fromkeys(replacement))
+        removed_parent_states.update(
+            str(parent) for parent in candidate.get("parents", []))
+        events.remove(candidate)
+
+    # Drop only root context states that became isolated solely because their
+    # non-adversary consumer was removed. Never delete an attacker-produced
+    # result state: that may itself be a legitimate terminal attack outcome.
+    consumed_state_ids = {
+        str(parent)
+        for event in events
+        for parent in event.get("parents", [])
+    }
+    preconditions = [
+        node for node in preconditions
+        if not (
+            str(node.get("id", "")) in removed_parent_states
+            and str(node.get("id", "")) not in consumed_state_ids
+            and not node.get("parents")
+        )
+    ]
+    return {**data, "preconditions": preconditions, "events": events}
+
+
+class EvidenceEventWire(BaseModel):
 
     id: str = Field(min_length=1)
     label: str = Field(min_length=1)
@@ -965,24 +1031,18 @@ class EvidenceEventWire(BaseModel):
     # not state, so a root event stays legitimate and this is not constrained.
     parents: list[str] = Field(default_factory=list)
     join: Literal["AND", "OR"] = "AND"
+    terminal_goal: bool = Field(
+        False,
+        description=(
+            "true only for the one terminal action that is itself the final "
+            "attacker objective and has no separate result state"),
+    )
     source_evidence: str = Field(min_length=1)
     evidence_status: Literal["confirmed", "reported", "alleged", "possible"]
     evidence_confidence: int = Field(ge=0, le=100)
 
 
 class EvidenceGraphWire(BaseModel):
-    """API-visible Stage A shape for the evidence rule set.
-
-    ``AttackGraph`` carries referential integrity as a Pydantic model
-    validator. A JSON Schema cannot express that, so sending ``AttackGraph`` as
-    the output format meant the SDK rejected a dangling reference from inside
-    the provider call, with a message that names neither the missing node nor
-    what to do about it, before the local gate could produce one that does.
-
-    This model keeps the constraints a schema can carry, so the payload comes
-    back and the gate reports it. ``AttackGraph`` still validates the result
-    afterwards, so nothing is accepted that the contract would reject.
-    """
 
     title: str = "Attack graph"
     preconditions: list[Precondition] = Field(min_length=1)
@@ -1071,22 +1131,6 @@ class TechniqueAssignmentsWire(BaseModel):
 
 
 class ConstructTechniqueAssignmentWire(BaseModel):
-    """v1.6 assignment: an action may be classified more than once.
-
-    ATT&CK classifies behaviours, and one action a report describes can exhibit
-    several. The reference diagram uses this: its "GREASE malware executed"
-    node carries seven techniques, because the report describes one execution
-    that logs keystrokes, reads stored credentials and exfiltrates them.
-    Forcing one technique per event forces one event per behaviour, which
-    lengthens the graph for a reason that comes from the schema rather than
-    from the incident.
-
-    The list is offered as a capability, not a target. How many techniques an
-    action carries is decided by the report, and the prompt supplies a
-    determination test rather than a number: tuning that number to reproduce
-    one reference diagram, then evaluating against that same diagram, would
-    measure nothing.
-    """
 
     id: str = Field(min_length=1)
     techniques: list[TechniqueIdWire] = Field(min_length=1)
@@ -1142,14 +1186,7 @@ class EvidenceTechniqueAssignments(BaseModel):
 
 
 class EvidenceTechniqueAssignmentWire(BaseModel):
-    """API-visible Stage B assignment for the evidence rule set.
 
-    Catalogue membership is a field validator on the strict model, which no
-    JSON Schema can express, so the provider was free to return a renumbered
-    identifier and the SDK rejected it inside the paid call. A Literal
-    vocabulary is a hard API constraint, so the identifier cannot be returned
-    at all. ``None`` remains valid: abstention is the point of this rule set.
-    """
 
     id: str = Field(min_length=1)
     technique: TechniqueIdWire | None = None
@@ -1159,39 +1196,18 @@ class EvidenceTechniqueAssignmentWire(BaseModel):
 class EvidenceTechniqueAssignmentsWire(BaseModel):
     assignments: list[EvidenceTechniqueAssignmentWire] = Field(min_length=1)
 
-
-# Output size is chosen by what the response *is*, and the test names the small
-# case rather than the large one. It was written the other way round -- an
-# allowlist of graph-shaped models each granted 8192 tokens -- and
-# ConstructAttackGraphSkeleton, added for v1.6, was not on it. A v1.6 skeleton
-# is the largest graph this tool asks for, since role and style are carried on
-# every node, and it would have been given the smallest budget. Stated this way
-# a model omitted from the table gets the generous default and is merely
-# wasteful; under the old form it was silently truncated mid-graph.
 _ASSIGNMENT_MODELS = frozenset({
     TechniqueAssignments, TechniqueAssignmentsWire,
     EvidenceTechniqueAssignments, EvidenceTechniqueAssignmentsWire,
 })
 _SMALL_RESPONSE_TOKENS = 4096
 
-# Raised from 8192 after a v1.6 run on STOLEN PENCIL returned 24 preconditions
-# referring to 23 events but only one event: the answer was cut off, not wrong.
-# A v1.6 skeleton is the largest response this tool asks for, since role and
-# style ride on every node, and the reference incident alone needs about fifty.
 _GRAPH_TOKENS_ENV = "ATTACK_GRAPH_MAX_OUTPUT_TOKENS"
 _GRAPH_RESPONSE_TOKENS_DEFAULT = 16384
 
 
 class _TruncatedResponse(RuntimeError):
-    """The model ran out of output space. Retrying unchanged cannot help.
-
-    Deliberately a RuntimeError, which is NOT in the tuple the Stage A and
-    Stage B loops catch. It therefore propagates on the first occurrence
-    instead of consuming the one permitted correction on a retry that would
-    hit the same ceiling. The message reaches the user unchanged and names the
-    variable to raise.
-    """
-
+    pass
 
 def _graph_response_tokens() -> int:
     """Output ceiling for a graph-shaped response, overridable for a big report."""
@@ -1205,24 +1221,10 @@ def _graph_response_tokens() -> int:
         return _GRAPH_RESPONSE_TOKENS_DEFAULT
     return value if value > 0 else _GRAPH_RESPONSE_TOKENS_DEFAULT
 
-# A Stage A call that fills its 8192-token budget legitimately takes longer than
-# three minutes on a long report. The previous 180s ceiling turned a slow but
-# succeeding request into an APITimeoutError, which is indistinguishable to the
-# caller from a dropped connection and discards work already paid for.
 _REQUEST_TIMEOUT_S = 600.0
 
 
 def _sanitize_student_v19_assignments(raw_json: str) -> str:
-    """Apply the Student app's closed ATT&CK v19 vocabulary without a retry.
-
-    Claude can ignore the supplied candidates and return an id remembered from
-    an older ATT&CK release, such as retired T1562. Student rules already allow
-    an evidence-honest abstention, so an out-of-catalogue technique becomes
-    ``null`` and its mitigations become empty. Unknown mitigation ids are
-    dropped. Malformed payloads remain unchanged for Pydantic to diagnose.
-
-    The professional v1.4 path does not call this function.
-    """
     try:
         data = json.loads(raw_json)
     except json.JSONDecodeError:
@@ -1566,10 +1568,28 @@ def _call_anthropic(system: str, user: str, model: str,
             )
             input_tokens = counted.input_tokens
         except Exception as exc:
-            # Authentication/credit errors should remain explicit. For older SDKs
-            # that lack token counting, use a deliberately conservative fallback.
-            if "count_tokens" not in str(exc).lower() and not isinstance(
-                    exc, AttributeError):
+            # Token counting is a cost-estimation aid, not the generation itself.
+            # A transient failure here must not discard an otherwise viable graph
+            # request.  Authentication, credit, permission, bad-request and model
+            # errors remain explicit because the subsequent generation call could
+            # not safely correct them.
+            transient_types = tuple(
+                cls for cls in (
+                    getattr(anthropic, "APIConnectionError", None),
+                    getattr(anthropic, "APITimeoutError", None),
+                ) if isinstance(cls, type)
+            )
+            transient_status = getattr(exc, "status_code", None) in {
+                429, 500, 502, 503, 504,
+            }
+            unavailable_counter = (
+                isinstance(exc, AttributeError)
+                or "count_tokens" in str(exc).lower()
+            )
+            if not (
+                    unavailable_counter
+                    or transient_status
+                    or (transient_types and isinstance(exc, transient_types))):
                 raise
             payload_chars = (
                 len(system_text)
@@ -1808,6 +1828,9 @@ def _call_mock(system: str, user: str, model: str,
                 for event_id in precondition.get("parents", [])
             }
             for event in skel.get("events", []):
+                # The teaching contract always displays an outcome ellipse and
+                # does not expose the professional action-goal exception.
+                event.pop("terminal_goal", None)
                 if event["id"] not in produced:
                     skel.setdefault("preconditions", []).append({
                         "id": f"result_{event['id']}",
@@ -1881,10 +1904,13 @@ _STRUCTURAL_FAULT_MARKERS = (
     "consume no precondition",     # gate: event consumes nothing
     "contains a cycle",            # gate
     "disconnected pieces",         # gate: uniformly fragmented
+    "disconnected components",     # student gate: same fault, student wording
     "detached from the attack",    # gate: one graph plus a few orphans
     "will not fit inside an ellipse",  # gate: over-long precondition label
     "empty or only whitespace",    # gate: blank id/label/code
     "no step follows from another",  # gate: flat fan
+    "produces no resulting state",   # gate: action-ended professional graph
+    "terminal_goal",                 # gate: invalid/multiple goal exceptions
 )
 
 
@@ -1917,6 +1943,21 @@ _STUDENT_IDENTIFIER_COVERAGE_MARKERS = (
     "student identifier coverage missing from stage a events",
 )
 
+_STUDENT_DISCONNECTED_MARKERS = (
+    "the student graph has",
+    "disconnected components",
+)
+
+_STUDENT_ACTOR_MARKERS = (
+    "actor must be adversary",
+    "victim, defender, investigator, and recovery actions are not attack events",
+)
+
+_TERMINAL_RESULT_FAULT_MARKERS = (
+    "produces no resulting state",
+    "terminal_goal",
+)
+
 
 def is_empty_graph_fault(message: str) -> bool:
     """Did Stage A return no events at all?"""
@@ -1945,6 +1986,27 @@ def is_student_identifier_coverage_fault(message: str) -> bool:
     lowered = message.lower()
     return any(marker in lowered
                for marker in _STUDENT_IDENTIFIER_COVERAGE_MARKERS)
+
+
+def is_student_disconnected_fault(message: str) -> bool:
+    """Did Student Stage A retain a source-backed but detached branch?"""
+
+    lowered = message.lower()
+    return all(marker in lowered for marker in _STUDENT_DISCONNECTED_MARKERS)
+
+
+def is_student_actor_fault(message: str) -> bool:
+    """Did Student Stage A turn a non-adversary action into an event?"""
+
+    lowered = message.lower()
+    return all(marker in lowered for marker in _STUDENT_ACTOR_MARKERS)
+
+
+def is_terminal_result_fault(message: str) -> bool:
+    """Does the professional skeleton violate its terminal-result contract?"""
+
+    lowered = message.lower()
+    return any(marker in lowered for marker in _TERMINAL_RESULT_FAULT_MARKERS)
 
 
 # Routed separately from the structural faults on purpose. The structural
@@ -2332,6 +2394,7 @@ def _skeleton_graph_problems(
     data: dict,
     *,
     require_event_parents: bool = True,
+    require_event_results: bool = False,
 ) -> list[str]:
     """Report Stage A id, parent-reference, acyclicity and shape faults.
 
@@ -2346,6 +2409,12 @@ def _skeleton_graph_problems(
     whose Rule 8 declines to invent a precondition the report does not state,
     so a root event is legitimate there. The connectivity and chaining checks
     still apply, and between them they reject a graph of isolated pairs.
+
+    ``require_event_results`` is the professional objective contract. Every
+    ordinary action must establish at least one causal state. The sole
+    exception is one action explicitly marked ``terminal_goal=true`` when the
+    action itself is the final attacker objective. This represents the
+    supervisor's Stolen Pencil ending without inventing a generic ellipse.
     """
 
     preconditions = [
@@ -2433,6 +2502,54 @@ def _skeleton_graph_problems(
             "Every event must list at least one precondition id in its "
             "parents: the state it needed before it could happen. Give each "
             "of these the state it actually consumed")
+
+    if require_event_results:
+        causal_preconditions = [
+            item for item in preconditions
+            if item.get("role", "precondition") != "annotation"
+        ]
+        producing_event_ids = {
+            parent
+            for state in causal_preconditions
+            for parent in (state.get("parents") or [])
+            if parent in event_ids
+        }
+        flagged = [
+            event for event in events if event.get("terminal_goal") is True
+        ]
+        flagged_ids = [str(event.get("id")) for event in flagged]
+        flagged_with_results = sorted(
+            event_id for event_id in flagged_ids
+            if event_id in producing_event_ids
+        )
+        if len(flagged) > 1:
+            problems.append(
+                "terminal_goal may identify at most one final attacker "
+                "objective, but these events are marked: "
+                f"{', '.join(flagged_ids)}. Keep the flag only on the single "
+                "final objective; give every other action its stated result "
+                "state")
+        if flagged_with_results:
+            problems.append(
+                "terminal_goal is unnecessary on event(s) that already "
+                "produce a resulting state: "
+                f"{', '.join(flagged_with_results)}. Set terminal_goal=false "
+                "and keep the existing result state")
+        missing_results = sorted(
+            str(event.get("id")) for event in events
+            if event.get("id") not in producing_event_ids
+            and event.get("terminal_goal") is not True
+        )
+        if missing_results:
+            problems.append(
+                "these action event(s) produce no resulting state: "
+                f"{', '.join(missing_results)}. For each ordinary action, add "
+                "the evidence-supported state it establishes as a precondition "
+                "whose parents list contains that event id. Only when ONE "
+                "action is itself the report's final attacker objective and "
+                "the source states no distinct outcome may you instead set "
+                "terminal_goal=true on that event. Do not invent a generic "
+                "success or impact state")
 
     if problems:
         # The parent links are already inconsistent, so an acyclicity result
@@ -2608,7 +2725,8 @@ def _skeleton_graph_problems(
 
 
 def _structure_problems(graph: AttackGraph,
-                        require_logic_gate: bool = True) -> list[str]:
+                        require_logic_gate: bool = True,
+                        require_event_results: bool = False) -> list[str]:
     """Flag graphs that collapsed into a bare chain, so we can ask for a retry."""
     problems = []
     n_pre = len(graph.preconditions)
@@ -2634,6 +2752,37 @@ def _structure_problems(graph: AttackGraph,
         problems.append(
             "events do not establish preconditions: after an event, add the "
             "precondition it produces so nodes alternate")
+    # The terminal-result contract was added after evaluating professional
+    # v1.6.  It must not be retroactively imposed on the frozen v1.4 baseline
+    # or on the teaching contract.  Callers opt in only for v1.6.
+    if require_event_results:
+        causal_producers = {
+            parent
+            for state in graph.preconditions
+            if state.role != "annotation"
+            for parent in state.parents
+        }
+        unrepresented = [
+            event.id for event in graph.events
+            if event.id not in causal_producers and not event.terminal_goal
+        ]
+        if unrepresented:
+            problems.append(
+                "action event(s) produce no resulting state and are not "
+                "explicitly marked as terminal goals: "
+                f"{', '.join(unrepresented)}")
+        flagged = [event.id for event in graph.events if event.terminal_goal]
+        if len(flagged) > 1:
+            problems.append(
+                "more than one event is marked terminal_goal: "
+                + ", ".join(flagged))
+        flagged_with_results = [
+            event_id for event_id in flagged if event_id in causal_producers
+        ]
+        if flagged_with_results:
+            problems.append(
+                "terminal_goal event(s) already produce a result state: "
+                + ", ".join(flagged_with_results))
     return problems
 
 
@@ -2656,9 +2805,35 @@ def _student_structure_problems(graph: AttackGraph) -> list[str]:
 
     digraph = build_digraph(graph)
     if digraph.number_of_nodes() and not nx.is_weakly_connected(digraph):
-        components = nx.number_weakly_connected_components(digraph)
+        event_labels = {event.id: event.label for event in graph.events}
+        state_labels = {
+            state.id: state.label for state in graph.preconditions
+        }
+        components = list(nx.weakly_connected_components(digraph))
+
+        # A bare component count gave the correction model no way to identify
+        # the detached branch in the JSON it was asked to edit.  Name every
+        # member deterministically so the repair can reuse the report-backed
+        # state that actually joins the two branches.  This is diagnostic only:
+        # no edge is inferred or inserted here.
+        component_details = []
+        for index, nodes in enumerate(
+                sorted(components, key=lambda item: sorted(item)), start=1):
+            members = []
+            for node_id in sorted(nodes):
+                if node_id in event_labels:
+                    members.append(
+                        f"event {node_id} ({event_labels[node_id]!r})")
+                elif node_id in state_labels:
+                    members.append(
+                        f"state {node_id} ({state_labels[node_id]!r})")
+                else:
+                    members.append(node_id)
+            component_details.append(
+                f"component {index}: " + ", ".join(members))
         problems.append(
-            f"the student graph has {components} disconnected components; "
+            f"the student graph has {len(components)} disconnected components "
+            f"({'; '.join(component_details)}); "
             "connect every supported preparation and impact branch to the main "
             "attack graph without inventing actions")
     return problems
@@ -2667,6 +2842,8 @@ def _student_structure_problems(graph: AttackGraph) -> list[str]:
 def _normalise_student_structure(
     graph: AttackGraph,
     model: type[AttackGraph] = AttackGraph,
+    *,
+    prune_disconnected: bool = True,
 ) -> AttackGraph:
     """Apply supervisor-sample syntax without inventing evidence or edges.
 
@@ -2685,6 +2862,12 @@ def _normalise_student_structure(
     # as a plain AttackGraph silently dropped the identifiers the
     # student had written, because a plain Event does not carry them.
     normalised = model.model_validate(data)
+    # Student v1.4 promises source and identifier coverage. Its caller must
+    # see every component the provider returned so that a detached, numbered
+    # action is repaired as a connectivity fault rather than being silently
+    # discarded and then misreported as a missing T/M clause.
+    if not prune_disconnected:
+        return normalised
     digraph = build_digraph(normalised)
     components = list(nx.weakly_connected_components(digraph))
     if len(components) <= 1:
@@ -2710,7 +2893,9 @@ def _normalise_student_structure(
         precondition for precondition in data["preconditions"]
         if precondition["id"] in core
     ]
-    return AttackGraph.model_validate(data)
+    # Rebuild through the caller's model. Returning a plain AttackGraph here
+    # drops StudentEvidenceEvent.stated_* fields from a retained component.
+    return model.model_validate(data)
 
 
 # ---------------------------------------------------------------------------
@@ -3086,7 +3271,9 @@ def _student_evidence_problems(events: list[dict], report_text: str) -> list[str
         event_id = event.get("id", "<missing id>")
         if event.get("actor") != "adversary":
             problems.append(
-                f"{event_id}: actor must be adversary; victim, defender, "
+                f"{event_id} ({event.get('label', '<missing label>')!r}, "
+                f"actor={event.get('actor')!r}): actor must be adversary; "
+                "victim, defender, "
                 "investigator, and recovery actions are not attack events")
 
         quote = event.get("source_evidence")
@@ -3208,10 +3395,13 @@ def _extract_hierarchical(report_text: str, call, model: str,
     construct_mode = is_construct_ruleset(ruleset)
     student_mode = ruleset.startswith("student-")
     # v1.3 keeps v1.2's evidence machinery and adds the rule that the
-    # student's own identifiers are kept, so it runs the same gates.
-    student_v12_mode = ruleset.startswith(("student-v1.2", "student-v1.3"))
+    # student's own identifiers are kept. v1.4 retains both and exposes the
+    # professional visual constructs through a Student-only Stage A schema.
+    student_construct_mode = ruleset.startswith("student-v1.4")
+    student_v12_mode = ruleset.startswith(
+        ("student-v1.2", "student-v1.3", "student-v1.4"))
     student_evidence_mode = ruleset.startswith(
-        ("student-v1.1", "student-v1.2", "student-v1.3"))
+        ("student-v1.1", "student-v1.2", "student-v1.3", "student-v1.4"))
     # v1.5 is deliberately two-call-only. v1.4 and the student path may repair
     # Stage A once, leaving the third and final API call available for Stage B.
     # Allowing two Stage A retries could consume the whole three-call budget and
@@ -3220,11 +3410,21 @@ def _extract_hierarchical(report_text: str, call, model: str,
     # correction, because a structural fault there is not recoverable later:
     # Stage B returns identifiers and cannot relink a node, so refusing the
     # retry discards the whole paid run rather than saving a call.
-    stage_a_retries = _STAGE_RETRIES
+    # Student v1.4 has two independent completeness gates: first preserve every
+    # source clause carrying a student-supplied identifier, then connect that
+    # retained action to the evidence-backed causal graph.  A first correction
+    # can therefore reveal (rather than repeat) a connectivity fault.  Give
+    # this route one additional targeted correction.  It still uses at most
+    # three Stage A calls plus one Stage B call, below the global five-call
+    # ceiling; all professional and earlier Student routes remain unchanged.
+    stage_a_retries = 2 if student_construct_mode else _STAGE_RETRIES
     stage_b_retries = 0 if (evidence_mode or student_mode) else _STAGE_RETRIES
     if student_evidence_mode:
-        stage_a_template = (STAGE_A_STUDENT_V12_USER if student_v12_mode
-                            else STAGE_A_STUDENT_EVIDENCE_USER)
+        if student_construct_mode:
+            stage_a_template = STAGE_A_STUDENT_V14_USER
+        else:
+            stage_a_template = (STAGE_A_STUDENT_V12_USER if student_v12_mode
+                                else STAGE_A_STUDENT_EVIDENCE_USER)
         stage_b_template = STAGE_B_STUDENT_EVIDENCE_USER
     elif student_mode:
         stage_a_template = STAGE_A_STUDENT_USER
@@ -3262,10 +3462,26 @@ Choose the tactic from the action's primary objective. In particular, DE
 services, destroying or encrypting data, and inhibiting recovery are IM
 (Impact), even when those actions also make investigation more difficult.
 """
+    if construct_mode:
+        stage_a_system += """
+
+PROFESSIONAL TERMINAL-RESULT CONTRACT
+Every ordinary event must establish at least one causal result state: return a
+precondition whose parents list contains that event id. This includes events at
+the end of a branch. Do not leave an action dangling merely because nothing
+later consumes its result.
+
+There is one narrow exception matching the supervisor's reference syntax. If
+ONE action is itself the report's final attacker objective, and the source does
+not state a distinct resulting condition, set terminal_goal=true on that event
+and do not invent a generic success ellipse. Set terminal_goal=false everywhere
+else. Never mark more than one event, never mark an event that already produces
+a state, and never use the flag to hide a missing result.
+"""
 
     # --- stage A: skeleton with a tactic on each event, no technique ids yet ---
     student_identifier_checklist = ""
-    if ruleset.startswith("student-v1.3"):
+    if ruleset.startswith(("student-v1.3", "student-v1.4")):
         clauses = identifier_source_clauses(report_text)
         if clauses:
             numbered = "\n".join(
@@ -3274,13 +3490,18 @@ services, destroying or encrypting data, and inhibiting recovery are IM
             )
             student_identifier_checklist = (
                 "\n\nMANDATORY STUDENT IDENTIFIER CHECKLIST\n"
+                "This checklist has priority over visual-construct enrichment. "
                 "The following exact source clauses contain ATT&CK identifiers "
                 "the student supplied. Before returning JSON, verify that every "
                 "clause which states an adversary action has its own event, that "
                 "the event copies the clause into source_evidence, and that all "
                 "T/M identifiers from that clause are copied into stated_technique "
                 "and stated_mitigations. Do not omit a listed action and do not "
-                "move its identifiers to another event.\n"
+                "move its identifiers to another event. Copy the identifiers even "
+                "when one appears technically unsuitable: preservation happens "
+                "here, while catalogue checking and teaching feedback happen "
+                "later. Never replace a numbered action with a state, annotation, "
+                "or external resource.\n"
                 + numbered
             )
     user_a = (stage_a_template.format(report=report_text)
@@ -3295,7 +3516,9 @@ services, destroying or encrypting data, and inhibiting recovery are IM
         # The wire model goes to the provider; StudentEvidenceGraph still
         # validates the answer locally, so nothing the contract rejects is
         # accepted.
-        stage_a_model = StudentEvidenceGraphWire
+        stage_a_model = (StudentConstructEvidenceGraphWire
+                         if student_construct_mode
+                         else StudentEvidenceGraphWire)
     elif evidence_mode:
         stage_a_model = EvidenceGraphWire
     elif construct_mode:
@@ -3335,6 +3558,7 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                 skeleton_problems = _skeleton_graph_problems(
                     data,
                     require_event_parents=False,
+                    require_event_results=False,
                 )
                 if skeleton_problems:
                     raise ValueError("; ".join(skeleton_problems))
@@ -3342,9 +3566,15 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                 # graphs are repaired before any ATT&CK identifiers are added.
                 AttackGraph.model_validate(data)
             elif student_evidence_mode:
+                if student_construct_mode:
+                    data = _normalise_student_constructs(data)
+                    data = _normalise_student_non_adversary_events(data)
                 student_graph = _normalise_student_structure(
                     StudentEvidenceGraph.model_validate(data),
-                    StudentEvidenceGraph)
+                    StudentEvidenceGraph,
+                    # v1.4 must not silently prune a detached numbered branch
+                    # before identifier coverage and connectivity are checked.
+                    prune_disconnected=not student_construct_mode)
                 data = student_graph.model_dump(exclude_none=True)
                 events = data["events"]
                 # Student v1.3 promises to preserve the mapping the student
@@ -3360,8 +3590,6 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     raise ValueError("; ".join(identifier_problems))
                 evidence_problems = _student_evidence_problems(
                     events, report_text)
-                if evidence_problems:
-                    raise ValueError("; ".join(evidence_problems))
                 # The two checks that bind every rule set, not just v1.6.
                 # Neither changes the visual language a student is taught; both
                 # catch a fault that would otherwise surface inside Stage B,
@@ -3369,11 +3597,18 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                 # relinked. See _annotation_problems and _mixed_join_problems.
                 contract_problems = (_annotation_problems(data)
                                      + _mixed_join_problems(data))
-                if contract_problems:
-                    raise ValueError("; ".join(contract_problems))
                 structure_problems = _student_structure_problems(student_graph)
-                if structure_problems:
-                    raise ValueError("; ".join(structure_problems))
+                # Report all locally visible Student faults together. These
+                # checks used to raise one at a time, so a corrected identifier
+                # branch could reveal disconnection on the next call and an
+                # invalid victim/recovery event only on the final call. The
+                # bounded repair loop then never saw both required edits at
+                # once. Aggregation changes no contract; it only makes existing
+                # violations observable during the same Student-only repair.
+                student_problems = (evidence_problems + contract_problems
+                                    + structure_problems)
+                if student_problems:
+                    raise ValueError("; ".join(student_problems))
             elif student_mode:
                 student_graph = _normalise_student_structure(
                     AttackGraph.model_validate(data))
@@ -3413,6 +3648,7 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     + _skeleton_graph_problems(
                         causal,
                         require_event_parents=False,
+                        require_event_results=True,
                     )
                 )
                 if skeleton_problems:
@@ -3430,6 +3666,7 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                 skeleton_problems = _skeleton_graph_problems(
                     data,
                     require_event_parents=False,
+                    require_event_results=False,
                 )
                 if skeleton_problems:
                     raise ValueError("; ".join(skeleton_problems))
@@ -3483,6 +3720,10 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     "put the T-number in stated_technique, and put the M-numbers "
                     "from the same sentence in stated_mitigations. Include the "
                     "direct result states explicitly described by the submission. "
+                    "If the missing event was returned as a detached component, "
+                    "connect it only to the source-supported condition it actually "
+                    "consumes or result it actually establishes; do not let graph "
+                    "cleanup discard the numbered step. "
                     "Do not move an identifier onto an unrelated existing event, "
                     "and do not invent an action merely to consume a number. Return "
                     "the complete corrected graph.\n\n")
@@ -3499,7 +3740,9 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     "approximate quotation: an action the report does not "
                     "state in one place is not evidence-backed. Leave every "
                     "other event unchanged.\n\n")
-            elif is_mixed_join_fault(str(ex)):
+            elif (is_mixed_join_fault(str(ex))
+                  and not (student_construct_mode
+                           and is_student_actor_fault(str(ex)))):
                 correction = (
                     "IMPORTANT: your previous answer identified the attack "
                     "correctly, but one event's join says something you did "
@@ -3516,6 +3759,45 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     "That merge is the only node you may remove. Leave every "
                     "other event, state, id, label, tactic, likelihood, role "
                     "and style exactly as they are.\n\n")
+            elif (student_construct_mode
+                  and is_student_actor_fault(str(ex))):
+                correction = (
+                    "IMPORTANT STUDENT ACTOR REPAIR: one or more nodes named "
+                    "below were emitted as attack-event rectangles even though "
+                    "their grammatical actor is a victim, defender, investigator "
+                    "or recovery party. Do not relabel that actor as adversary and "
+                    "do not delete a supported fact merely to pass validation. "
+                    "Reclassify each named node according to what the source says. "
+                    "A condition produced by the attack, such as an employee having "
+                    "opened an attachment or software being installed, is an ellipse "
+                    "with role precondition (the canonical state role used for both "
+                    "inputs and event results). A defensive, investigative or recovery "
+                    "fact that supplies context but is not required for the next "
+                    "attacker action is a dashed annotation beside its supported "
+                    "event. If it is neither part of the causal attack nor useful "
+                    "context, omit only that non-adversary assertion. Rewire existing "
+                    "adversary events through the resulting evidence-backed state "
+                    "when the report explicitly supports that dependency. Preserve "
+                    "all adversary events, exact quotations, uncertainty, and every "
+                    "student-supplied T/M identifier. Never invent a bridge state or "
+                    "an attacker action.\n\n")
+                if is_student_disconnected_fault(str(ex)):
+                    correction += (
+                        "The same answer also contains disconnected components. "
+                        "The error names their members. Repair their boundary while "
+                        "performing the actor reclassification: connect them only "
+                        "through an existing or explicitly stated result/condition, "
+                        "not by sentence order, and do not discard a numbered "
+                        "adversary event. Return one evidence-backed causal graph.\n\n")
+                if is_mixed_join_fault(str(ex)):
+                    correction += (
+                        "The same answer also contains an invalid OR join. Fix the "
+                        "event named in that error without changing its evidence: "
+                        "OR is valid only when each parent state is independently "
+                        "sufficient. If the alternatives produce the same state, "
+                        "put their event ids on that one state's parents and let "
+                        "the downstream event consume the single merged state. "
+                        "Otherwise use AND for conditions that are jointly required.\n\n")
             elif is_structural_stage_a_fault(str(ex)):
                 correction = (
                     "IMPORTANT: your previous answer identified the attack "
@@ -3540,8 +3822,36 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     "its own. Branches are expected: several events may "
                     "consume the same state, and one event may require "
                     "several states. Join a stray node by giving it the "
-                    "precondition it actually consumes, not by putting it in "
-                    "a line behind an unrelated step.\n\n")
+                     "precondition it actually consumes, not by putting it in "
+                     "a line behind an unrelated step.\n\n")
+                if (student_construct_mode
+                        and is_student_disconnected_fault(str(ex))):
+                    correction += (
+                        "STUDENT COMPONENT REPAIR: the error names every node "
+                        "in each disconnected component. Preserve every one of "
+                        "those nodes, its exact source evidence, and all stated "
+                        "T/M identifiers. Re-read the report and repair only "
+                        "the causal boundary between the named components. "
+                        "Prefer making the detached event consume an existing "
+                        "state when the source says that state enabled it. If "
+                        "the source explicitly states a missing result of an "
+                        "existing event, add that exact result state and use it "
+                        "as the next event's parent. Do not connect components "
+                        "merely because their sentences occur next to each "
+                        "other, do not create a generic bridge such as 'access "
+                        "obtained', and do not delete the detached component.\n\n")
+                if is_terminal_result_fault(str(ex)):
+                    correction += (
+                        "TERMINAL ACTION REPAIR: fix only the event ids named "
+                        "in the error. For each ordinary action add the actual "
+                        "state that the report says it established, with the "
+                        "event id as that state's parent. If and only if one "
+                        "named action is itself the final attacker objective "
+                        "and no separate outcome is stated, keep it as a "
+                        "rectangle and set terminal_goal=true. Do not create "
+                        "'attack succeeded', 'objective achieved', 'incident "
+                        "impact', or another generic state. Do not alter T/M "
+                        "content, labels, tactics or unrelated links.\n\n")
             elif (student_evidence_mode
                   and is_grounded_action_fault(str(ex))):
                 correction = (
@@ -3593,7 +3903,8 @@ services, destroying or encrypting data, and inhibiting recovery are IM
             _normalise_constructs(last_data) if construct_mode
             else last_data)
         if dropped and not _skeleton_graph_problems(
-                candidate, require_event_parents=False):
+                candidate, require_event_parents=False,
+                require_event_results=construct_mode):
             try:
                 model_cls = (ConstructAttackGraphSkeleton if construct_mode
                              else AttackGraphSkeleton)
@@ -3665,7 +3976,8 @@ services, destroying or encrypting data, and inhibiting recovery are IM
                     and revised_shape["unused_states"]
                     <= shape["unused_states"])
                 if (not _skeleton_graph_problems(
-                        causal, require_event_parents=False)
+                        causal, require_event_parents=False,
+                        require_event_results=True)
                         and not _annotation_problems(revised)
                         and not _mixed_join_problems(revised)
                         and kept_every_node
@@ -3689,7 +4001,7 @@ services, destroying or encrypting data, and inhibiting recovery are IM
     # schema the application trusts. They differ wherever the strict model
     # carries a rule a JSON Schema cannot express.
     wire_model: type[BaseModel] = assignments_model
-    if evidence_mode:
+    if evidence_mode or student_evidence_mode:
         wire_model = EvidenceTechniqueAssignmentsWire
     if not (evidence_mode or student_evidence_mode):
         # A flat assignment list is used rather than a per-tactic Union schema.
@@ -3947,7 +4259,9 @@ services, destroying or encrypting data, and inhibiting recovery are IM
             build_digraph(graph)
             problems = (_student_structure_problems(graph) if student_mode else
                         _structure_problems(
-                            graph, require_logic_gate=not evidence_mode))
+                            graph,
+                            require_logic_gate=not evidence_mode,
+                            require_event_results=construct_mode))
             # Every problem this reports is a property of the SKELETON: too few
             # preconditions, no AND/OR gate, events that establish nothing.
             # Stage B returns {id, techniques}. It cannot add a parent, add a

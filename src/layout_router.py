@@ -1,5 +1,3 @@
-"""Stage-C obstacle-aware orthogonal routing for AGVS-SP layout plans."""
-
 from __future__ import annotations
 
 from dataclasses import dataclass, replace

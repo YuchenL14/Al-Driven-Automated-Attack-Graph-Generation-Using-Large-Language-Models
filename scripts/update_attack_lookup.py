@@ -1,20 +1,3 @@
-"""
-update_attack_lookup.py -- rebuild data/attack_lookup.json from the official
-MITRE ATT&CK Enterprise STIX data.
-
-This replaces the hand-written name map with the authoritative source, so the
-tool's technique (T) and mitigation (M) ids and names come directly from MITRE
-rather than from memory. Run it whenever you want to refresh to the latest
-ATT&CK release.
-
-    python scripts/update_attack_lookup.py
-
-Requires only the Python standard library and an internet connection. The raw
-GitHub host is the machine-readable source MITRE documents for automation;
-the human matrix at https://attack.mitre.org/matrices/enterprise/ is the same
-catalogue in web form.
-"""
-
 import json
 import sys
 import urllib.request
@@ -27,11 +10,6 @@ STIX_URL = ("https://raw.githubusercontent.com/mitre-attack/"
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "attack_lookup.json"
 
-
-# STIX kill-chain phase names -> the 14 tactic abbreviations this tool uses.
-# ATT&CK v19 split the old Defense Evasion tactic into "stealth" and
-# "defense-impairment"; both are mapped back to DE here so the tool keeps its
-# established 14-tactic scheme, matching the earlier versions and the sample.
 PHASE_TO_ABBR = {
     "reconnaissance": "RE",
     "resource-development": "RS",
@@ -64,15 +42,6 @@ def tactics_of(obj: dict) -> list[str]:
 
 
 def collection_version(bundle: dict) -> str:
-    """Which ATT&CK release this bundle is, from the bundle itself.
-
-    The source URL points at a branch, so it names no version: two runs a
-    month apart download different catalogues under one address, and the file
-    that comes out says only where it came from. A dissertation that reports
-    which techniques a tool proposed has to be able to say which catalogue it
-    was choosing from, so the release is read out of the bundle's own
-    collection object and written into the snapshot.
-    """
 
     for obj in bundle.get("objects", []):
         if obj.get("type") == "x-mitre-collection":
@@ -130,10 +99,6 @@ def main() -> None:
               "overwriting the existing file.", file=sys.stderr)
         raise SystemExit(1)
 
-    # ATT&CK represents a recommended mitigation as a STIX relationship whose
-    # source is a course-of-action (M id) and target is an attack-pattern
-    # (T id). Keep this authoritative relationship instead of letting the
-    # language model pair globally valid but unrelated M and T identifiers.
     technique_mitigations: dict[str, list[str]] = {}
     for obj in bundle.get("objects", []):
         if (obj.get("type") != "relationship"

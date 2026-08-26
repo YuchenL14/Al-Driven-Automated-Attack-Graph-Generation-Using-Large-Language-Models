@@ -1,15 +1,3 @@
-"""Student-facing text-entry interface for the teaching attack-graph pipeline.
-
-``app.py`` runs the current professional rule set and keeps v1.4 as its
-frozen comparison baseline. This file
-uses an isolated student rule set: type an incident description, press Generate,
-and view the graph. Teaching fixes therefore cannot change professional results.
-
-Run:
-    python student_app.py
-Then open http://127.0.0.1:5001
-"""
-
 from __future__ import annotations
 
 import os
@@ -37,10 +25,7 @@ OUTPUTS_DIR = ROOT / "outputs"
 REPORTS_DIR.mkdir(exist_ok=True)
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
-# Student rules are intentionally absent from the professional application.
-# The visual syntax is the shared AGVS-SP profile, which is
-# independent of the rule set version.
-RULESET = "student-v1.3"
+RULESET = "student-v1.4"
 PROVIDER = "anthropic"
 MODEL = resolve_model(PROVIDER)
 MAX_SCENARIO_CHARS = 50_000
@@ -346,8 +331,13 @@ PAGE = """
     <div class="tips"><b>For a clearer graph:</b> describe one attacker action per
       sentence; state the condition required before it; state the result; and
       identify alternatives explicitly (for example, "possible phishing or
-      possible brute force"). Include only source-supported information. Do not
-      enter passwords, API keys, or personal data.</div>
+      possible brute force"). If your source names an attacker-held tool or
+      resource, a defensive recommendation or contextual observation, or an
+      uncertain branch, state it explicitly so the graph can distinguish an
+      external-resource ellipse, dashed annotation, or dotted branch. These
+      constructs are not added when your text does not support them. Include
+      only source-supported information. Do not enter passwords, API keys, or
+      personal data.</div>
     <div class="actions">
       <button id="generate" type="submit">Generate attack graph</button>
       <p class="note">40 character minimum &middot; saved for review</p>
@@ -516,12 +506,6 @@ PAGE = """
 
 
 def _page_context(**overrides) -> dict:
-    """Defaults every render of the page needs, so no branch can omit one.
-
-    The page reads a dozen names and this file returns from six places. Listing
-    the defaults once means a new panel cannot silently disappear from the
-    branch whose author forgot to pass it.
-    """
 
     context = {
         "scenario": "",
@@ -603,9 +587,6 @@ def generate():
         return render_template_string(
             PAGE, **_page_context(
                 scenario=scenario, error=_friendly_error(error), usage=usage,
-                # Nothing was drawn, so no width was measured. Each absent
-                # measurement prints as an em dash; a zero would read as a page
-                # comfortably inside the budget.
                 metrics=run_metrics(graph, None, None, usage),
                 tactics=tactic_progression(graph) if graph else None))
 
@@ -629,7 +610,4 @@ def outputs(name):
 
 
 if __name__ == "__main__":
-    # See the note in app.py: the interactive debugger is arbitrary code
-    # execution for anyone who can reach the port, and a teaching tool is the
-    # one most likely to be run on a shared machine.
     app.run(debug=os.environ.get("AGVS_DEBUG") == "1", port=5001)

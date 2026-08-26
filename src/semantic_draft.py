@@ -1,18 +1,3 @@
-"""Evidence-first, coordinate-free incident graph planning.
-
-This module defines the semantic object that should sit between report
-understanding and ATT&CK T/M assignment.  It intentionally contains no pixel
-coordinates, Graphviz ranks, or renderer-specific geometry.  The language
-model may describe evidence, causal nodes, alternatives, parallel branches,
-annotations, and safe page boundaries; deterministic code remains responsible
-for drawing those semantics.
-
-The contract is deliberately separate from :mod:`schema`.  ``AttackGraph`` is
-the frozen renderer input used by the professional v1.4 baseline.  Introducing
-this draft as an intermediate representation lets the project evaluate the new
-reasoning stage without silently changing that frozen contract.
-"""
-
 from __future__ import annotations
 
 import re

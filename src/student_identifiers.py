@@ -1,35 +1,3 @@
-"""Honour the identifiers a student wrote, and say what they left out.
-
-The teaching workflow the supervisor described puts the classification with the
-student: they consolidate sources, reason about the incident, decide the ATT&CK
-technique and mitigation numbers themselves, and paste a description that
-already carries those numbers. The tool draws the graph with the numbers
-intact. Garbage in, garbage out is the intended contract -- a wrong technique
-produces a wrong graph, which is the student's to notice.
-
-The student version did the opposite. Stage B re-derived every technique from a
-candidate list without ever seeing what the student had written, and the v1.2
-evidence gate could blank a technique for "insufficient evidence" even though
-the narrative was the student's own curated evidence. A student who researched
-T1566.002 and typed it in could be handed an empty badge.
-
-So the catalogue changes role. It stops being the thing that answers, and
-becomes two smaller things:
-
-  a dictionary   does T1566.002 exist, and what is it called for the legend;
-  an annotator   MITRE does not list M1053 as countering T1566.002.
-
-The line between those and the student's judgement is what this module draws.
-Whether T1566.002 is the right technique for a step is judgement, and is never
-second-guessed. Whether "T9999" is an ATT&CK identifier at all is not
-judgement, it is a typo, and one the legend cannot render.
-
-Nothing here silently corrects anything. A rejected identifier is reported
-against the step it came from, and an identifier the student did not supply is
-reported as inferred, so the feedback names what was missing rather than
-quietly filling it in.
-"""
-
 from __future__ import annotations
 
 import re

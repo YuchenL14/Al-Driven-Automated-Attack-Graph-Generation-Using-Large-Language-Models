@@ -1,11 +1,3 @@
-"""Deterministic geometry for evidence-first semantic attack graphs.
-
-This planner consumes :class:`IncidentSemanticDraft`, not raw report text and
-not model-authored coordinates.  It honours validated page boundaries and
-macro-level rank groups while keeping every causal edge strictly top-down.
-The module draws nothing and never changes graph content or ATT&CK metadata.
-"""
-
 from __future__ import annotations
 
 from collections import defaultdict, deque

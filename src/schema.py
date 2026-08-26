@@ -1,27 +1,3 @@
-"""
-schema.py -- the canonical data contract for the attack-graph tool.
-
-DESIGN NOTE (Approach C: dual-input, single contract)
------------------------------------------------------
-Every input route -- an analyst filling in JSON by hand today, or an LLM
-extracting elements from a narrative report tomorrow -- must converge on ONE
-validated object model. The rendering engine only ever sees this model, so it
-never needs to know where the data came from. This file *is* that contract.
-
-The constructs mirror the primary constructs identified in
-Lallie, Debattista & Bal (2020): a *precondition*, an *event* (exploit), and
-*precondition logic* (AND / OR). Grounding the schema in that visual-syntax
-theory is what makes the graph a faithful implementation rather than an
-arbitrary drawing.
-
-The two known fidelity issues are fixed *here*, at the contract, so bad data
-can never reach the renderer:
-  1. Sub-technique notation must be T####.### (three digits), so "T1566.02"
-     is rejected in favour of "T1566.002".
-  2. The tactic marker must be a real ATT&CK tactic abbreviation, so the old
-     Kill-Chain letters (D / E / I) can no longer be mixed in.
-"""
-
 from __future__ import annotations
 
 import json
@@ -235,6 +211,18 @@ class Event(BaseModel):
     # precondition logic: which nodes feed this event, and how they combine
     parents: List[str] = Field(default_factory=list)
     join: Literal["AND", "OR"] = "AND"
+    # A small number of reference graphs, including the supervisor's Stolen
+    # Pencil figure, deliberately end on an action rectangle rather than on a
+    # separate result ellipse.  This flag makes that exception explicit.  It
+    # must not be used merely because Stage A forgot to emit an action's result;
+    # the professional structural gate enforces that distinction before Stage
+    # B is called.  The default preserves every existing graph document.
+    terminal_goal: bool = Field(
+        False,
+        description=(
+            "true only when this action itself is the final attacker objective "
+            "and the source states no distinct resulting state"),
+    )
 
     @field_validator("style")
     @classmethod

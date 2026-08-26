@@ -56,11 +56,15 @@ class V15ContractTests(unittest.TestCase):
         # research rule set. The version is pinned as well so a bump is a
         # deliberate edit here rather than a silent change of what students see.
         self.assertTrue(student_app.RULESET.startswith("student-"))
-        self.assertEqual("student-v1.3", student_app.RULESET)
+        self.assertEqual("student-v1.4", student_app.RULESET)
         rules = load_ruleset(student_app.RULESET)
         self.assertIn("Evidence threshold for an event", rules)
         self.assertIn("Technique-scoped mitigations", rules)
         self.assertIn("Remote Services T1021", rules)
+        self.assertIn("Visual-construct coverage check", rules)
+        self.assertIn("external_resource", rules)
+        self.assertIn("annotation", rules)
+        self.assertIn("dotted", rules)
 
     def test_student_v13_keeps_the_students_own_identifiers(self):
         """v1.2 chose the technique itself; v1.3 gives that back to them."""
@@ -347,10 +351,12 @@ class V15ContractTests(unittest.TestCase):
     def test_student_v11_pipeline_uses_v19_and_keeps_graph_on_old_id(self):
         report = "The threat actor disabled Windows Defender."
         stage_b_prompts = []
+        stage_b_models = []
 
         def fake_call(system, user, model, response_model=AttackGraph):
             if response_model in _STAGE_B_MODELS:
                 stage_b_prompts.append(user)
+                stage_b_models.append(response_model)
                 return (
                     '{"assignments":[{"id":"e_disable",'
                     '"technique":"T1562","mitigations":["M1040"]}]}')
@@ -371,6 +377,7 @@ class V15ContractTests(unittest.TestCase):
         self.assertIn("ATT&CK\nv19 catalogue", stage_b_prompts[0])
         self.assertIn("retired T1562", stage_b_prompts[0])
         self.assertIn("T1685", stage_b_prompts[0])
+        self.assertEqual([EvidenceTechniqueAssignmentsWire], stage_b_models)
 
     def test_student_v12_filters_mitigations_by_official_relationship(self):
         events = [{
@@ -476,7 +483,7 @@ class V15ContractTests(unittest.TestCase):
         # strict model made every evidence field optional in the schema.
         self.assertEqual(
             [StudentEvidenceGraphWire, StudentEvidenceGraphWire,
-             EvidenceTechniqueAssignments], calls)
+             EvidenceTechniqueAssignmentsWire], calls)
 
     def test_student_pipeline_normalises_sample_syntax_before_stage_b(self):
         report = (
@@ -542,7 +549,7 @@ class V15ContractTests(unittest.TestCase):
             "e2" in precondition.parents
             for precondition in graph.preconditions))
         self.assertEqual(
-            [StudentEvidenceGraphWire, EvidenceTechniqueAssignments], calls)
+            [StudentEvidenceGraphWire, EvidenceTechniqueAssignmentsWire], calls)
 
     def test_v15_accepts_claude_double_encoded_assignment_array(self):
         payload = {
@@ -998,6 +1005,30 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual("AND", normalised.events[0].join)
         self.assertEqual([], _student_structure_problems(normalised))
 
+    def test_student_connectivity_error_names_both_components(self):
+        graph = AttackGraph.model_validate({
+            "preconditions": [
+                {"id": "p_main", "label": "Main access", "code": "IA"},
+                {"id": "r_main", "label": "Main result", "code": "IA",
+                 "parents": ["e_main"]},
+                {"id": "p_mail", "label": "Finance staff targeted",
+                 "code": "D"},
+                {"id": "r_mail", "label": "Attachment delivered",
+                 "code": "D", "parents": ["e_mail"]},
+            ],
+            "events": [
+                {"id": "e_main", "label": "Access main system",
+                 "tactic": "IA", "parents": ["p_main"]},
+                {"id": "e_mail", "label": "Send spearphishing attachment",
+                 "tactic": "IA", "parents": ["p_mail"]},
+            ],
+        })
+        message = "; ".join(_student_structure_problems(graph))
+        self.assertIn("2 disconnected components", message)
+        self.assertIn("event e_main ('Access main system')", message)
+        self.assertIn("event e_mail ('Send spearphishing attachment')", message)
+        self.assertIn("state p_mail ('Finance staff targeted')", message)
+
     def test_student_structure_allows_root_and_terminal_events(self):
         graph = AttackGraph.model_validate({
             "preconditions": [
@@ -1112,6 +1143,46 @@ class V15ContractTests(unittest.TestCase):
                     "system", "user", "claude-sonnet-5", AttackGraph,
                     _AnthropicCostBudget())
         self.assertEqual(1, state["parses"])
+
+    def test_anthropic_token_count_connection_failure_uses_local_estimate(self):
+        state = {"counts": 0, "parses": 0}
+
+        class FakeConnectionError(Exception):
+            pass
+
+        class FakeMessages:
+            def count_tokens(self, **kwargs):
+                state["counts"] += 1
+                raise FakeConnectionError(
+                    "server disconnected without sending a response")
+
+            def parse(self, **kwargs):
+                state["parses"] += 1
+                parsed = AttackGraph(
+                    title="test", preconditions=[], events=[])
+                return SimpleNamespace(
+                    parsed_output=parsed,
+                    content=[SimpleNamespace(type="text")],
+                    stop_reason="end_turn",
+                    usage=SimpleNamespace(input_tokens=100, output_tokens=20))
+
+        class FakeClient:
+            def __init__(self, **kwargs):
+                self.messages = FakeMessages()
+
+        fake_anthropic = SimpleNamespace(
+            Anthropic=FakeClient,
+            APIConnectionError=FakeConnectionError,
+        )
+        budget = _AnthropicCostBudget()
+        with patch.dict(sys.modules, {"anthropic": fake_anthropic}):
+            result = _call_anthropic(
+                "system", "user", "claude-sonnet-5", AttackGraph, budget)
+
+        self.assertIn('"events":[]', result)
+        self.assertEqual(1, state["counts"])
+        self.assertEqual(1, state["parses"])
+        self.assertEqual(1, budget.summary()["calls"])
 
     def test_anthropic_empty_structured_output_is_rejected(self):
         state = {"parses": 0}

@@ -1,23 +1,3 @@
-"""Deterministic macro-structure analysis for AGVS-SP attack graphs.
-
-The validated :class:`schema.AttackGraph` remains the semantic source of
-truth.  This module works only on :class:`layout_ir.LayoutIR` and therefore
-cannot add, delete, relabel or reclassify an attack step.
-
-The earlier planner treated every atomic event/result block as an independent
-global rank.  That was correct but produced a narrow "longest path tower".
-Here we first identify the larger structures readers perceive:
-
-* a maximal causal chain;
-* a fork into independently progressing branches;
-* a merge of several branches;
-* a merge followed by another fork.
-
-Those modules are stable graph properties, not model-generated drawing hints.
-Later layout and pagination stages can therefore optimise the drawing around
-causal modules while retaining a lossless mapping to every atomic block.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass

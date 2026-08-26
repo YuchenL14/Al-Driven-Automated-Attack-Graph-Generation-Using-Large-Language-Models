@@ -1,12 +1,3 @@
-"""
-ingest.py -- Stage 2 of the pipeline: turn a source document into clean text.
-
-A real incident report usually arrives as a PDF. markitdown converts it to
-clean, LLM-ready text in one call. Plain-text and markdown files are read
-directly. The output of this stage is a single string that the extraction
-stage (Stage 3) will read.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path

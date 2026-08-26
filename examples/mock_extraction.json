@@ -35,7 +35,8 @@
       "mitigations": ["M1040", "M1053"],
       "likelihood": 6.0,
       "parents": ["pc_spread"],
-      "join": "AND"
+      "join": "AND",
+      "terminal_goal": true
     }
   ]
 }

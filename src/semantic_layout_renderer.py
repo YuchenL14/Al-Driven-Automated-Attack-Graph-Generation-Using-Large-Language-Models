@@ -1,5 +1,3 @@
-"""PNG rendering for validated evidence-first semantic layout plans."""
-
 from __future__ import annotations
 
 from collections import defaultdict

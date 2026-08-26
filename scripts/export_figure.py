@@ -1,28 +1,3 @@
-"""export_figure.py -- turn a saved run into a figure for the dissertation.
-
-Every generation already writes its validated graph to ``outputs/<stem>.json``.
-This script re-renders that graph, so a figure can be produced or re-produced
-for any past run without spending another model call.
-
-    python scripts/export_figure.py outputs/<run>.json
-    python scripts/export_figure.py outputs/<run>.json --format png --dpi 300
-
-SVG is the default because it is vector: LaTeX keeps it sharp at any size, and
-it uses the same AGVS-SP layout as the PNG shown in the application.
-
-Including the result in LaTeX:
-
-    % preamble
-    \\usepackage{svg}          % needs Inkscape on PATH
-    ...
-    \\includesvg[width=\\textwidth]{figures/run_part1}
-
-If Inkscape is not available, convert once and include the PDF instead:
-
-    inkscape run_part1.svg --export-filename=run_part1.pdf
-    % \\includegraphics[width=\\textwidth]{figures/run_part1}
-"""
-
 from __future__ import annotations
 
 import argparse

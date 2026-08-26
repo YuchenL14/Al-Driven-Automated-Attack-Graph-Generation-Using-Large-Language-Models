@@ -1,18 +1,3 @@
-"""Reference-style PNG renderer for the attack-graph application.
-
-This module intentionally owns presentation only.  It consumes the existing
-validated :class:`schema.AttackGraph` model, so report ingestion, LLM/API calls,
-ATT&CK validation, output naming, and split-graph behaviour remain unchanged.
-
-Graphviz is excellent at general diagrams, but its HTML labels place badges
-*inside* nodes and its canvas changes with every graph.  The project reference
-uses a different visual grammar: white ellipses/rectangles, circular badges
-that overlap the node borders, small technique/mitigation stickers, orthogonal
-connector buses, and an unboxed right-side legend.  Pillow gives us reliable
-pixel-level control over those elements while this small layered layout keeps
-the renderer useful for arbitrary graphs extracted from reports.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
