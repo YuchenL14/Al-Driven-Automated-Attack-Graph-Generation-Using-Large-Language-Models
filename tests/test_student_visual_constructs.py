@@ -15,6 +15,7 @@ from extract import (
     StudentEvidenceGraph,
     _normalise_student_structure,
     _normalise_student_constructs,
+    _normalise_student_context_annotations,
     _normalise_student_non_adversary_events,
     _student_structure_problems,
     is_construct_ruleset,
@@ -192,6 +193,76 @@ class StudentVisualConstructTests(unittest.TestCase):
         }
         normalised = _normalise_student_non_adversary_events(raw)
         self.assertEqual(["e1"], [event["id"] for event in normalised["events"]])
+
+    def test_v14_reclassifies_explicit_backup_recovery_context(self):
+        report = (
+            "The attacker uploaded 40GB of records to an external account. "
+            "Backup snapshots on a separate network were untouched and were "
+            "later used to restore service. The attacker published the records."
+        )
+        raw = {
+            "title": "Recovery-context annotation",
+            "preconditions": [
+                {"id": "p_exfil", "label": "Finance records uploaded",
+                 "code": "EF", "role": "precondition", "style": "solid",
+                 "parents": ["e_exfil"]},
+                {"id": "p_backup", "label": "Backup snapshots untouched",
+                 "code": "R", "role": "precondition", "style": "solid",
+                 "parents": ["e_exfil"]},
+                {"id": "p_publish", "label": "Records published", "code": "R",
+                 "role": "precondition", "style": "solid",
+                 "parents": ["e_publish"]},
+            ],
+            "events": [
+                {"id": "e_exfil", "label": "Upload finance records",
+                 "actor": "adversary", "parents": [], "tactic": "EF",
+                 "likelihood": 7.0, "join": "AND", "source_evidence":
+                 "The attacker uploaded 40GB of records to an external account.",
+                 "action_evidence": "uploaded", "evidence_status": "confirmed",
+                 "evidence_confidence": 95, "stated_technique": "",
+                 "stated_mitigations": [], "style": "solid"},
+                {"id": "e_publish", "label": "Publish the records",
+                 "actor": "adversary", "parents": ["p_exfil", "p_backup"],
+                 "tactic": "IM", "likelihood": 7.0, "join": "AND",
+                 "source_evidence": "The attacker published the records.",
+                 "action_evidence": "published", "evidence_status": "confirmed",
+                 "evidence_confidence": 95, "stated_technique": "",
+                 "stated_mitigations": [], "style": "solid"},
+            ],
+        }
+
+        normalised = _normalise_student_context_annotations(raw, report)
+        states = {node["id"]: node for node in normalised["preconditions"]}
+        self.assertEqual("annotation", states["p_backup"]["role"])
+        self.assertEqual("dashed", states["p_backup"]["style"])
+        self.assertEqual(["e_exfil"], states["p_backup"]["parents"])
+        publish = next(event for event in normalised["events"]
+                       if event["id"] == "e_publish")
+        self.assertEqual(["p_exfil"], publish["parents"])
+        graph = StudentEvidenceGraph.model_validate(normalised)
+        self.assertEqual(["p_backup"], [node.id for node in graph.annotations])
+
+    def test_v14_keeps_attacker_harmed_backups_in_causal_graph(self):
+        report = "The attacker destroyed backup snapshots to inhibit recovery."
+        raw = {
+            "preconditions": [
+                {"id": "p1", "label": "Backup snapshots destroyed",
+                 "code": "IM", "role": "precondition", "style": "solid",
+                 "parents": ["e1"]},
+            ],
+            "events": [
+                {"id": "e1", "label": "Destroy backup snapshots",
+                 "actor": "adversary", "parents": [], "tactic": "IM",
+                 "likelihood": 8.0, "join": "AND", "source_evidence": report,
+                 "action_evidence": "destroyed", "evidence_status": "confirmed",
+                 "evidence_confidence": 95, "stated_technique": "T1490",
+                 "stated_mitigations": [], "style": "solid"},
+            ],
+        }
+        normalised = _normalise_student_context_annotations(raw, report)
+        self.assertEqual("precondition",
+                         normalised["preconditions"][0]["role"])
+        self.assertEqual("solid", normalised["preconditions"][0]["style"])
 
 
 if __name__ == "__main__":

@@ -667,7 +667,14 @@ never be invented merely to make the diagram look richer.
    style dashed, with that event id in the annotation's parents list. An
    annotation never appears in an event's parents and never becomes part of
    the causal attack path. Do not turn a victim response or impact into an
-   annotation when it is actually a stated result state.
+   annotation when it is actually a stated result state. An explicitly stated
+   defensive or recovery fact is contextual annotation when it neither enables
+   an adversary action nor records attacker-produced impact. For example,
+   backup snapshots that remained untouched on a separate network and were
+   later used to restore service are a dashed annotation beside the closest
+   relevant adversary event. Backups destroyed, deleted, encrypted, disabled,
+   corrupted, unavailable, or otherwise harmed by the adversary remain causal
+   conditions or results, not annotations.
 3. UNCERTAIN OR ALTERNATIVE BRANCH. Preserve possible, suspected, alleged, or
    explicitly alternative attacker behaviour as an event rather than deleting
    it or presenting it as confirmed. Give that event style dotted. Give a state
@@ -896,6 +903,99 @@ def _normalise_student_constructs(data: dict) -> dict:
                 and all(parent in uncertain_ids for parent in parents)):
             repaired["style"] = "dotted"
         preconditions.append(repaired)
+    return {**data, "preconditions": preconditions, "events": events}
+
+
+def _normalise_student_context_annotations(data: dict,
+                                           report_text: str) -> dict:
+    """Reclassify an explicit Student recovery context without inventing it.
+
+    Student v1.4 asks the provider to expose the same annotation construct as
+    professional v1.6.  In practice, a sentence such as "backup snapshots ...
+    were untouched and ... used to restore service" was repeatedly returned
+    as an ordinary state.  This Student-only repair changes the role and
+    outline of that already returned state; it never creates a node or changes
+    professional extraction.
+
+    The conversion is deliberately narrow.  It requires both a backup/snapshot
+    noun and an explicit benign recovery cue in the node label and in one
+    source sentence.  Any attacker-harm cue vetoes the conversion.  The
+    annotation is attached to the closest preceding evidence-backed adversary
+    event, and is removed from every event's causal parents list.
+    """
+
+    def compact(value: object) -> str:
+        return " ".join(str(value or "").lower().split())
+
+    def is_recovery_context(value: object) -> bool:
+        text = compact(value)
+        if not re.search(r"\b(?:backups?|snapshots?)\b", text):
+            return False
+        positive = (
+            "untouched", "intact", "unaffected", "separate network",
+            "used to restore", "restore service", "restored service",
+            "available for recovery", "retained for recovery",
+        )
+        harmful = (
+            "destroy", "delete", "encrypt", "disable", "inhibit",
+            "corrupt", "wipe", "unavailable", "compromis", "stolen",
+        )
+        return (any(cue in text for cue in positive)
+                and not any(cue in text for cue in harmful))
+
+    context_spans: list[tuple[int, str]] = []
+    for match in re.finditer(r"[^.!?\r\n]+(?:[.!?]+|$)", report_text):
+        sentence = match.group(0).strip()
+        if sentence and is_recovery_context(sentence):
+            context_spans.append((match.start(), sentence))
+    if not context_spans:
+        return data
+
+    events = [dict(event) for event in data.get("events", [])]
+    event_positions: dict[str, int] = {}
+    for event in events:
+        if event.get("actor") != "adversary":
+            continue
+        evidence = str(event.get("source_evidence", "")).strip()
+        position = report_text.find(evidence) if evidence else -1
+        if position >= 0:
+            event_positions[str(event.get("id", ""))] = position
+
+    converted_ids: set[str] = set()
+    preconditions: list[dict] = []
+    for node in data.get("preconditions", []):
+        repaired = dict(node)
+        if (repaired.get("role", "precondition") == "precondition"
+                and is_recovery_context(repaired.get("label", ""))):
+            context_position = context_spans[0][0]
+            preceding = [
+                (position, event_id)
+                for event_id, position in event_positions.items()
+                if position <= context_position
+            ]
+            anchor = max(preceding)[1] if preceding else ""
+            if not anchor:
+                existing = [
+                    str(parent) for parent in repaired.get("parents", [])
+                    if any(str(event.get("id", "")) == str(parent)
+                           and event.get("actor") == "adversary"
+                           for event in events)
+                ]
+                anchor = existing[-1] if existing else ""
+            if anchor:
+                repaired["role"] = "annotation"
+                repaired["style"] = "dashed"
+                repaired["parents"] = [anchor]
+                converted_ids.add(str(repaired.get("id", "")))
+        preconditions.append(repaired)
+
+    if not converted_ids:
+        return data
+    for event in events:
+        event["parents"] = [
+            parent for parent in event.get("parents", [])
+            if str(parent) not in converted_ids
+        ]
     return {**data, "preconditions": preconditions, "events": events}
 
 
@@ -3568,6 +3668,8 @@ a state, and never use the flag to hide a missing result.
             elif student_evidence_mode:
                 if student_construct_mode:
                     data = _normalise_student_constructs(data)
+                    data = _normalise_student_context_annotations(
+                        data, report_text)
                     data = _normalise_student_non_adversary_events(data)
                 student_graph = _normalise_student_structure(
                     StudentEvidenceGraph.model_validate(data),

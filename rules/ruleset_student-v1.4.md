@@ -112,6 +112,15 @@ victim response or impact into an annotation when it is actually a result
 state. If the narrative contains no qualifying commentary, return no
 annotations.
 
+An explicitly stated defensive or recovery fact is also contextual annotation
+when it does not enable an adversary action and is not an impact produced by
+the adversary. For example, backup snapshots that remained untouched on a
+separate network and were later used to restore service belong in one dashed
+annotation beside the closest relevant adversary event. By contrast, backups
+destroyed, deleted, encrypted, disabled, corrupted, made unavailable, or used
+by the adversary remain causal conditions or results. Never infer a recovery
+fact or recommendation that the narrative does not state.
+
 ## 6. Uncertain and alternative branches; AND/OR
 
 Use precondition -> event -> precondition alternation wherever a causal edge
