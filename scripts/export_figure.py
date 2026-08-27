@@ -31,9 +31,13 @@ def main() -> None:
     source = Path(args.graph_json)
     if not source.is_file():
         raise SystemExit(f"[error] no such file: {source}")
-    if source.name.endswith(".layout-quality.json"):
+    if source.name.endswith((
+            ".layout-quality.json",
+            ".reproducibility.json",
+            ".semantic.json",
+    )):
         raise SystemExit(
-            "[error] that is the layout metrics sidecar, not a graph. "
+            "[error] that is a run sidecar, not a graph. "
             "Pass the run's graph JSON instead.")
 
     graph = AttackGraph.from_json_file(source)

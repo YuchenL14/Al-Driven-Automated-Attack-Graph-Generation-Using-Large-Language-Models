@@ -168,7 +168,10 @@ class CommandLineTests(unittest.TestCase):
     def test_every_saved_run_conforms_or_is_a_recorded_exception(self):
         """The regression this whole session has been protecting."""
         runs = sorted((ROOT / "outputs").glob("*rules-v1.6*.json"))
-        runs = [p for p in runs if not p.name.endswith(".layout-quality.json")]
+        runs = [p for p in runs if not p.name.endswith((
+            ".layout-quality.json",
+            ".reproducibility.json",
+        ))]
         if not runs:
             self.skipTest("no runs present")
         for path in runs:

@@ -179,7 +179,9 @@ class WebApplicationTests(unittest.TestCase):
             pngs = list(outputs.glob("*.png"))
             quality = list(outputs.glob("*.layout-quality.json"))
             audits = [
-                path for path in outputs.glob("*.json") if path not in quality
+                path for path in outputs.glob("*.json")
+                if path not in quality
+                and not path.name.endswith(".reproducibility.json")
             ]
             self.assertEqual(1, len(pngs))
             self.assertEqual(1, len(audits))

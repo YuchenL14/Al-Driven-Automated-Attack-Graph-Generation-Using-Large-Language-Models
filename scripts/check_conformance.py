@@ -31,7 +31,11 @@ KNOWN_NONCONFORMANT: dict[str, set[str]] = {
 def graphs() -> list[tuple[str, AttackGraph]]:
     found = []
     for name in sorted(glob.glob(str(ROOT / "outputs" / "*.json"))):
-        if name.endswith((".layout-quality.json", ".semantic.json")):
+        if name.endswith((
+                ".layout-quality.json",
+                ".reproducibility.json",
+                ".semantic.json",
+        )):
             continue
         try:
             data = json.loads(Path(name).read_text(encoding="utf-8"))

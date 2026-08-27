@@ -364,8 +364,23 @@ Backups: `backups/*.zip`, newest is the current state.
 
 ## 10. Open methodological points
 
-- Runs are n=1. LLM output is stochastic and this project has demonstrated it
-  on one document. Report variance, or run each report three times.
+- The frozen evaluation corpus remains a record of independent model samples.
+  It must not be regenerated or rewritten: the observed 2--5 page and 19--27
+  action ranges are evidence of inter-run model variance, not renderer
+  variance.
+- The final professional application now separates those independent samples
+  from operational reproducibility. Anthropic requests use temperature zero,
+  but this is only variance reduction; a hosted model is not claimed to be
+  bitwise deterministic. By default, the first graph that passes validation
+  and rendering is content-addressed by extracted source text, rule file,
+  model/provider, ATT&CK catalogue and semantic code, then replayed exactly on
+  an identical request. `Generate an independent sample` deliberately bypasses
+  that replay without overwriting the frozen reference.
+- Every professional output has a `.reproducibility.json` manifest recording
+  whether it was a new frozen reference, a validated replay or an independent
+  sample, together with the semantic graph and renderer hashes. This makes a
+  repeated final run auditable without pretending the original model samples
+  were consistent.
 - British Library has been run repeatedly with code changes between runs, so
   it is no longer a clean development case in the methodological sense.
 - All current metrics are structural. Only Stolen Pencil has a ground truth.

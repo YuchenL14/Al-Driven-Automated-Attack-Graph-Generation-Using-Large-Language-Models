@@ -1625,6 +1625,18 @@ def get_last_api_usage() -> dict | None:
     return _LAST_API_USAGE.get()
 
 
+def zero_api_usage() -> dict:
+    """Return an honest zero-call summary using the configured cost ceiling."""
+
+    return {
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost_usd": 0.0,
+        "limit_usd": _configured_max_cost_usd(),
+    }
+
+
 def _call_anthropic(system: str, user: str, model: str,
                     response_model: type[BaseModel] = AttackGraph,
                     budget: _AnthropicCostBudget | None = None) -> str:
@@ -1652,6 +1664,10 @@ def _call_anthropic(system: str, user: str, model: str,
     request_kwargs = dict(
         model=model,
         max_tokens=max_output_tokens,
+        # This reduces sampling variance for independent runs.  It is not a
+        # promise of bit-for-bit determinism from a hosted service; exact
+        # reproducibility is provided separately by validated graph replay.
+        temperature=0,
         system=system_text,
         messages=messages,
         output_format=response_model,

@@ -415,8 +415,15 @@ def main(argv: list[str] | None = None) -> int:
                         default=None,
                         help="compare techniques with the reference figure")
     args = parser.parse_args(argv)
-    existing = [p for p in args.graphs
-                if p.is_file() and not p.name.endswith(".layout-quality.json")]
+    sidecar_suffixes = (
+        ".layout-quality.json",
+        ".reproducibility.json",
+        ".semantic.json",
+    )
+    existing = [
+        p for p in args.graphs
+        if p.is_file() and not p.name.endswith(sidecar_suffixes)
+    ]
     return report(existing, args.markdown, args.gold, args.student)
 
 

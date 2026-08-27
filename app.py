@@ -14,10 +14,14 @@ from extract import (extract_attack_graph, extract_attack_graph_semantic,  # noq
                      is_construct_ruleset, get_last_salvaged_nodes,
                      get_last_shape_notes, get_last_shape_measure,
                      get_last_api_usage, is_structural_stage_a_fault,
-                     resolve_model)
+                     resolve_model, zero_api_usage)
 from attack_graph import (quality_report_path, render_split,  # noqa: E402
                           tagged_output_path)
 from run_metrics import run_metrics, tactic_progression  # noqa: E402
+from reproducibility import (build_reproducibility_spec,  # noqa: E402
+                             load_validated_graph,
+                             store_validated_graph,
+                             write_run_manifest)
 from semantic_layout_renderer import render_semantic_layout  # noqa: E402
 
 REPORTS_DIR = ROOT / "reports"
@@ -481,6 +485,13 @@ PAGE = """
         </select>
         <p class="hint">{{ baseline }} is the frozen comparison baseline</p>
       </div>
+      <div class="field">
+        <label for="fresh_sample">Sampling</label>
+        <label><input id="fresh_sample" type="checkbox"
+          name="fresh_sample" value="1"> Generate an independent sample</label>
+        <p class="hint">Unchecked: replay the validated graph for identical
+          source, rules, model, catalogue and extraction code.</p>
+      </div>
       <!-- The layout and pagination lines used to sit here as two disabled
            fields. They are not inputs, they are properties of the tool, so
            they moved to the opening panel above where they read as facts
@@ -557,6 +568,15 @@ PAGE = """
   <div class="metric {{ metrics.cost_state }}"><span class="k">Cost</span>
     <span class="v">{{ "%.2f"|format(metrics.cost_usd) }}<span class="u">usd</span></span>
     <span class="sub">of {{ "%.2f"|format(metrics.limit_usd) }} limit</span></div>
+</div>
+{% endif %}
+
+{% if reproducibility %}
+<div class="panel-note neutral">
+  <h3>Reproducibility &middot; {{ reproducibility.label }}</h3>
+  <p class="tail">{{ reproducibility.message }} Cache key:
+    <code>{{ reproducibility.cache_key }}</code>. The complete run identity is
+    saved as <code>{{ reproducibility.manifest }}</code>.</p>
 </div>
 {% endif %}
 
@@ -651,6 +671,7 @@ def _page_context(**overrides) -> dict:
         "baseline": COMPARISON_BASELINE,
         "default_ruleset": DEFAULT_RULESET,
         "selected_ruleset": DEFAULT_RULESET,
+        "reproducibility": None,
     }
     context.update(overrides)
     return context
@@ -677,6 +698,7 @@ def generate():
     # or by restoring the control, rather than being deleted along with the
     # only way to reach it.
     semantic_mode = request.form.get("semantic_mode") == "1"
+    independent_sample = request.form.get("fresh_sample") == "1"
 
     if provider not in {"anthropic", "ollama", "mock"}:
         return render_template_string(
@@ -703,6 +725,10 @@ def generate():
     usage = None
     graph_audit_path = None
     graph = None
+    reproducibility = None
+    spec = None
+    cache_dir = None
+    cache_hit = False
     try:
         text = ingest(report_path)
         if semantic_mode and is_construct_ruleset(ruleset):
@@ -721,13 +747,30 @@ def generate():
             graph = semantic_result.graph
         else:
             semantic_result = None
-            graph = extract_attack_graph(
-                text,
-                provider=provider,
-                model=effective_model,
-                ruleset=ruleset,
+            spec = build_reproducibility_spec(
+                ROOT, text, ruleset, provider, effective_model,
             )
-        usage = get_last_api_usage()
+            cache_dir = OUTPUTS_DIR / ".reproducibility-cache"
+            graph = (
+                None
+                if independent_sample
+                else load_validated_graph(cache_dir, spec)
+            )
+            cache_hit = graph is not None
+            if graph is None:
+                graph = extract_attack_graph(
+                    text,
+                    provider=provider,
+                    model=effective_model,
+                    ruleset=ruleset,
+                )
+                usage = get_last_api_usage()
+            else:
+                # A replay does not call the provider.  Do not display usage
+                # left in a worker context by an earlier request.
+                usage = zero_api_usage()
+        if semantic_mode:
+            usage = get_last_api_usage()
         graph_audit_path = out_path.with_suffix(
             ".semantic.json" if semantic_mode else ".json")
         graph_audit_path.write_text(
@@ -755,6 +798,45 @@ def generate():
             if semantic_result is None else None
         )
         layout_warnings = _extraction_notes() + _layout_warnings(out_path)
+        if not semantic_mode:
+            # Freeze only a graph that has passed both the semantic contract
+            # and the renderer.  A structurally valid but unrenderable graph
+            # must never become the replay reference.
+            if not independent_sample and not cache_hit:
+                store_validated_graph(cache_dir, spec, graph)
+            manifest = write_run_manifest(
+                out_path,
+                ROOT,
+                spec,
+                graph,
+                cache_hit=cache_hit,
+                independent_sample=independent_sample,
+                pages=len(images),
+            )
+            if independent_sample:
+                label = "independent sample"
+                message = (
+                    "The validated replay cache was bypassed and was not "
+                    "replaced; this run may differ from another model sample."
+                )
+            elif cache_hit:
+                label = "validated replay"
+                message = (
+                    "The exact previously validated graph was reused, so no "
+                    "model request or new API cost was incurred."
+                )
+            else:
+                label = "new frozen reference"
+                message = (
+                    "A new validated graph was generated and frozen for exact "
+                    "replay by subsequent identical runs."
+                )
+            reproducibility = {
+                "label": label,
+                "message": message,
+                "cache_key": spec.cache_key[:12],
+                "manifest": manifest.name,
+            }
     except Exception as e:
         app.logger.exception("Attack-graph generation failed")
         if graph_audit_path is not None and graph_audit_path.exists():
@@ -762,7 +844,8 @@ def generate():
                 "Validated graph preserved for offline rendering: %s",
                 graph_audit_path,
             )
-        usage = get_last_api_usage()
+        if usage is None:
+            usage = get_last_api_usage()
         error = _friendly_error(e, provider)
         if graph_audit_path is not None and graph_audit_path.exists():
             error += (
@@ -773,6 +856,7 @@ def generate():
         return render_template_string(
             PAGE, **_page_context(
                 error=error, usage=usage, selected_ruleset=ruleset,
+                reproducibility=reproducibility,
                 metrics=run_metrics(graph, None, None, usage),
                 tactics=tactic_progression(graph) if graph else None))
 
@@ -781,6 +865,7 @@ def generate():
             images=images, vectors=vectors, title=graph.title,
             n_pre=len(graph.preconditions), n_ev=len(graph.events),
             usage=usage, layout_warnings=layout_warnings,
+            reproducibility=reproducibility,
             selected_ruleset=ruleset,
             metrics=run_metrics(graph, quality_report_path(str(out_path)),
                                 len(images), usage),
