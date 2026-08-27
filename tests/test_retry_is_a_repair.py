@@ -161,5 +161,86 @@ class TestStageBDoesNotRetryWhatItCannotFix(unittest.TestCase):
         self.assertTrue(notes)
         self.assertIn("AND/OR", notes[0])
 
+
+class TestStageBRepairsOnlyTheFailedEvent(unittest.TestCase):
+    """One malformed T-number must not invalidate or regenerate neighbours."""
+
+    def setUp(self):
+        self.prompts: list[str] = []
+        skeleton = TestStageBDoesNotRetryWhatItCannotFix._chain(2)
+
+        def call(system, user, model, response_model=AttackGraph):
+            if "Assignment" not in response_model.__name__:
+                return json.dumps(skeleton)
+            self.prompts.append(user)
+            if len(self.prompts) == 1:
+                return json.dumps({"assignments": [
+                    {"id": "e1", "techniques": ["T1587.001"]},
+                    {"id": "e2", "techniques": ["T9999"]},
+                ]})
+            return json.dumps({"assignments": [
+                {"id": "e2", "techniques": ["T1587.001"]},
+            ]})
+
+        self.graph = _extract_hierarchical(
+            "report", call, "model", "v1.6")
+
+    def test_only_the_failed_event_is_requested_again(self):
+        self.assertEqual(2, len(self.prompts))
+        self.assertIn("EVENT-LOCAL STAGE B REPAIR", self.prompts[1])
+        self.assertIn("Frozen accepted event ids: e1", self.prompts[1])
+        self.assertIn('"id": "e2"', self.prompts[1])
+        self.assertNotIn('"id": "e1"', self.prompts[1])
+
+    def test_valid_neighbour_survives_the_local_repair(self):
+        self.assertEqual(["e1", "e2"],
+                         [event.id for event in self.graph.events])
+        self.assertEqual(["T1587.001"], self.graph.events[0].techniques)
+        self.assertEqual(["T1587.001"], self.graph.events[1].techniques)
+
+
+class TestStageBRepairsOnlyTheFailedV14Mitigation(unittest.TestCase):
+    """A bad mitigation is repaired without resending a valid neighbour."""
+
+    def setUp(self):
+        self.prompts: list[str] = []
+        skeleton = TestStageBDoesNotRetryWhatItCannotFix._chain(2)
+
+        def call(system, user, model, response_model=AttackGraph):
+            if "Assignment" not in response_model.__name__:
+                return json.dumps(skeleton)
+            self.prompts.append(user)
+            if len(self.prompts) == 1:
+                return json.dumps({"assignments": [
+                    {"id": "e1", "technique": "T1587.001",
+                     "mitigations": ["M1013"]},
+                    {"id": "e2", "technique": "T1587.001",
+                     "mitigations": ["M9999"]},
+                ]})
+            return json.dumps({"assignments": [
+                {"id": "e2", "technique": "T1587.001",
+                 "mitigations": ["M1013"]},
+            ]})
+
+        self.graph = _extract_hierarchical(
+            "report", call, "model", "v1.4")
+
+    def test_only_the_bad_mitigation_record_is_requested_again(self):
+        self.assertEqual(2, len(self.prompts))
+        self.assertIn("Frozen accepted event ids: e1", self.prompts[1])
+        self.assertIn('"id": "e2"', self.prompts[1])
+        self.assertNotIn('"id": "e1"', self.prompts[1])
+
+    def test_both_assignments_survive_the_local_repair(self):
+        self.assertEqual(["e1", "e2"],
+                         [event.id for event in self.graph.events])
+        self.assertTrue(self.graph.events[0].mitigations)
+        self.assertTrue(self.graph.events[1].mitigations)
+        self.assertNotIn(
+            "M9999",
+            [mitigation for event in self.graph.events
+             for mitigation in event.mitigations],
+        )
+
 if __name__ == "__main__":
     unittest.main()

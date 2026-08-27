@@ -1240,6 +1240,36 @@ class ConstructTechniqueAssignmentsWire(BaseModel):
     assignments: list[ConstructTechniqueAssignmentWire] = Field(min_length=1)
 
 
+class RepairableTechniqueAssignmentWire(BaseModel):
+    """Loose professional record used so one bad identifier stays local.
+
+    The catalogue and tactic checks are deliberately performed record by
+    record after the response returns.  A Literal-constrained batch makes the
+    SDK reject the complete response before the application can retain the
+    valid records around one malformed assignment.
+    """
+
+    id: str = Field(min_length=1)
+    technique: str = Field(min_length=1)
+    mitigations: list[str] = Field(default_factory=list)
+
+
+class RepairableTechniqueAssignmentsWire(BaseModel):
+    assignments: list[RepairableTechniqueAssignmentWire] = Field(min_length=1)
+
+
+class RepairableConstructTechniqueAssignmentWire(BaseModel):
+    """Loose v1.6 counterpart for bounded, event-local Stage B repair."""
+
+    id: str = Field(min_length=1)
+    techniques: list[str] = Field(min_length=1)
+
+
+class RepairableConstructTechniqueAssignmentsWire(BaseModel):
+    assignments: list[RepairableConstructTechniqueAssignmentWire] = Field(
+        min_length=1)
+
+
 class EvidenceTechniqueAssignment(BaseModel):
     """v1.5 Stage B assignment with an explicit abstention path."""
 
@@ -1298,6 +1328,8 @@ class EvidenceTechniqueAssignmentsWire(BaseModel):
 
 _ASSIGNMENT_MODELS = frozenset({
     TechniqueAssignments, TechniqueAssignmentsWire,
+    RepairableTechniqueAssignmentsWire,
+    RepairableConstructTechniqueAssignmentsWire,
     EvidenceTechniqueAssignments, EvidenceTechniqueAssignmentsWire,
 })
 _SMALL_RESPONSE_TOKENS = 4096
@@ -1885,7 +1917,8 @@ def _call_mock(system: str, user: str, model: str,
             }],
         })
     if response_model in {
-        TechniqueAssignments, TechniqueAssignmentsWire
+        TechniqueAssignments, TechniqueAssignmentsWire,
+        RepairableTechniqueAssignmentsWire,
     }:
         if "e_reported_action" in user:
             return json.dumps({"assignments": [{
@@ -1907,7 +1940,8 @@ def _call_mock(system: str, user: str, model: str,
             for event in full.get("events", [])
         ]})
     if response_model in {
-        ConstructTechniqueAssignments, ConstructTechniqueAssignmentsWire
+        ConstructTechniqueAssignments, ConstructTechniqueAssignmentsWire,
+        RepairableConstructTechniqueAssignmentsWire,
     }:
         # v1.6 asks for a list of techniques per action and derives the
         # mitigations itself from the ATT&CK data, so the mock supplies
@@ -3492,6 +3526,101 @@ def _technique_tactic_mismatches(
     return mismatches
 
 
+def _validate_stage_b_records(
+        records: list[BaseModel], expected_events: list[dict],
+        record_model: type[BaseModel], *, construct_mode: bool
+) -> tuple[dict[str, BaseModel], dict[str, str], dict[str, BaseModel]]:
+    """Validate Stage B records independently and retain valid neighbours.
+
+    The former graph-wide ``model_validate_json`` call discarded every
+    assignment when one record contained a retired identifier, a duplicate id
+    or a cross-tactic primary technique.  This function creates one local
+    validation boundary per requested event.  Its caller can freeze the valid
+    records and ask the model to repair only the returned error ids.
+    """
+
+    expected_by_id = {event["id"]: event for event in expected_events}
+    accepted: dict[str, BaseModel] = {}
+    validated: dict[str, BaseModel] = {}
+    problems: dict[str, str] = {}
+    seen: set[str] = set()
+
+    for index, wire_record in enumerate(records):
+        data = wire_record.model_dump()
+        record_id = str(data.get("id", "")).strip()
+        problem_key = record_id if record_id in expected_by_id else f"item {index + 1}"
+        if record_id not in expected_by_id:
+            problems[problem_key] = (
+                f"unexpected event id {record_id!r}; return only "
+                f"{', '.join(expected_by_id)}")
+            continue
+        if record_id in seen:
+            accepted.pop(record_id, None)
+            validated.pop(record_id, None)
+            problems[record_id] = "the event id was returned more than once"
+            continue
+        seen.add(record_id)
+        try:
+            assignment = record_model.model_validate(data)
+        except ValidationError as exc:
+            problems[record_id] = str(exc)
+            continue
+        validated[record_id] = assignment
+
+        event = expected_by_id[record_id]
+        primary = (assignment.techniques[0] if construct_mode
+                   else assignment.technique)
+        allowed = tuple(_TECHNIQUE_TACTICS.get(primary, ()))
+        if allowed and event.get("tactic") not in allowed:
+            problems[record_id] = (
+                f"technique {primary} belongs to {list(allowed)}, not tactic "
+                f"{event.get('tactic')}")
+            # Keep the syntactically valid record aside.  On the final bounded
+            # attempt the established catalogue reconciliation can still use
+            # it, but it is not frozen as a successful assignment yet.
+            continue
+        accepted[record_id] = assignment
+
+    for event_id in expected_by_id:
+        if event_id not in accepted and event_id not in problems:
+            problems[event_id] = "no assignment was returned for this event"
+    return accepted, problems, validated
+
+
+def _stage_b_prompt_for_events(
+        template: str, events: list[dict], *, repair_problems: dict[str, str] | None = None,
+        frozen_ids: tuple[str, ...] = ()) -> str:
+    """Build either the initial Stage B batch or an event-local repair batch."""
+
+    used_tactics = sorted({event["tactic"] for event in events})
+    candidate_blocks = []
+    for tactic in used_tactics:
+        candidate_blocks.append(
+            f"Techniques allowed for tactic {tactic} "
+            f"({ATTACK_TACTICS[tactic]}):\n{_tech_lines_for_tactic(tactic)}")
+    event_ids = ", ".join(event["id"] for event in events)
+    prompt = template.format(
+        events=json.dumps(events, indent=2),
+        n_events=len(events),
+        event_ids=event_ids,
+        candidates="\n\n".join(candidate_blocks),
+        miti_lines=_MITI_LINES,
+    )
+    if repair_problems is not None:
+        details = "\n".join(
+            f"- {event_id}: {message}"
+            for event_id, message in repair_problems.items())
+        frozen = ", ".join(frozen_ids) or "none"
+        prompt += (
+            "\n\nEVENT-LOCAL STAGE B REPAIR\n"
+            "The other assignments already passed catalogue and tactic "
+            "validation and are frozen. Do not return or alter them. Return "
+            "exactly one corrected assignment for each event shown above.\n"
+            f"Frozen accepted event ids: {frozen}\n"
+            f"Rejected records to correct:\n{details}")
+    return prompt
+
+
 def _extract_hierarchical(report_text: str, call, model: str,
                           ruleset: str) -> AttackGraph:
     """Two-stage extraction: choose tactics first, then techniques per tactic."""
@@ -4135,20 +4264,13 @@ a state, and never use the flag to hide a missing result.
         # the installed catalogue means an identifier the current ATT&CK release
         # has renumbered, such as the retired T1070.001, cannot be returned at
         # all, rather than being rejected only after the call has been paid for.
-        wire_model = TechniqueAssignmentsWire
+        # The professional path validates each returned record locally.  This
+        # looser API wire keeps one retired/cross-tactic identifier from making
+        # the SDK discard every otherwise valid assignment in the batch.
+        wire_model = RepairableTechniqueAssignmentsWire
         if construct_mode:
             assignments_model = ConstructTechniqueAssignments
-            wire_model = ConstructTechniqueAssignmentsWire
-
-    # --- build per-tactic candidate lists for the tactics actually used --------
-    used_tactics = sorted({e["tactic"] for e in skeleton["events"]})
-    candidate_blocks = []
-    for tac in used_tactics:
-        lines = _tech_lines_for_tactic(tac)
-        candidate_blocks.append(
-            f"Techniques allowed for tactic {tac} "
-            f"({ATTACK_TACTICS[tac]}):\n{lines}")
-    candidates = "\n\n".join(candidate_blocks)
+            wire_model = RepairableConstructTechniqueAssignmentsWire
 
     # --- stage B: assign T/M values without re-emitting the graph --------------
     # Stage A's graph is deliberately kept in Python. Earlier versions asked the
@@ -4156,13 +4278,13 @@ a state, and never use the flag to hide a missing result.
     # long graph collapse to zero events during Stage B. Stage B now returns a
     # short id -> T/M mapping only; the preserved skeleton is then merged and
     # validated locally.
-    skeleton_events_json = json.dumps(skeleton["events"], indent=2)
     n_events = len(skeleton["events"])
-    event_ids = ", ".join(e["id"] for e in skeleton["events"])
-    user_b = stage_b_template.format(
-        events=skeleton_events_json, n_events=n_events,
-        event_ids=event_ids, candidates=candidates, miti_lines=_MITI_LINES)
+    user_b = _stage_b_prompt_for_events(stage_b_template, skeleton["events"])
     last_error = None
+    expected_ids = [event["id"] for event in skeleton["events"]]
+    accepted_assignments: dict[str, BaseModel] = {}
+    requested_events = list(skeleton["events"])
+    modular_stage_b = not (evidence_mode or student_evidence_mode)
     for attempt in range(stage_b_retries + 1):
         try:
             # The model call sits inside the retry guard. When a structured
@@ -4173,9 +4295,69 @@ a state, and never use the flag to hide a missing result.
             raw = call(system, user_b, model, wire_model)
             if student_evidence_mode:
                 raw = _sanitize_student_v19_assignments(raw)
-            assignments = assignments_model.model_validate_json(raw).assignments
+            if modular_stage_b:
+                envelope = wire_model.model_validate_json(raw)
+                record_model = (ConstructTechniqueAssignment
+                                if construct_mode else TechniqueAssignment)
+                accepted, record_problems, validated = (
+                    _validate_stage_b_records(
+                        envelope.assignments, requested_events, record_model,
+                        construct_mode=construct_mode))
+                accepted_assignments.update(accepted)
+
+                failed_ids = {
+                    event["id"] for event in requested_events
+                    if event["id"] not in accepted
+                }
+                # An unexpected extra record cannot invalidate correctly
+                # returned requested records. It is discarded at this local
+                # boundary; every requested id must still be present exactly
+                # once before the batch can complete.
+                failed_problems = {
+                    event_id: message
+                    for event_id, message in record_problems.items()
+                    if event_id in failed_ids
+                }
+                if failed_ids and attempt < stage_b_retries:
+                    requested_events = [
+                        event for event in skeleton["events"]
+                        if event["id"] in failed_ids
+                    ]
+                    user_b = _stage_b_prompt_for_events(
+                        stage_b_template, requested_events,
+                        repair_problems=failed_problems,
+                        frozen_ids=tuple(accepted_assignments))
+                    continue
+                if failed_ids:
+                    # A syntactically valid cross-tactic answer is allowed to
+                    # reach the established final reconciliation below. Other
+                    # failures (retired identifier, duplicate or omission)
+                    # remain local hard errors and cannot erase accepted
+                    # neighbours or be silently converted into empty badges.
+                    unresolved = failed_ids - set(validated)
+                    if unresolved:
+                        details = "; ".join(
+                            f"{event_id}: {failed_problems.get(event_id, 'invalid assignment')}"
+                            for event_id in sorted(unresolved))
+                        raise ValueError(
+                            "event-local Stage B repair did not validate: "
+                            + details)
+                    accepted_assignments.update(
+                        {event_id: validated[event_id]
+                         for event_id in failed_ids})
+
+                if set(accepted_assignments) != set(expected_ids):
+                    missing = [event_id for event_id in expected_ids
+                               if event_id not in accepted_assignments]
+                    raise ValueError(
+                        "event-local Stage B validation is incomplete; missing "
+                        + ", ".join(missing))
+                assignments = [accepted_assignments[event_id]
+                               for event_id in expected_ids]
+            else:
+                assignments = assignments_model.model_validate_json(
+                    raw).assignments
             assignment_ids = [assignment.id for assignment in assignments]
-            expected_ids = [event["id"] for event in skeleton["events"]]
             if len(assignments) != n_events:
                 raise ValueError(
                     f"stage B returned {len(assignments)} assignments but the skeleton "
@@ -4406,12 +4588,19 @@ a state, and never use the flag to hide a missing result.
             return graph
         except (ValidationError, ValueError) as ex:
             last_error = ex
-            user_b = (stage_b_template.format(
-                          events=skeleton_events_json, n_events=n_events,
-                          event_ids=event_ids, candidates=candidates,
-                          miti_lines=_MITI_LINES) +
-                      f"\n\nYour previous answer was rejected with this error:\n{ex}\n"
-                      f"Return a corrected object that fixes it.")
+            # Assignment-specific professional failures are intercepted above
+            # and retried only for their event ids. Reaching this handler means
+            # the envelope itself or a graph-wide invariant failed. Evidence
+            # and teaching schemas retain their existing whole-object repair
+            # because their records contain evidence fields whose consistency
+            # is genuinely batch-wide.
+            if attempt < stage_b_retries:
+                requested_events = list(skeleton["events"])
+                user_b = (_stage_b_prompt_for_events(
+                              stage_b_template, requested_events)
+                          + "\n\nYour previous answer was rejected with this error:\n"
+                          + str(ex)
+                          + "\nReturn a corrected object that fixes it.")
 
     raise RuntimeError(f"stage B failed: {last_error}")
 
