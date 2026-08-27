@@ -14,69 +14,32 @@ so a figure cannot reach the document without its evidence.
 
 Source run: `student_submission_14__rules-student-v1.3__anthropic-claude-sonnet-5_1`
 
-## ch5-testing-british-library
+## ch6-results-british-library
 
-development report, all 4 pages within the print floor
-
-| page | width | prints at | file |
-|---|---|---|---|
-| 1 | 1054 px | 9.4 pt | `ch5-testing-british-library-p1.svg` |
-| 2 | 1124 px | 8.8 pt | `ch5-testing-british-library-p2.svg` |
-| 3 | 896 px | 11.1 pt | `ch5-testing-british-library-p3.svg` |
-| 4 | 826 px | 12.0 pt | `ch5-testing-british-library-p4.svg` |
-
-Source run: `british-library-cyber-incident-review-8-march-2024__rules-v1.6__anthropic-claude-sonnet-5_9`
-
-## ch5-testing-marks-and-spencer
-
-blind report, branching intrusion, the only fully usable M&S run
+development report, final run
 
 | page | width | prints at | file |
 |---|---|---|---|
-| 1 | 1010 px | 9.8 pt | `ch5-testing-marks-and-spencer-p1.svg` |
-| 2 | 1072 px | 9.3 pt | `ch5-testing-marks-and-spencer-p2.svg` |
-| 3 | 674 px | 14.7 pt | `ch5-testing-marks-and-spencer-p3.svg` |
-| 4 | 826 px | 12.0 pt | `ch5-testing-marks-and-spencer-p4.svg` |
-| 5 | 674 px | 14.7 pt | `ch5-testing-marks-and-spencer-p5.svg` |
+| 1 | 1054 px | 9.4 pt | `ch6-results-british-library-p1.svg` |
+| 2 | 826 px | 12.0 pt | `ch6-results-british-library-p2.svg` |
+| 3 | 1054 px | 9.4 pt | `ch6-results-british-library-p3.svg` |
+| 4 | 1352 px | 7.3 pt | `ch6-results-british-library-p4.svg` |
+| 5 | 1352 px | 7.3 pt | `ch6-results-british-library-p5.svg` |
 
-Source run: `Scattered-Spider-and-MandS-Incident___rules-v1.6__anthropic-claude-sonnet-5_1`
+Source run: `british-library-cyber-incident-review-8-march-2024__rules-v1.6__anthropic-claude-sonnet-5_10`
 
-## ch5-testing-student-edition
+## ch6-results-marks-and-spencer
 
-teaching edition, covers PRE/RES/EXT, a dotted branch and an AND
-
-| page | width | prints at | file |
-|---|---|---|---|
-| 1 | 826 px | 12.0 pt | `ch5-testing-student-edition-p1.svg` |
-| 2 | 826 px | 12.0 pt | `ch5-testing-student-edition-p2.svg` |
-| 3 | 674 px | 14.7 pt | `ch5-testing-student-edition-p3.svg` |
-
-Source run: `student_submission_25__rules-student-v1.3__anthropic-claude-sonnet-5_1`
-
-## ch5-testing-wannacry
-
-blind report, linear worm, worst page 11.1pt
+blind report, branching intrusion, final run; ends on an action with no result state, which the objective repair now names
 
 | page | width | prints at | file |
 |---|---|---|---|
-| 1 | 826 px | 12.0 pt | `ch5-testing-wannacry-p1.svg` |
-| 2 | 896 px | 11.1 pt | `ch5-testing-wannacry-p2.svg` |
-| 3 | 896 px | 11.1 pt | `ch5-testing-wannacry-p3.svg` |
-| 4 | 826 px | 12.0 pt | `ch5-testing-wannacry-p4.svg` |
+| 1 | 940 px | 10.6 pt | `ch6-results-marks-and-spencer-p1.svg` |
+| 2 | 896 px | 11.1 pt | `ch6-results-marks-and-spencer-p2.svg` |
+| 3 | 936 px | 10.6 pt | `ch6-results-marks-and-spencer-p3.svg` |
+| 4 | 896 px | 11.1 pt | `ch6-results-marks-and-spencer-p4.svg` |
 
-Source run: `Case-Study_WannaCry__rules-v1.6__anthropic-claude-sonnet-5_1`
-
-## ch6-results-below-floor
-
-counter-example: page 3 is 1352px and prints at 7.3pt
-
-| page | width | prints at | file |
-|---|---|---|---|
-| 1 | 883 px | 11.2 pt | `ch6-results-below-floor-p1.svg` |
-| 2 | 896 px | 11.1 pt | `ch6-results-below-floor-p2.svg` |
-| 3 | 1352 px | 7.3 pt | `ch6-results-below-floor-p3.svg` |
-
-Source run: `Scattered-Spider-and-MandS-Incident___rules-v1.6__anthropic-claude-sonnet-5_3`
+Source run: `Scattered-Spider-and-MandS-Incident___rules-v1.6__anthropic-claude-sonnet-5_4`
 
 ## ch6-results-stolen-pencil-generated
 
@@ -93,9 +56,21 @@ the one incident with an expert-drawn reference figure
 
 Source run: `netscout-stolen-pencil__rules-v1.6__anthropic-claude-sonnet-5_7`
 
+## ch6-results-student-edition
+
+teaching edition, final run
+
+| page | width | prints at | file |
+|---|---|---|---|
+| 1 | 674 px | 14.7 pt | `ch6-results-student-edition-p1.svg` |
+| 2 | 826 px | 12.0 pt | `ch6-results-student-edition-p2.svg` |
+| 3 | 896 px | 11.1 pt | `ch6-results-student-edition-p3.svg` |
+
+Source run: `student_submission_26__rules-student-v1.3__anthropic-claude-sonnet-5_1`
+
 ## ch6-results-variance-fewer-pages
 
-same report, 2 pages, worst 5.7pt: the compact run is the illegible one
+same report in 2 pages: the compact run is the illegible one
 
 | page | width | prints at | file |
 |---|---|---|---|
@@ -103,3 +78,16 @@ same report, 2 pages, worst 5.7pt: the compact run is the illegible one
 | 2 | 1738 px | 5.7 pt | `ch6-results-variance-fewer-pages-p2.svg` |
 
 Source run: `british-library-cyber-incident-review-8-march-2024__rules-v1.6__anthropic-claude-sonnet-5_3`
+
+## ch6-results-wannacry
+
+blind report, linear worm, final run
+
+| page | width | prints at | file |
+|---|---|---|---|
+| 1 | 826 px | 12.0 pt | `ch6-results-wannacry-p1.svg` |
+| 2 | 826 px | 12.0 pt | `ch6-results-wannacry-p2.svg` |
+| 3 | 1124 px | 8.8 pt | `ch6-results-wannacry-p3.svg` |
+| 4 | 674 px | 14.7 pt | `ch6-results-wannacry-p4.svg` |
+
+Source run: `Case-Study_WannaCry__rules-v1.6__anthropic-claude-sonnet-5_6`

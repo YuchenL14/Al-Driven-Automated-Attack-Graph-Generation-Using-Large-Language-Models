@@ -1,41 +1,43 @@
 {
   "page_count": 2,
-  "warning_count": 1,
+  "warning_count": 2,
   "pages": [
     {
       "page": 1,
-      "node_count": 14,
-      "page_width_px": 1054,
+      "node_count": 22,
+      "page_width_px": 1282,
       "canonical_duplicate_count": 0,
       "downward_edge_fraction": 1.0,
-      "main_aspect_ratio": 1.464705882352941,
-      "page_aspect_ratio": 0.9449715370018975,
-      "occupied_width_fraction": 0.9294117647058824,
-      "occupied_height_fraction": 0.9076305220883534,
-      "node_area_density": 0.2946846208362863,
-      "median_horizontal_drift_fraction": 0.1676470588235294,
-      "mean_route_detour": 1.1954040404040402,
-      "bend_count": 13,
+      "main_aspect_ratio": 1.5991189427312775,
+      "page_aspect_ratio": 1.1326053042121684,
+      "occupied_width_fraction": 0.947136563876652,
+      "occupied_height_fraction": 0.9366391184573003,
+      "node_area_density": 0.23468161794152984,
+      "median_horizontal_drift_fraction": 0.12555066079295155,
+      "mean_route_detour": 1.1127331002331002,
+      "bend_count": 27,
       "has_parallel_structure": true,
-      "warnings": []
+      "warnings": [
+        "one page is 1282px wide against a 1240px budget; its labels print at about 7.7pt across a landscape page, below the 8pt figure-text floor"
+      ]
     },
     {
       "page": 2,
-      "node_count": 24,
-      "page_width_px": 1830,
+      "node_count": 17,
+      "page_width_px": 1738,
       "canonical_duplicate_count": 0,
       "downward_edge_fraction": 1.0,
-      "main_aspect_ratio": 0.6854395604395604,
-      "page_aspect_ratio": 0.5453551912568306,
-      "occupied_width_fraction": 0.967032967032967,
-      "occupied_height_fraction": 0.9078156312625251,
-      "node_area_density": 0.2303728335792464,
-      "median_horizontal_drift_fraction": 0.0782967032967033,
-      "mean_route_detour": 1.0347855991644532,
-      "bend_count": 48,
+      "main_aspect_ratio": 0.6480938416422287,
+      "page_aspect_ratio": 0.5086306098964327,
+      "occupied_width_fraction": 0.9648093841642229,
+      "occupied_height_fraction": 0.8959276018099548,
+      "node_area_density": 0.1979273098817691,
+      "median_horizontal_drift_fraction": 0.07074780058651026,
+      "mean_route_detour": 1.0808404649988808,
+      "bend_count": 21,
       "has_parallel_structure": true,
       "warnings": [
-        "one page is 1830px wide against a 1240px budget; its labels print at about 5.4pt across a landscape page, below the 8pt figure-text floor"
+        "one page is 1738px wide against a 1240px budget; its labels print at about 5.7pt across a landscape page, below the 8pt figure-text floor"
       ]
     }
   ]
