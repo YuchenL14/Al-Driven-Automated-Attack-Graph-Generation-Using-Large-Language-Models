@@ -358,6 +358,25 @@ class ObjectiveTests(unittest.TestCase):
         self.assertEqual(bottom, drawn[objective].y)
         self.assertEqual(1, sum(1 for node in plan.nodes if node.y == bottom))
 
+    def test_annotation_attached_to_terminal_action_remains_below_it(self):
+        """Closing a terminal action must not invert its annotation edge."""
+
+        data = RICH.model_dump()
+        data["events"][-1]["terminal_goal"] = True
+        terminal_id = data["events"][-1]["id"]
+        data["preconditions"].append(
+            {"id": "terminal_note", "label": "No evidence found",
+             "code": "ANN", "role": "annotation", "style": "dashed",
+             "parents": [terminal_id]})
+        model = AttackGraph.model_validate(data)
+        objective = attack_objective(model)
+        self.assertEqual(terminal_id, objective)
+
+        plan = plan_layout(build_layout_ir(model), objective)
+        drawn = {node.canonical_id: node for node in plan.nodes}
+        self.assertLess(drawn[terminal_id].bottom,
+                        drawn["terminal_note"].y)
+
     def test_a_split_names_it_on_one_page_only(self):  # noqa: D401
         """A state produced from two parts is drawn in both, correctly.
 

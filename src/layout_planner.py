@@ -739,6 +739,15 @@ def plan_layout(layout_ir: LayoutIR,
     )
     visual_rank = _close_on_the_objective(layout_ir, visual_rank,
                                           objective_id)
+    # Closing a named terminal action below the other endings can move it past
+    # an annotation attached to that action.  An annotation is excluded from
+    # objective selection, but its dashed edge is still a real visual edge and
+    # must remain top-down.  Re-project after the objective adjustment so only
+    # such downstream commentary gives way; the canonical graph is unchanged.
+    visual_rank = _enforce_strict_downward_ranks(
+        layout_ir,
+        visual_rank,
+    )
 
     occupied_ranks = sorted(set(visual_rank.values()))
     rank_y: dict[int, int] = {}
