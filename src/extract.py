@@ -1664,10 +1664,10 @@ def _call_anthropic(system: str, user: str, model: str,
     request_kwargs = dict(
         model=model,
         max_tokens=max_output_tokens,
-        # This reduces sampling variance for independent runs.  It is not a
-        # promise of bit-for-bit determinism from a hosted service; exact
-        # reproducibility is provided separately by validated graph replay.
-        temperature=0,
+        # Do not send ``temperature`` here. Current Claude models can reject
+        # that formerly supported parameter as deprecated. Independent calls
+        # therefore use the provider's decoding policy; exact professional-run
+        # reproducibility is supplied separately by validated graph replay.
         system=system_text,
         messages=messages,
         output_format=response_model,

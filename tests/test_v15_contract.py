@@ -1116,7 +1116,7 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual(0, state["creates"])
         self.assertIs(
             AttackGraph, state["parse_kwargs"]["output_format"])
-        self.assertEqual(0, state["parse_kwargs"]["temperature"])
+        self.assertNotIn("temperature", state["parse_kwargs"])
         self.assertIs(
             AttackGraph, state["count_kwargs"]["output_format"])
         self.assertEqual(0, state["client_kwargs"]["max_retries"])

@@ -79,7 +79,8 @@ class ReproducibilityCacheTests(unittest.TestCase):
         self.assertEqual(self.spec.cache_key, same.cache_key)
         self.assertNotEqual(self.spec.cache_key, changed_source.cache_key)
         self.assertNotEqual(self.spec.cache_key, changed_model.cache_key)
-        self.assertEqual(0, self.spec.decoding["temperature"])
+        self.assertEqual(
+            "provider_default", self.spec.decoding["temperature"])
 
     def test_first_validated_graph_is_immutable_replay_reference(self):
         first = _graph("first")

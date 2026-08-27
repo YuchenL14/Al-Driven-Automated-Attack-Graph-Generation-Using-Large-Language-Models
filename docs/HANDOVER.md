@@ -369,10 +369,10 @@ Backups: `backups/*.zip`, newest is the current state.
   action ranges are evidence of inter-run model variance, not renderer
   variance.
 - The final professional application now separates those independent samples
-  from operational reproducibility. Anthropic requests use temperature zero,
-  but this is only variance reduction; a hosted model is not claimed to be
-  bitwise deterministic. By default, the first graph that passes validation
-  and rendering is content-addressed by extracted source text, rule file,
+  from operational reproducibility. Anthropic requests omit the now-deprecated
+  temperature parameter and use the provider's decoding policy; a hosted model
+  is not claimed to be bitwise deterministic. By default, the first graph that
+  passes validation and rendering is content-addressed by extracted source text, rule file,
   model/provider, ATT&CK catalogue and semantic code, then replayed exactly on
   an identical request. `Generate an independent sample` deliberately bypasses
   that replay without overwriting the frozen reference.

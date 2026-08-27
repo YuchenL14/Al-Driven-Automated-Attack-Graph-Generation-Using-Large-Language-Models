@@ -23,7 +23,9 @@ from schema import AttackGraph
 
 CACHE_FORMAT_VERSION = 1
 DECODING_PROFILE = {
-    "temperature": 0,
+    # Current Claude models reject an explicit ``temperature`` value. Record
+    # the omission honestly; exact repeatability comes from graph replay.
+    "temperature": "provider_default",
     "thinking": "disabled",
 }
 _SEMANTIC_CODE_FILES = (
