@@ -214,8 +214,6 @@ class LayoutStageAIRTests(unittest.TestCase):
             node for node in layout_ir.nodes
             if node.visual_id == "p_no_mfa"
         )
-        # The stored code stays "IA" for audit; the drawing shows the derived
-        # state symbol, so an ATT&CK tactic still never reaches an ellipse.
         self.assertEqual("IA", graph.preconditions[1].code)
         self.assertEqual("PRE", no_mfa.semantics.badge_code)
         self.assertEqual("state_phase", no_mfa.semantics.badge_namespace)

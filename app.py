@@ -53,8 +53,6 @@ def list_claude_models():
 
 CLAUDE_MODELS = list_claude_models()
 
-# Local models suited to a 6-8 GB GPU (Ollama). Pull one before selecting it,
-# e.g. `ollama pull qwen3:8b`.
 OLLAMA_MODELS = ["qwen3:8b", "phi4-mini", "llama3.1:8b", "deepseek-r1:8b",
                  "gemma3:4b"]
 
@@ -142,7 +140,6 @@ def _friendly_error(e: Exception, provider: str) -> str:
             re.search(rf"\b{re.escape(word)}\b", low) for word in words
         )
 
-    # --- failures this pipeline raised itself -----------------------------
     if is_structural_stage_a_fault(msg):
         return ("The model found the attack steps but returned an inconsistent "
                 "graph, and the permitted Stage A correction did not resolve "
@@ -690,13 +687,7 @@ def generate():
             PAGE, **_page_context(error="No file uploaded."))
     provider = request.form.get("provider", "mock")
     model = request.form.get("model") or None
-    # Only a rule set that exists on disk is accepted; anything else falls back
-    # to the frozen baseline rather than reaching load_ruleset as a path.
     ruleset = _selected_ruleset(request.form.get("ruleset"))
-    # No control in the page sets this any more (see the note in PAGE). The
-    # read stays so the pipeline can still be exercised deliberately, by a test
-    # or by restoring the control, rather than being deleted along with the
-    # only way to reach it.
     semantic_mode = request.form.get("semantic_mode") == "1"
     independent_sample = request.form.get("fresh_sample") == "1"
 
@@ -715,7 +706,6 @@ def generate():
     effective_model = resolve_model(provider, model)
     report_path = REPORTS_DIR / report_name
     f.save(str(report_path))
-    # fold the rule set version into the name so iterations do not overwrite
     layout_tag = "__semantic-draft-v1" if semantic_mode else ""
     stem = f"{report_path.stem}__rules-{ruleset}{layout_tag}"
     filename_model = None if provider == "mock" else effective_model
@@ -766,8 +756,6 @@ def generate():
                 )
                 usage = get_last_api_usage()
             else:
-                # A replay does not call the provider.  Do not display usage
-                # left in a worker context by an earlier request.
                 usage = zero_api_usage()
         if semantic_mode:
             usage = get_last_api_usage()
@@ -799,9 +787,6 @@ def generate():
         )
         layout_warnings = _extraction_notes() + _layout_warnings(out_path)
         if not semantic_mode:
-            # Freeze only a graph that has passed both the semantic contract
-            # and the renderer.  A structurally valid but unrenderable graph
-            # must never become the replay reference.
             if not independent_sample and not cache_hit:
                 store_validated_graph(cache_dir, spec, graph)
             manifest = write_run_manifest(

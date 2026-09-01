@@ -445,7 +445,6 @@ class ObjectiveTests(unittest.TestCase):
         layout_ir = build_layout_ir(RICH)
         self.assertIsNone(objective_label_for_page(layout_ir, {}))
         self.assertIsNone(objective_label_for_page(layout_ir, {}, None))
-        # The page still has a convergence; it is simply not a claim to make.
         self.assertIsNotNone(page_objective(layout_ir))
 
     def test_a_graph_whose_endings_tie_names_none_anywhere(self):

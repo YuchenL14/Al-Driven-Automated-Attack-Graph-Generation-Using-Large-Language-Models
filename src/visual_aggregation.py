@@ -5,13 +5,6 @@ from dataclasses import dataclass
 
 from schema import ATTACK_TACTICS, AttackGraph
 
-# How many members make a fan too wide to draw.
-#
-# This was the pagination event budget plus one, which was a count with no
-# measured meaning. Measured against the page-width budget in `layout_renderer`
-# -- the width past which a node label prints below 8pt -- a page holds three
-# drawn columns at 1194px and four at 1492px against a 1240px budget. So a fan
-# of four is already one column too wide, and folding starts there.
 MAX_DRAWN_COLUMNS = 3
 DEFAULT_MIN_AGGREGATE = MAX_DRAWN_COLUMNS + 1
 
@@ -130,9 +123,6 @@ def aggregate_for_drawing(
     graph that came out of extraction.
     """
 
-    # Not an early return on "no event groups": a graph with one action and
-    # six results has nothing to group at the event level and is still too wide
-    # to read. The outcome pass below is what reaches that case.
     groups = find_aggregatable_groups(model, min_size=min_size)
 
     by_event = {event.id: event for event in model.events}

@@ -5,8 +5,6 @@ from typing import Iterable
 
 from schema import ATTACK_TACTICS
 
-# Words too common to indicate anything. Kept short on purpose: a longer list
-# would start deciding which of the student's words matter.
 _NOISE = frozenset({
     "the", "and", "for", "with", "from", "into", "that", "this", "was", "were",
     "used", "using", "via", "over", "then", "their", "attacker",

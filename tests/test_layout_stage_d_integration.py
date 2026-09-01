@@ -142,8 +142,6 @@ class WebRuntimeIntegrationTests(unittest.TestCase):
                 )
             self.assertEqual(200, response.status_code)
             extraction.assert_called_once()
-            # The chosen rule set reaches the extractor unchanged; v1.4 is the
-            # default rather than the only possibility.
             self.assertEqual(
                 "v1.5",
                 extraction.call_args.kwargs["ruleset"],

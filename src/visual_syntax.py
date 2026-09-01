@@ -15,14 +15,6 @@ BadgeNamespace = Literal["attack_tactic", "kill_chain_phase",
 BadgeSource = Literal["attack_tactic", "kill_chain_phase"]
 EdgeStyle = Literal["solid", "dotted", "dashed"]
 
-# Edges carry meaning too. Node constructs were made enumerable so that symbol
-# overload could be checked; leaving edges as one undifferentiated line kept
-# half the notation unexaminable, and it is the half the reference diagram uses
-# to separate what caused a step from what merely accompanies it.
-#
-# The relation is derived from the endpoints rather than stored. Nothing else
-# could make it disagree with the roles it describes, and no rule set has to
-# remember to set it.
 EdgeRelation = Literal["causal", "context", "annotation"]
 
 EDGE_RELATION_STYLES: dict[EdgeRelation, EdgeStyle] = {
@@ -76,11 +68,6 @@ class VisualSyntaxProfile:
     or_notation: Literal["separate_edges"]
     event_tactic_badges_only: bool
     prohibited_state_badges: frozenset[str]
-    # Which vocabulary the event badge speaks. The reference diagram badges the
-    # kill-chain phase; this tool has always badged the ATT&CK tactic. Making
-    # it a profile field means the difference is a stated, switchable choice
-    # rather than an assumption buried in the renderer -- which is the whole
-    # reason the profile exists.
     badge_source: BadgeSource = "attack_tactic"
 
 
@@ -92,20 +79,9 @@ AGVS_SP_V1 = VisualSyntaxProfile(
     and_notation="shared_bus",
     or_notation="separate_edges",
     event_tactic_badges_only=True,
-    # An ATT&CK tactic classifies adversary behaviour, so a precondition cannot
-    # hold one: the supervisor identified IA on a prerequisite as invalid, and
-    # the same argument applies to all fourteen. Drawing them on ellipses also
-    # loaded one symbol with two concepts, since the purple circle already
-    # means "this action's tactic" on rectangles. Lallie, Debattista and Bal
-    # (2020) treat that overload as a failure of semiotic clarity. The original
-    # value remains in the canonical graph for auditability; only its invalid
-    # visual placement is suppressed by the presentation layer.
     prohibited_state_badges=frozenset(ATTACK_TACTICS),
 )
 
-# The same syntax reading its event badges in the supervisor's vocabulary. The
-# tactic stays in the canonical graph either way; only the badge changes, so a
-# graph rendered under both profiles is the same graph.
 AGVS_SP_V1_KILL_CHAIN = replace(
     AGVS_SP_V1,
     profile_id="AGVS-SP-1.0-KC",
@@ -117,18 +93,6 @@ AGVS_SP_V1_KILL_CHAIN = replace(
 BADGE_SOURCE_ENV = "AGVS_BADGE_SOURCE"
 
 
-# The badge vocabulary the dissertation's figures use.
-#
-# The supervisor's reference diagram badges the Lockheed Martin Cyber Kill
-# Chain phase on 26 of its 32 nodes and an ATT&CK tactic on only 2, so kill
-# chain is what conformance to that figure means. The tool badged the ATT&CK
-# tactic for most of its life, which is why the mapping is many-to-one and
-# lossy in that direction: fourteen tactics share seven phases. The tactic is
-# never discarded, only unshown. It stays in the canonical JSON, drives the
-# tactic-first technique selection, and still governs Stage B validation.
-#
-# Set AGVS_BADGE_SOURCE=attack_tactic to render the ATT&CK vocabulary instead,
-# which is how the two are compared under otherwise identical conditions.
 DEFAULT_BADGE_SOURCE: BadgeSource = "kill_chain_phase"
 
 
@@ -162,13 +126,7 @@ class VisualNodeSemantics:
     parents: tuple[str, ...]
     join: Literal["AND", "OR"]
     source_index: int
-    # Outline texture, independent of the construct. A dotted precondition and
-    # a dotted event both sit on an alternative branch, and the dotted event
-    # still carries its technique, mitigations and likelihood.
     style: EdgeStyle = "solid"
-    # The canonical construct. ``kind`` collapses external resources into
-    # "state" because they are drawn as ellipses, so it cannot classify the
-    # edges leaving them; this keeps the distinction the edge rule needs.
     role: str = "precondition"
 
     @property
@@ -177,20 +135,6 @@ class VisualNodeSemantics:
         return self.techniques[0] if self.techniques else None
 
 
-# The whole vocabulary an ellipse can badge. Three values, and an annotation
-# badges nothing at all because its dashed outline already says what it is.
-#
-# The codes used to come from the model, one per node, and the model invented a
-# fresh set for every report: PRE1, RESULT2, EXT-RES, VULN, NET, COND, SVCSTOP,
-# ENC-EXEC, XFER. Lallie, Debattista and Bal (2020) name exactly that as the
-# defect in published attack graphs, and their 2018 conjoint study (n=212)
-# found the precondition attribute carries the largest share of practitioner
-# preference at 38.5%, so the least consistent notation sat on the construct
-# readers weight most.
-#
-# Deriving it removes the possibility rather than discouraging it. Role and
-# parentage are already validated by the schema, so no rule set has to remember
-# a vocabulary and no two graphs can disagree about one.
 STATE_BADGES: dict[str, str] = {
     "PRE": "a condition that held before the attack",
     "RES": "a state an action produced",
@@ -248,8 +192,6 @@ def project_visual_nodes(
             mitigations=(),
             likelihood=None,
             parents=tuple(precondition.parents),
-            # Several exploits producing the same state are independently
-            # sufficient alternatives in the canonical schema.
             join="OR",
             source_index=source_index,
             style=precondition.style,

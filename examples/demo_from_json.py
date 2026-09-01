@@ -12,7 +12,6 @@ Run from the project root:
 import sys
 from pathlib import Path
 
-# make src/ importable when run from the project root
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from schema import AttackGraph          # noqa: E402

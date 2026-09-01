@@ -152,13 +152,6 @@ class InputAndNamingTests(unittest.TestCase):
 
 class WebApplicationTests(unittest.TestCase):
     def test_professional_route_defaults_to_the_current_ruleset(self):
-        # This assertion used to read v1.4, because v1.4 was both the frozen
-        # comparison baseline and the version the work used. It is still the
-        # baseline, but every graph the dissertation reports now comes from
-        # v1.6, so a request that chooses nothing must run under v1.6 and
-        # reaching the baseline must be the deliberate act. The constant and
-        # this test were changed together rather than leaving a test that
-        # asserted behaviour the tool no longer has.
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             reports = root / "reports"
@@ -247,11 +240,6 @@ class WebApplicationTests(unittest.TestCase):
             self.assertIn(b"Long-graph pagination: automatic", response.data)
 
     def test_professional_route_rejects_a_ruleset_not_on_disk(self):
-        # The selector offers the rule files that exist. Anything else, whether
-        # a traversal attempt or a typo, falls back to the default instead of
-        # reaching load_ruleset as a path fragment. What matters here is that
-        # the fallback is a rule set on disk, not which one, so the assertion
-        # reads the constant rather than naming a version.
         for tampered in ("../../secrets", "v9.9", "student-v1.2", ""):
             with self.subTest(ruleset=tampered):
                 with tempfile.TemporaryDirectory() as directory:
@@ -299,15 +287,9 @@ class WebApplicationTests(unittest.TestCase):
             self.assertEqual(200, response.status_code)
             pngs = list(outputs.glob("*.png"))
             self.assertEqual(1, len(pngs))
-            # The rule set is recorded in the file name, so a run made under a
-            # non-baseline version can never be mistaken for a baseline run.
             self.assertIn("__rules-v1.5__", pngs[0].name)
 
     def test_image_only_pdf_is_explained_not_just_refused(self):
-        # Printing a web page or scanning a document produces a PDF whose
-        # words are pixels. Refusing it is correct; saying only that nothing
-        # was extracted leaves the reader unable to tell that from a corrupt
-        # file, or to know what to do instead.
         from ingest import _no_text_message
 
         message = _no_text_message(Path("saved-page.pdf"))

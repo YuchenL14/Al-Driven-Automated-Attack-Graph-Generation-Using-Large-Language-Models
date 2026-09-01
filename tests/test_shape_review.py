@@ -74,7 +74,6 @@ def _funnel(n: int) -> dict:
     so it is not what "less chained" should mean.
     """
     graph = {"title": "funnel", "preconditions": [], "events": []}
-    # stem: e0 -> p_hold
     graph["preconditions"].append(
         {"id": "p_start", "label": "Access obtained", "code": "IA",
          "style": "solid", "parents": []})
@@ -85,7 +84,6 @@ def _funnel(n: int) -> dict:
     graph["preconditions"].append(
         {"id": "p_hold", "label": "Foothold on host", "code": "IA",
          "style": "solid", "parents": ["e0"]})
-    # independent work, all consuming p_hold
     for i in range(1, n - 1):
         graph["events"].append(
             {"id": f"e{i}", "label": f"Harvest {i}", "tactic": "CA",
@@ -94,7 +92,6 @@ def _funnel(n: int) -> dict:
         graph["preconditions"].append(
             {"id": f"r{i}", "label": f"Credential set {i}", "code": "CA",
              "style": "solid", "parents": [f"e{i}"]})
-    # a final step that consumes what the independent work produced
     graph["events"].append(
         {"id": f"e{n - 1}", "label": "Aggregate and move on", "tactic": "LM",
          "likelihood": 5.0, "style": "solid",
@@ -128,9 +125,9 @@ class TestTheMeasurement(unittest.TestCase):
         outputs = ROOT / "outputs"
         expected = {
             "netscout-stolen-pencil__rules-v1.6__anthropic-claude-sonnet-5_2":
-                True,   # 23 of 23 events on one path
+                True,
             "netscout-stolen-pencil__rules-v1.6__anthropic-claude-sonnet-5_1":
-                False,  # 9 of 22
+                False,
         }
         for stem, should_fire in expected.items():
             path = outputs / f"{stem}.json"
@@ -320,8 +317,6 @@ class TestTheBudgetIsFixed(unittest.TestCase):
                     {"id": e["id"], "techniques": ["T1190"]}
                     for e in chain["events"]]})
             calls.append(user)
-            # Always answer the review with something no better, so a loop
-            # would keep asking.
             return json.dumps(chain)
 
         _extract_hierarchical("report", call, "model", "v1.6")
@@ -344,7 +339,6 @@ class TestTheBudgetIsFixed(unittest.TestCase):
         self.assertLess(worst, _configured_max_cost_usd())
 
     def test_the_call_ceiling_admits_the_review(self):
-        # 2 Stage A + 1 review + 2 Stage B.
         self.assertGreaterEqual(_MAX_GENERATION_CALLS, 4 + _SHAPE_REVIEW_CALLS)
 
     def test_a_budget_refusal_during_the_review_keeps_the_graph(self):
@@ -359,7 +353,6 @@ class TestTheBudgetIsFixed(unittest.TestCase):
                     for e in chain["events"]]})
             calls.append(user)
             if len(calls) > 1:
-                # What the cost guard raises when it refuses to send.
                 raise RuntimeError(
                     "API cost guard stopped the next model call before it "
                     "was sent")

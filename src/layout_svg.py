@@ -226,9 +226,6 @@ def render_layout_plan_svg(
     fonts = _load_fonts()
     draw = _measure_draw()
 
-    # The same key the PNG draws, aggregation lines included. Omitting them
-    # here left the vector figure -- the one that goes in the dissertation --
-    # showing a box labelled "6 grouped actions" with nothing saying which six.
     legend_lines, legend_area_width, graph_offset_x = legend_geometry(
         model, resolver, extra_legend_lines,
         objective_label_for_page(layout_ir, continuation_labels,
@@ -236,9 +233,6 @@ def render_layout_plan_svg(
     )
     legend_height = len(legend_lines) * LEGEND_LINE_HEIGHT + 88
     width = graph_offset_x + plan.width + GRAPH_RIGHT_PAD
-    # The vector page and the raster page come from one geometry, so the
-    # height rule has to be the same one. See the note beside
-    # CANVAS_BOTTOM_MARGIN.
     height = max(plan.height, legend_height) + CANVAS_BOTTOM_MARGIN
 
     parts = [

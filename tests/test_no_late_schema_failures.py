@@ -41,7 +41,6 @@ BASE = {
          "likelihood": 5.0, "parents": ["p1"], "join": "AND"}],
 }
 
-# name -> mutation. Each corresponds to a rejection in schema.py.
 VIOLATIONS = {
     "over_long_label":
         lambda d: d["preconditions"][1].update(

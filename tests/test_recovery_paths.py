@@ -66,9 +66,6 @@ UNKNOWN_TECHNIQUE_ASSIGNMENTS = json.dumps({"assignments": [
 
 class RecoveryPathTests(unittest.TestCase):
     def test_stage_a_recovers_from_a_schema_rejection(self):
-        # An empty events array violates the skeleton's minimum length, so the
-        # provider raises inside the call. The loop must catch that, send the
-        # correction, and accept the second answer.
         calls: list[type] = []
         attempts = {"skeleton": 0}
 
@@ -88,8 +85,6 @@ class RecoveryPathTests(unittest.TestCase):
         self.assertEqual(3, len(calls))
 
     def test_stage_a_correction_prompt_reaches_the_model(self):
-        # The "no events" guidance existed but had never executed. Prove the
-        # second request actually carries it.
         prompts: list[str] = []
         attempts = {"skeleton": 0}
 
@@ -130,8 +125,6 @@ class RecoveryPathTests(unittest.TestCase):
         self.assertEqual(3, len(calls))
 
     def test_recovered_graph_still_gets_official_mitigations(self):
-        # A graph that arrived through the recovery path must not bypass the
-        # deterministic mitigation derivation.
         attempts = {"assignments": 0}
 
         def payload(system, user, model, response_model):
@@ -152,8 +145,6 @@ class RecoveryPathTests(unittest.TestCase):
             )
 
     def test_seam_double_refuses_to_return_an_invalid_payload(self):
-        # Guard the guard: if this double ever stops validating, the recovery
-        # tests above would silently stop testing recovery.
         call = seam_accurate_call(
             lambda system, user, model, response_model: EMPTY_EVENT_SKELETON
         )

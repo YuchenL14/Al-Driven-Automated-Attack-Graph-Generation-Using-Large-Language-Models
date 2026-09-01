@@ -208,8 +208,6 @@ def _edge_path(
     vertical_top = source.bottom + 1
     vertical_bottom = target.y - 1
     padding = 9
-    # Candidate channels sit just outside existing node columns.  The closest
-    # channel that does not pass through an intermediate node is selected.
     candidates = {source.cx, target.cx, 8, page.width - 8}
     for node in page_nodes:
         candidates.add(node.x - padding)
@@ -267,7 +265,6 @@ def _draw_connectors(draw, page: SemanticPageLayout) -> None:
             for index, source in enumerate(sources):
                 path = _edge_path(
                     source, target, page, lane_offset=index * 8)
-                # Stop at the shared bus; the bus has one arrow to the event.
                 input_path = path[:-1]
                 if input_path[-1][1] != bus_y:
                     input_path.append((input_path[-1][0], bus_y))
@@ -282,7 +279,6 @@ def _draw_connectors(draw, page: SemanticPageLayout) -> None:
                 draw, [(target.cx, bus_y), (target.cx, target.y)])
             continue
 
-        # OR inputs remain visually separate; single inputs use the same route.
         for index, edge in enumerate(edges):
             source = nodes[edge.source]
             path = _edge_path(

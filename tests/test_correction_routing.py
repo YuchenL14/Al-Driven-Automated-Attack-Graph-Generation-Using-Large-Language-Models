@@ -49,7 +49,6 @@ def _with(**mutation):
     return data
 
 
-# Each case must make the gate emit at least one message.
 GATE_CASES = {
     "duplicate id": lambda d: d["events"][0].__setitem__("id", "p1"),
     "missing events": lambda d: d["preconditions"][1].__setitem__(
@@ -172,8 +171,6 @@ class UserFacingClassificationTests(unittest.TestCase):
         self.friendly = app._friendly_error
 
     def test_a_rejected_quotation_is_not_reported_as_a_spend_limit(self):
-        # "quota" sits inside "quotation": the substring test used to fire the
-        # rate-limit branch and told the user to check Settings > Limits.
         message = self.friendly(
             RuntimeError(
                 "stage A failed: e5: source_evidence is not a verbatim extract "

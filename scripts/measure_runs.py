@@ -27,9 +27,6 @@ from visual_syntax import active_profile, project_visual_nodes
 GOLD = ROOT / "tests" / "fixtures" / "stolen_pencil_gold.json"
 
 
-# --------------------------------------------------------------------------
-# structure
-# --------------------------------------------------------------------------
 @dataclass
 class Structure:
     events: int
@@ -102,17 +99,11 @@ def measure_structure(data: dict) -> Structure:
         review_would_fire=bool(shape_revision_request(shape)),
         mixed_join=len(_mixed_join_problems(data)),
         annotation_faults=len(_annotation_problems(data)),
-        # Reported, never failed on. A graph whose every action maps to one
-        # technique is not violating anything; Rule 7 decides how many, and
-        # the answer depends on the report.
         max_techniques=max((len(e.get("techniques") or [])
                             for e in data.get("events") or []), default=0),
     )
 
 
-# --------------------------------------------------------------------------
-# visual syntax
-# --------------------------------------------------------------------------
 PROFESSIONAL_ONLY_CHECKS = ("every action has a technique",)
 
 SYNTAX_CHECKS = (
@@ -197,9 +188,6 @@ def check_syntax(model: AttackGraph) -> dict[str, bool]:
     return result
 
 
-# --------------------------------------------------------------------------
-# layout
-# --------------------------------------------------------------------------
 @dataclass
 class Layout:
     pages: int | None = None
@@ -235,9 +223,6 @@ def read_layout(path: Path, model: AttackGraph | None = None) -> Layout:
     )
 
 
-# --------------------------------------------------------------------------
-# gold comparison
-# --------------------------------------------------------------------------
 @dataclass
 class GoldScore:
     rule: str
@@ -278,9 +263,6 @@ def score_against_gold(model: AttackGraph, gold_path: Path) -> list[GoldScore]:
     return scores
 
 
-# --------------------------------------------------------------------------
-# reporting
-# --------------------------------------------------------------------------
 def _short_name(path: Path) -> str:
     """Report and run number, which is what distinguishes two runs."""
 
@@ -368,7 +350,6 @@ def report(paths: list[Path], markdown: bool, gold: Path | None,
                              for x in layouts]),
         ("bends", [str(x.bends if x.bends is not None else "-")
                    for x in layouts]),
-        # Whether the figure can be used, as opposed to whether it is correct.
         ("widest page px",
          [str(x.widest_page_px) if x.widest_page_px else "-"
           for x in layouts]),

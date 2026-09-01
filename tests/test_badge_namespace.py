@@ -56,19 +56,11 @@ class TestMapping(unittest.TestCase):
 class TestProfileSelection(unittest.TestCase):
 
     def test_the_default_badges_the_supervisor_s_vocabulary(self):
-        # This assertion used to read AGVS_SP_V1, because the tool badged the
-        # ATT&CK tactic and the kill chain was the option. The reference
-        # diagram badges the kill-chain phase on 26 of its 32 nodes and a
-        # tactic on 2, so conformance to that figure means the kill chain is
-        # the default and the tactic is the option. The constant and this test
-        # were changed together rather than leaving a test asserting a default
-        # the tool no longer has.
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("AGVS_BADGE_SOURCE", None)
             self.assertIs(active_profile(), AGVS_SP_V1_KILL_CHAIN)
 
     def test_the_attack_tactic_profile_is_still_selectable(self):
-        # The v1.4/v1.6 comparison needs both vocabularies reachable.
         with patch.dict(os.environ, {"AGVS_BADGE_SOURCE": "attack_tactic"}):
             self.assertIs(active_profile(), AGVS_SP_V1)
 

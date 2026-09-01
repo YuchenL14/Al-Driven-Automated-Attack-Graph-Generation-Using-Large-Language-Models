@@ -37,8 +37,6 @@ sys.path.insert(0, str(ROOT / "src"))
 from extract import (_mixed_join_problems, is_mixed_join_fault,
                      is_structural_stage_a_fault)
 
-# Two substitutable routes to one credential state, plus conditions that hold
-# whichever route was taken. Written the way Rule 3 now asks for.
 CORRECT = {
     "events": [
         {"id": "e_phish", "label": "Phish for privileged credentials",
@@ -54,7 +52,6 @@ CORRECT = {
          "code": "P1", "parents": []},
         {"id": "p_no_mfa", "label": "MFA not enabled on the server",
          "code": "P2", "parents": []},
-        # One state, two producers: the OR lives here.
         {"id": "p_creds", "label": "Privileged credentials obtained",
          "code": "P3", "parents": ["e_phish", "e_brute"]},
         {"id": "p_in", "label": "Foothold on the network",

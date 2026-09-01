@@ -65,7 +65,6 @@ class StructureTests(unittest.TestCase):
         structure = measure_structure(CHAIN)
         self.assertEqual(1, structure.annotations)
         self.assertEqual(3, structure.states)
-        # The annotation hangs off e2 and would otherwise read as a terminal.
         self.assertEqual(1, structure.terminals)
 
     def test_convergence_is_the_share_reaching_one_ending(self):
@@ -151,15 +150,6 @@ class LayoutTests(unittest.TestCase):
 
 
 class CommandLineTests(unittest.TestCase):
-    # Runs kept from before the rules that would now reject them. Recorded
-    # rather than deleted: they are the evidence that the rules changed
-    # something, and listing them here means a NEW failure is still caught.
-    # Runs 1 and 5 were listed here for "no connector crosses a node" and are
-    # not any more. Same saved graphs, same check: the planner now separates
-    # same-rank blocks by the width they are actually drawn at rather than by
-    # an estimate, and the routes that had to squeeze past a drifted block no
-    # longer exist. Removed rather than left in place, because this table's
-    # only value is that an entry means something.
     KNOWN_HISTORICAL = {
         "netscout-stolen-pencil__rules-v1.6__anthropic-claude-sonnet-5_4":
             ["every action has a technique"],
@@ -197,7 +187,6 @@ class CommandLineTests(unittest.TestCase):
                 f"{stem} no longer fails what it is recorded as failing")
 
     def test_it_exits_non_zero_when_a_check_fails(self):
-        # Exit status is what makes it usable in a build step.
         self.assertEqual(1, main([str(ROOT / "outputs" / "missing.json")]))
 
 

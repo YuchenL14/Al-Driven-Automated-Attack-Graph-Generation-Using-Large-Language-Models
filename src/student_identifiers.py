@@ -15,19 +15,14 @@ NoteKind = Literal[
     "kept_mitigation_without_technique",
 ]
 
-# Retirements the rule set already names. Reported as a replacement to consider,
-# never substituted: choosing between three successors is the student's call.
 RETIRED_TECHNIQUES: dict[str, str] = {
     "T1562": "T1685 (disable or modify tools), T1686 (disable or modify "
              "system firewall) or T1687 (exploitation for defense impairment)",
 }
 
 
-# ATT&CK identifiers as they appear in prose: T1213, T1566.002, M1047.
 _TECHNIQUE_IN_TEXT = re.compile(r"\bT\d{4}(?:\.\d{3})?\b")
 _MITIGATION_IN_TEXT = re.compile(r"\bM\d{4}\b")
-# A full stop that really ends a sentence: not one inside T1003.003 or
-# NTDS.dit, so it must not sit between two digits or before a letter.
 _SENTENCE_END = re.compile(r"(?<!\d)\.(?=\s|$)")
 _CLAUSE_END = re.compile(r"(?<!\d)[.!?](?=\s|$)")
 
@@ -96,12 +91,6 @@ def read_identifiers_from_text(events: list[dict], narrative: str) -> None:
 
     if not narrative:
         return
-    # Matched on normalised whitespace. A pasted description is wrapped, so a
-    # sentence can carry a newline where the quotation carries a space, and a
-    # literal search then finds nothing: the first real run lost a student's
-    # T1213 to a line break between "refunds" and "system". This is the third
-    # comparison in this project to be defeated the same way, so prose is no
-    # longer matched on raw text anywhere.
     flat_narrative = " ".join(narrative.split())
     for event in events:
         quotation = " ".join((event.get("source_evidence") or "").split())
@@ -110,17 +99,6 @@ def read_identifiers_from_text(events: list[dict], narrative: str) -> None:
         start = flat_narrative.find(quotation)
         if start < 0:
             continue
-        # Read exactly the sentence the quotation sits in, so a trailing
-        # "(T1213; mitigations M1047)" is included but identifiers from the
-        # next sentence can never bleed into this event.  Searching only after
-        # the quotation was wrong when the quotation already included its
-        # terminal full stop: the next sentence's M-numbers were then silently
-        # attributed to the previous action.
-        #
-        # Not every full stop ends a sentence. "T1003.003" and "NTDS.dit" both
-        # contain one, and cutting at the first of them truncated a student's
-        # sub-technique to its parent: the span ended mid-identifier at
-        # "(T1003" and the pattern matched exactly that.
         tail = _SENTENCE_END.search(flat_narrative, start)
         span = flat_narrative[
             start:tail.end() if tail else len(flat_narrative)]
@@ -214,8 +192,6 @@ class AcceptedIdentifiers:
 
 
 def _known_technique(identifier: str) -> bool:
-    # An empty catalogue means the lookup file is absent; refusing everything
-    # then would be worse than accepting, so absence disables the check.
     return not KNOWN_TECHNIQUES or identifier in KNOWN_TECHNIQUES
 
 
@@ -286,10 +262,6 @@ def classify_identifiers(
                     f"{technique}. It has been kept as you wrote it."))
 
         if kept and stated and technique is None:
-            # A step where the technique was rejected but the mitigations were
-            # not. Without this line the student reads the retirement note for
-            # their technique and has no way to tell whether the mitigations
-            # they wrote beside it survived.
             notes.append(IdentifierNote(
                 event_id, label, "kept_mitigation_without_technique",
                 f"your technique for this step was not usable, so a technique "

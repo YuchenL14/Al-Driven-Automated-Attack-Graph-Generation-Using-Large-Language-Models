@@ -4,7 +4,6 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
-# Official MITRE ATT&CK Enterprise STIX 2.1 bundle, most recent release.
 STIX_URL = ("https://raw.githubusercontent.com/mitre-attack/"
             "attack-stix-data/master/enterprise-attack/enterprise-attack.json")
 
@@ -76,7 +75,6 @@ def main() -> None:
     mitigation_stix_ids: dict[str, str] = {}
 
     for obj in bundle.get("objects", []):
-        # skip anything MITRE has retired
         if obj.get("revoked") or obj.get("x_mitre_deprecated"):
             continue
         aid = attack_id(obj)
@@ -121,10 +119,7 @@ def main() -> None:
         "_attack_version": collection_version(bundle),
         "_retrieved": date.today().isoformat(),
         "techniques": dict(sorted(techniques.items())),
-        # technique -> tactic abbreviations, added for tactic-scoped retrieval.
         "technique_tactics": dict(sorted(technique_tactics.items())),
-        # technique -> officially related mitigations, derived from STIX
-        # course-of-action --mitigates--> attack-pattern relationships.
         "technique_mitigations": {
             tid: sorted(mids)
             for tid, mids in sorted(technique_mitigations.items())

@@ -114,9 +114,6 @@ def _module_paths(
             current = child
         paths.append(tuple(path))
 
-    # A DAG should have exposed every vertex through a start.  Retaining this
-    # deterministic fallback makes the contract robust for state-only pages
-    # or future specialised atomic-block construction.
     for block_id in sorted(graph.nodes, key=block_order.get):
         if block_id not in assigned:
             paths.append((block_id,))
@@ -181,8 +178,6 @@ def analyze_macro_layout(layout_ir: LayoutIR) -> MacroLayout:
         )
     ranks = _longest_path_ranks(module_graph)
 
-    # State production/consumption is needed only to expose meaningful module
-    # boundaries.  It never changes the underlying LayoutIR edges.
     producer_by_state = {
         state_id: block.id
         for block in layout_ir.atomic_blocks

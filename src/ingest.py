@@ -16,7 +16,6 @@ def ingest(path: str | Path) -> str:
             raise ValueError(f"report contains no text: {p}")
         return text
 
-    # everything else (pdf, docx, html, pptx...) goes through markitdown
     from markitdown import MarkItDown
     md = MarkItDown(enable_plugins=False)
     result = md.convert(str(p))

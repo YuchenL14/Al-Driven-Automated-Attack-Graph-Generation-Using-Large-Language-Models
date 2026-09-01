@@ -61,7 +61,6 @@ def main() -> None:
     args = sys.argv[1:]
     compact = "compact" in args
     split = "split" in args
-    # a "rules=vX" token selects the rule set version; default is the built-in one
     ruleset = next((a.split("=", 1)[1] for a in args if a.startswith("rules=")),
                    DEFAULT_RULESET)
     args = [a for a in args
@@ -72,7 +71,6 @@ def main() -> None:
     effective_model = resolve_model(provider, model)
 
     OUTPUTS_DIR.mkdir(exist_ok=True)
-    # fold the rule set version into the name so iterations do not overwrite
     stem = f"{report.stem}__rules-{ruleset}"
     filename_model = None if provider == "mock" else effective_model
     out_path = tagged_output_path(

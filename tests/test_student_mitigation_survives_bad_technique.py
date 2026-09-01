@@ -69,7 +69,6 @@ class MitigationSurvivalTests(unittest.TestCase):
             _events("T1562", ["M9999"]), _TECHNIQUE_MITIGATIONS)
         self.assertEqual((), accepted["e5"].mitigations)
         self.assertIn("unknown_mitigation", {note.kind for note in notes})
-        # Nothing survived, so there is nothing to say survived.
         self.assertNotIn("kept_mitigation_without_technique",
                          {note.kind for note in notes})
 

@@ -7,8 +7,6 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-# --- The 14 MITRE ATT&CK Enterprise tactics (abbreviation -> canonical) ------
-# Used to REJECT non-ATT&CK tactic markers (fixes the mixed-scheme issue).
 ATTACK_TACTICS = {
     "RE": "Reconnaissance",
     "RS": "Resource Development",
@@ -26,16 +24,6 @@ ATTACK_TACTICS = {
     "IM": "Impact",
 }
 
-# The supervisor's reference diagram badges the Lockheed Martin Cyber Kill
-# Chain phase, not the ATT&CK tactic: its own `code_namespaces` block records
-# `supervisor_visual_phase: R W D E I C A` on 26 of its 32 nodes and an ATT&CK
-# tactic on only 2. The two notations are not interchangeable, so the tool has
-# to be able to speak both rather than assume one.
-#
-# The mapping is many-to-one and lossy in that direction, which is the point:
-# the kill chain has seven phases and ATT&CK has fourteen tactics, so several
-# tactics share a phase. It is derived, never stored, so a graph cannot carry a
-# phase that contradicts its tactic.
 KILL_CHAIN_PHASES = {
     "R": "Reconnaissance",
     "W": "Weaponization",
@@ -47,19 +35,19 @@ KILL_CHAIN_PHASES = {
 }
 
 TACTIC_TO_KILL_CHAIN = {
-    "RE": "R",   # Reconnaissance
-    "RS": "W",   # Resource Development is where the adversary weaponises
-    "IA": "D",   # Initial Access is the delivery of the attack to the target
-    "EX": "E",   # Execution is the exploitation step
-    "PS": "I",   # Persistence installs the foothold
-    "PE": "E",   # Privilege Escalation exploits a further weakness
-    "DE": "E",   # Defence Evasion exploits or subverts a control
-    "CA": "E",   # Credential Access exploits to obtain credentials
-    "DS": "A",   # Discovery is already action on the objective
+    "RE": "R",
+    "RS": "W",
+    "IA": "D",
+    "EX": "E",
+    "PS": "I",
+    "PE": "E",
+    "DE": "E",
+    "CA": "E",
+    "DS": "A",
     "LM": "A",
     "CL": "A",
-    "C2": "C",   # Command and Control
-    "EF": "A",   # Exfiltration is the objective itself
+    "C2": "C",
+    "EF": "A",
     "IM": "A",
 }
 
@@ -70,14 +58,9 @@ def kill_chain_phase(tactic: str) -> str | None:
     return TACTIC_TO_KILL_CHAIN.get(tactic)
 
 
-# Technique id: T#### optionally .### (three-digit sub-technique).  Fixes .02 -> .002
 TECHNIQUE_RE = re.compile(r"^T\d{4}(\.\d{3})?$")
 MITIGATION_RE = re.compile(r"^M\d{4}$")
 
-# --- known ATT&CK ids (the closed vocabulary the tool supports) -------------
-# Loaded from the same offline lookup used for the legend. A technique or
-# mitigation id must exist here, which stops a model inventing a plausible but
-# non-existent id such as M1052. Extend data/attack_lookup.json to widen it.
 _LOOKUP = Path(__file__).resolve().parent.parent / "data" / "attack_lookup.json"
 try:
     _raw = json.loads(_LOOKUP.read_text(encoding="utf-8"))
@@ -87,7 +70,7 @@ try:
         tid: set(tactics)
         for tid, tactics in _raw.get("technique_tactics", {}).items()
     }
-except Exception:                       # fall back to format-only if file missing
+except Exception:
     KNOWN_TECHNIQUES = set()
     KNOWN_MITIGATIONS = set()
     KNOWN_TECHNIQUE_TACTICS = {}
@@ -95,14 +78,6 @@ except Exception:                       # fall back to format-only if file missi
 
 NodeRole = Literal["precondition", "external_resource", "annotation"]
 
-# Outline texture. This is independent of the construct: the reference diagram
-# draws both an ordinary precondition and an ordinary event with a dotted
-# outline on the alternative delivery branch, and those dotted events still
-# carry their technique, mitigations and likelihood. Only an annotation is
-# dashed. Lallie, Debattista and Bal (2020) record that 11.9% of surveyed
-# attack graphs use edge texture but that no shared meaning exists for it, and
-# that texture is a weak visual variable compared with shape or fill, so this
-# is a documented project convention rather than a standard.
 NodeStyle = Literal["solid", "dotted", "dashed"]
 
 
@@ -177,18 +152,10 @@ class Event(BaseModel):
     id: str
     label: str
     tactic: str = Field(..., description="ATT&CK tactic abbreviation, top-left")
-    # A list, because the reference diagram stacks several T-numbers on one
-    # action: two of its nodes carry seven. Stored as the canonical form so a
-    # score computed against that diagram is comparing like with like.
-    # ``technique`` remains readable as a property and remains accepted as an
-    # input key, so v1.4 data and every existing reader are unaffected.
     techniques: List[str] = Field(default_factory=list,
                                   description="T-numbers, top-right stack")
     mitigations: List[str] = Field(default_factory=list, description="M-numbers, bottom-right")
     likelihood: Optional[float] = Field(None, ge=0, le=10, description="bottom-left, 0-10")
-    # v1.5 evidence metadata.  These remain optional in the shared contract so
-    # frozen v1.4 data and hand-written example JSON continue to validate.  The
-    # v1.5 extraction path requires and checks all three fields explicitly.
     source_evidence: Optional[str] = Field(
         None, description="exact quotation from the supplied report")
     evidence_status: Optional[Literal[
@@ -197,26 +164,14 @@ class Event(BaseModel):
     evidence_confidence: Optional[int] = Field(
         None, ge=0, le=100,
         description="confidence in the extracted claim, separate from likelihood")
-    # Student v1.1 grounding metadata. Optional here so the frozen professional
-    # v1.4 contract and existing examples remain byte-for-byte compatible.
     actor: Optional[Literal[
         "adversary", "victim", "defender", "investigator", "unknown"
     ]] = None
     action_evidence: Optional[str] = Field(
         None, description="exact action verb or verb phrase inside source_evidence")
-    # An event on an alternative or uncertain branch is drawn dotted. It keeps
-    # its technique, mitigations and likelihood: outline texture says how
-    # certain the branch is, not whether the step is classified.
     style: NodeStyle = "solid"
-    # precondition logic: which nodes feed this event, and how they combine
     parents: List[str] = Field(default_factory=list)
     join: Literal["AND", "OR"] = "AND"
-    # A small number of reference graphs, including the supervisor's Stolen
-    # Pencil figure, deliberately end on an action rectangle rather than on a
-    # separate result ellipse.  This flag makes that exception explicit.  It
-    # must not be used merely because Stage A forgot to emit an action's result;
-    # the professional structural gate enforces that distinction before Stage
-    # B is called.  The default preserves every existing graph document.
     terminal_goal: bool = Field(
         False,
         description=(
@@ -264,12 +219,6 @@ class Event(BaseModel):
             return data
         if "technique" not in data:
             return data
-        # The singular key wins over any list already present. Stage B writes
-        # it onto a skeleton that the student and evidence paths dumped from an
-        # already-validated graph, so both keys arrive together and the
-        # singular one is the later, explicit assignment. Letting the list win
-        # discarded Stage B's answer silently, and silently overrode an
-        # abstention -- the failure mode this schema exists to prevent.
         folded = dict(data)
         single = folded.pop("technique")
         folded["techniques"] = [single] if single else []
@@ -392,7 +341,6 @@ class AttackGraph(BaseModel):
         """Defensive controls and commentary attached beside a step."""
         return [p for p in self.preconditions if p.role == "annotation"]
 
-    # ---- input adapters (Approach C) --------------------------------------
     @classmethod
     def from_json_file(cls, path: str | Path) -> "AttackGraph":
         """Route 1 (works today): load a canonical JSON file."""

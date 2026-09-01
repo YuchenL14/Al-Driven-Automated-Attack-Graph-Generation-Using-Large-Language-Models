@@ -29,7 +29,6 @@ def model_tag(provider: str | None, model: str | None) -> str:
 
     parts = [p for p in (provider, model) if p]
     raw = "-".join(parts) if parts else "unknown"
-    # replace any character that is awkward in a file name with a hyphen
     safe = re.sub(r"[^A-Za-z0-9._-]+", "-", raw)
     return safe.strip("-.") or "unknown"
 
@@ -56,12 +55,11 @@ def _esc(s) -> str:
     """Escape &, <, > so text is safe inside Graphviz HTML-like labels."""
     return html.escape(str(s), quote=False)
 
-# --- palette (matches the existing four-colour badge scheme) ----------------
-C_TACTIC = "#b6a8d6"      # lavender
-C_TECH = "#e8918c"        # red
-C_LIKELIHOOD = "#4ec9b0"  # teal
-C_MITIG = "#f4b860"       # orange
-C_BORDER = "#33415e"      # dark slate
+C_TACTIC = "#b6a8d6"
+C_TECH = "#e8918c"
+C_LIKELIHOOD = "#4ec9b0"
+C_MITIG = "#f4b860"
+C_BORDER = "#33415e"
 C_TEXT = "#1a1a2e"
 FONT = "Helvetica"
 
@@ -87,9 +85,6 @@ def selected_png_renderer(renderer: str | None = None) -> str:
     return selected
 
 
-# ---------------------------------------------------------------------------
-# structural model + validation
-# ---------------------------------------------------------------------------
 def build_digraph(model: AttackGraph) -> nx.DiGraph:
     g = nx.DiGraph()
     for p in model.causal_preconditions:
@@ -106,9 +101,6 @@ def build_digraph(model: AttackGraph) -> nx.DiGraph:
     return g
 
 
-# ---------------------------------------------------------------------------
-# HTML-like label helpers
-# ---------------------------------------------------------------------------
 def _badge(text: str, bg: str) -> str:
     """A small rounded colour badge (one-cell nested table)."""
     return (
@@ -196,13 +188,10 @@ def _add_graphviz_edges(dot: Digraph, model: AttackGraph,
         dot.edge(junction_id, event.id)
 
 
-# ---------------------------------------------------------------------------
-# render
-# ---------------------------------------------------------------------------
 def _render_graphviz(model: AttackGraph, out_path: str, fmt: str = "png",
                      dpi: int = 170, resolver: AttackResolver | None = None,
                      compact: bool = False) -> str:
-    build_digraph(model)                     # <-- raises if not a DAG
+    build_digraph(model)
     if not model.events and not model.preconditions:
         raise ValueError(
             "the model produced no attack steps from this report. This usually "
@@ -232,20 +221,16 @@ def _render_graphviz(model: AttackGraph, out_path: str, fmt: str = "png",
                 tight_pairs.add((p.parents[0], p.id))
                 produced.add(p.parents[0])
 
-    # preconditions (ellipses)
     for p in model.preconditions:
         dot.node(p.id, label=_precondition_label(p), shape="ellipse",
                  color=C_BORDER, penwidth="1.4")
 
-    # events (rectangles)
     for e in model.events:
         dot.node(e.id, label=_event_label(e), shape="box",
                  color=C_BORDER, penwidth="1.6")
 
-    # edges + unlabelled connected/disconnected precondition logic
     _add_graphviz_edges(dot, model, tight_pairs)
 
-    # auto-generated legend (only if there is something to decode)
     legend = resolver.build_legend(model)
     if any(items for items in legend.values()):
         dot.node("__legend", label=_legend_label(legend), shape="plaintext")
@@ -336,7 +321,6 @@ def render(model: AttackGraph, out_path: str, fmt: str = "png",
 
 
 if __name__ == "__main__":
-    # tiny smoke test
     from schema import Precondition, Event
     g = AttackGraph(
         title="smoke",
@@ -364,7 +348,6 @@ def measure_page_quality(page_model: AttackGraph) -> dict:
     plan = plan_layout(layout_ir)
     routed = route_layout(layout_ir, plan)
     if quality_mode() == "strict":
-        # Callers run this before drawing, so a strict refusal costs no image.
         validate_layout_quality(layout_ir, plan, routed)
     quality = measure_layout_quality(layout_ir, plan, routed)
     warnings = (quality_warnings(quality)
@@ -484,8 +467,6 @@ def render_split(model, out_path: str, fmt: str = "png", dpi: int = 170,
                 compact=compact,
                 page_header=f"Part {part.index} of {len(plan.parts)}",
                 continuation_labels_by_id=continuation_labels(plan, part),
-                # The tie note goes on the last page only, where the reader has
-                # seen every ending the graph claims.
                 extra_legend_lines=(
                     tuple(_legend_for_page(aggregated_groups, page))
                     + (no_objective_note

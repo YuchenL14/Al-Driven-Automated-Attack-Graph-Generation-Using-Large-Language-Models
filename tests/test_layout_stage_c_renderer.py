@@ -38,16 +38,9 @@ class LayoutStageCRendererTests(unittest.TestCase):
             plan = plan_layout(build_layout_ir(graph))
             with Image.open(output) as image:
                 self.assertEqual("PNG", image.format)
-                # The page is exactly the legend column plus the planned graph
-                # and its badge overhang; it is no longer padded out to a
-                # fixed landscape width.
                 self.assertGreaterEqual(
                     image.width, graph_offset_x + plan.width
                 )
-                # This assertion used to read 710, a fixed floor that padded a
-                # small graph with blank space amounting to much of the figure.
-                # The height now follows the content, so what is asserted is
-                # that the content fits and that the padding is bounded.
                 legend_lines, _, _ = legend_geometry(graph)
                 needed = max(plan.height,
                              len(legend_lines) * LEGEND_LINE_HEIGHT + 88)
@@ -62,8 +55,6 @@ class LayoutStageCRendererTests(unittest.TestCase):
             render_new_layout_png(graph, str(output))
             _, legend_area_width, _ = legend_geometry(graph)
             with Image.open(output).convert("RGB") as image:
-                # The renderer deliberately reserves a 34px white gutter
-                # between the left-hand legend and the causal graph.
                 gutter = image.crop(
                     (legend_area_width, 60, legend_area_width + 30, image.height)
                 )
@@ -79,10 +70,10 @@ class LayoutStageCRendererTests(unittest.TestCase):
             render_new_layout_png(graph, str(output))
             with Image.open(output).convert("RGB") as image:
                 colours = set(image.get_flattened_data())
-        self.assertIn((184, 181, 234), colours)  # tactic badge
-        self.assertIn((49, 168, 196), colours)   # likelihood badge
-        self.assertIn((243, 178, 178), colours)  # technique tag
-        self.assertIn((231, 190, 155), colours)  # mitigation tag
+        self.assertIn((184, 181, 234), colours)
+        self.assertIn((49, 168, 196), colours)
+        self.assertIn((243, 178, 178), colours)
+        self.assertIn((231, 190, 155), colours)
 
     def test_all_report_oracle_pages_render_within_aspect_budget(self):
         factories = (
@@ -111,10 +102,6 @@ class LayoutStageCRendererTests(unittest.TestCase):
                         continuation_labels=continuation_labels(split, part),
                     )
                     with Image.open(output) as image:
-                        # The Stolen Pencil reference page is portrait, at
-                        # roughly 1.13 high per unit wide. The budget allows a
-                        # chain-structured incident to be a little taller
-                        # without padding the page with empty space.
                         self.assertLessEqual(
                             image.height / image.width,
                             1.65,

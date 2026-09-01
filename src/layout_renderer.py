@@ -21,10 +21,6 @@ WHITE = "#FFFFFF"
 TEXT = "#222222"
 BORDER = "#303030"
 TACTIC = "#B8B5EA"
-# A state code is a different concept from an adversary tactic, so it must not
-# reuse the tactic badge's colour. Lallie, Debattista and Bal (2020) record
-# that a difference in fill creates a perceptible visual distance while a
-# difference in edge treatment does not.
 STATE_PHASE = "#CFCFC7"
 LIKELIHOOD = "#31A8C4"
 TECHNIQUE = "#F3B2B2"
@@ -34,58 +30,19 @@ CONTINUATION = "#666666"
 
 BADGE_DIAMETER = 26
 LEGEND_GAP = 34
-# The key was one line per entry, and the column was set wide enough for the
-# longest ATT&CK technique name to fit on one: 386px of the page, before the
-# graph got any. Against the width budget below that is 40% of a page spent on
-# text that reads perfectly well wrapped, and it was the difference between two
-# and three drawn columns per page. So the key wraps and the width is fixed.
 LEGEND_TEXT_WIDTH = 240
 LEGEND_MIN_WIDTH = LEGEND_TEXT_WIDTH + 24
 LEGEND_LINE_HEIGHT = 13
 LEGEND_MARGIN = 14
-# The canvas follows its content. A fixed floor of 710px sat here for most of
-# the project, and on a small graph it was most of the figure: a page whose
-# graph and key both ended around 420px was padded to 710, so 40% of what went
-# into the document was blank.
-#
-# Nothing measured noticed, which is the part worth recording. The acceptance
-# limit named "graph content leaves excessive vertical whitespace" reads
-# `occupied_height_fraction`, and that is computed from the plan rather than
-# from the canvas, so the check with exactly the right name could not see the
-# whitespace a reader sees. Page width, and therefore the printed point size
-# every figure is judged on, is unaffected by this constant, so removing the
-# floor changes how the figures look without changing what was measured.
-#
-# The margin is zero because the planner already leaves room below the last
-# rank, which is why the previous rule could take the plan height unchanged on
-# every page tall enough to clear the floor and never clipped anything. A
-# margin added on top of that padded the pages that were already correct.
 CANVAS_BOTTOM_MARGIN = 0
-# Technique and mitigation tags are drawn just outside the planned node box.
-# The planner does not reserve that space, so the canvas adds it once.
 GRAPH_RIGHT_PAD = 76
 
-# Type sizes in pixels. Named because the page-width budget below is derived
-# from the node size, and a silent edit to one without the other would move the
-# budget without anyone deciding to.
 NODE_FONT_PX = 14
 BADGE_FONT_PX = 11
 TAG_FONT_PX = 9
 LEGEND_FONT_PX = 10
 HEADER_FONT_PX = 14
 
-# How wide a page may be before its type is too small to read in print.
-#
-# A figure in the dissertation is placed at some physical width and every pixel
-# scales with it, so the printed size of a node label is decided by the ratio of
-# the font to the whole canvas, not by the DPI stamped in the file. Placing a
-# page across a landscape A4 text area gives about 250 mm, which is 708.7 pt;
-# a label set at NODE_FONT_PX of a canvas W pixels wide prints at
-# NODE_FONT_PX / W * 708.7 pt. Requiring 8 pt -- the usual floor for figure
-# text -- gives W <= 1240.
-#
-# Before this budget existed the widest page produced by this tool was 3731 px,
-# whose labels print at 1.7 pt.
 FIGURE_PLACEMENT_WIDTH_PT = 250 / 25.4 * 72
 MIN_PRINTED_LABEL_PT = 8.0
 MAX_PAGE_WIDTH_PX = int(
@@ -409,8 +366,6 @@ def _draw_connector(draw, connector: RoutedConnector, dx: int = 0,
             roles.get(source_id, "precondition"), target_role)
         style = edge_style(relation, styles.get(source_id, "solid"))
         arrow = index in connector.input_arrow_indices
-        # An arrowhead is never a duplicate: it says which way this particular
-        # edge runs, and two edges sharing a column still arrive separately.
         if arrow or _stroked_once(path, style, already):
             _draw_path(draw, path, arrow, dx, style)
     if connector.shared_bus:
@@ -474,10 +429,6 @@ def _syntax_key_lines(model: AttackGraph,
                  == "kill_chain_phase" else "ATT&CK tactic")
         lines.append(f"Circle at an action's top-left corner: {badge}, keyed "
                      "below")
-    # The state vocabulary is fixed at three symbols and derived from the
-    # graph, so the same three mean the same three on every figure this tool
-    # draws. Only the ones this page uses are stated, on the same rule as
-    # every other line here.
     drawn_state_badges = {
         code for code in (
             state_badge_code(node.role, bool(node.parents))
@@ -498,10 +449,6 @@ def _syntax_key_lines(model: AttackGraph,
         lines.append("Number at an action's bottom-left corner: how feasible "
                      "the step was judged to be, 0 to 10")
     if has_aggregates:
-        # Without this a line above is false for one shape on the page, and
-        # the reader has no way to know until the end of the key. Which shape
-        # is deliberately not named: an action fold draws a rectangle and an
-        # outcome fold draws an ellipse, and this one line is true of both.
         lines.append("One shape stands for several nodes folded together; "
                      "they are listed at the end of this key")
     return lines
@@ -539,9 +486,6 @@ def _legend_lines(
 
     lines = _syntax_key_lines(model, has_aggregates=bool(extra_lines))
     if objective_label:
-        # The bottom of the figure, named. The placement already puts this node
-        # on a row of its own, but a reader coming to the page cold should not
-        # have to infer from position what the key can simply say.
         lines.append("")
         lines.append(f"The attack's objective, at the foot of the figure: "
                      f"{objective_label}")
@@ -640,8 +584,6 @@ def legend_geometry(
         if not line:
             lines.append(line)
             continue
-        # Continuation indented, so a wrapped technique name cannot be mistaken
-        # for the start of the next entry.
         wrapped = _wrap(measure_draw, line, fonts["legend"], LEGEND_TEXT_WIDTH)
         lines.append(wrapped[0])
         lines.extend(f"   {part}" for part in wrapped[1:])
@@ -666,10 +608,6 @@ def _draw_node(
     right = node.right + dx
     centre_x = node.cx + dx
     bounds = (left, node.y, right, node.bottom)
-    # Lallie et al. (2020) find that edge weight is not a perceptible visual
-    # variable. The construct distinction is therefore carried by the shape
-    # alone, and every outline uses the same stroke width. Texture is reserved
-    # for the separate question of how certain the branch is.
     style = getattr(semantics, "style", "solid")
     if semantics.shape == "ellipse":
         draw.ellipse(bounds, fill=WHITE,
@@ -677,8 +615,6 @@ def _draw_node(
         if style != "solid":
             _draw_broken_outline(draw, _ellipse_points(bounds), style)
     else:
-        # An annotation is a box like an event, distinguished by its dashed
-        # outline and by carrying no ATT&CK metadata at all.
         draw.rectangle(bounds, fill=WHITE,
                        outline=None if style != "solid" else BORDER, width=1)
         if style != "solid":
@@ -686,8 +622,6 @@ def _draw_node(
 
     continuation = continuation_labels.get(node.canonical_id)
     label_center_y = node.cy - (8 if continuation else 0)
-    # An ellipse only offers its full width across the middle, so its text
-    # column is narrower than the bounding box.
     inner_width = node.width - (36 if semantics.shape == "ellipse" else 20)
     lines = _wrap(
         draw,
@@ -729,9 +663,6 @@ def _draw_node(
 
     if semantics.kind != "event":
         return
-    # A stack, growing downward from the top-right corner. The reference
-    # diagram puts up to seven techniques on one action, and showing only the
-    # first would silently drop the rest.
     tag_top = node.y - 8
     for technique in semantics.techniques:
         tag_top += _draw_tag(
@@ -750,20 +681,6 @@ def _draw_node(
             LIKELIHOOD,
             fonts["badge"],
         )
-    # Mitigations hang from the bottom-right, but a long technique stack can
-    # reach past the middle of the node. Growing them downward from whichever
-    # is lower keeps the two stacks from printing over each other, which is
-    # what happened with a seven-technique action.
-    #
-    # The stack grew without limit while the page height was computed from
-    # node geometry alone, so the two never agreed. An aggregate node carrying
-    # the union of seven actions' mitigations reached sixteen tags and ran off
-    # the bottom of the page, where the identifiers could not be read at all.
-    # An earlier fix for the same class only moved the starting point.
-    #
-    # Clip to the room that exists and say how many were hidden. Nothing is
-    # lost: every mitigation is in the left-margin key, which is built from the
-    # same list.
     tag_y = max(node.bottom - 12, tag_top)
     shown = list(semantics.mitigations)
     if page_bottom is not None and shown:
@@ -839,9 +756,6 @@ def render_layout_plan_png(
             fill=TEXT,
         )
 
-    # One relation lookup for the page. The roles come from the same
-    # projection the nodes were drawn from, so an edge can never be
-    # classified against a construct the node does not actually have.
     node_roles = {node.semantics.id: node.semantics.role
                   for node in layout_ir.nodes}
     node_styles = {node.semantics.id: node.semantics.style

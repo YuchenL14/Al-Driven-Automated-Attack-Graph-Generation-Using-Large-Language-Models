@@ -28,11 +28,6 @@ from extract import extract_attack_graph  # noqa: E402
 REPORT = ("An externally reachable service was exploited. The attacker moved "
           "to other hosts and encrypted them for ransom.")
 
-# Deliberately shares no vocabulary with the mock's canned verbs. The teaching
-# rules require the action evidence to be a verbatim substring of the source
-# evidence, so a mock that answers with a fixed verb only works when the input
-# happens to contain it. That is how the offline student path came to succeed
-# for the reports the suite used and fail for everything else.
 UNRELATED_REPORT = (
     "A remote access gateway accepted a password with no second factor. "
     "Someone signed in as a member of staff, opened a document store, took "
@@ -49,9 +44,6 @@ class OfflineProviderTests(unittest.TestCase):
                 f"{ruleset}: {event.id} came back with no technique")
 
     def test_every_offered_ruleset_runs_offline(self):
-        # Whatever the selector offers, the offline provider must complete it.
-        # A version the interface can select but the mock cannot run is a dead
-        # combination the user finds only by choosing it.
         for ruleset in app.RULESETS:
             for label, text in (("familiar", REPORT),
                                 ("unrelated", UNRELATED_REPORT)):
@@ -59,9 +51,6 @@ class OfflineProviderTests(unittest.TestCase):
                     self._assert_runs(ruleset, text)
 
     def test_the_teaching_ruleset_also_runs_offline(self):
-        # The teaching app is wired to the hosted provider, but the offline
-        # one has to be able to run its rules too, or the teaching pipeline
-        # cannot be exercised or demonstrated without spending money.
         for label, text in (("familiar", REPORT),
                             ("unrelated", UNRELATED_REPORT)):
             with self.subTest(report=label):
@@ -71,8 +60,6 @@ class OfflineProviderTests(unittest.TestCase):
         self.assertIn(app.DEFAULT_RULESET, app.RULESETS)
 
     def test_the_frozen_baseline_is_still_offered(self):
-        # The comparison baseline has to stay reachable, or the v1.4/v1.6
-        # comparison that is the research method cannot be run from the page.
         self.assertIn(app.COMPARISON_BASELINE, app.RULESETS)
 
 

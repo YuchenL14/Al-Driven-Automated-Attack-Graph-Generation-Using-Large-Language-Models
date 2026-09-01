@@ -78,8 +78,6 @@ class StudentVisualConstructTests(unittest.TestCase):
         self.assertEqual("dotted", normalised["events"][0]["style"])
         self.assertNotIn("a1", normalised["events"][0]["parents"])
 
-        # The same canonical contract consumed by the renderer accepts the
-        # result; annotations remain present but outside the causal graph.
         graph = StudentEvidenceGraph.model_validate(normalised)
         self.assertEqual(["a1"], [node.id for node in graph.annotations])
 

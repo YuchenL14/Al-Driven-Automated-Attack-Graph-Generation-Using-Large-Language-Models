@@ -80,7 +80,6 @@ class StateVocabularyTests(unittest.TestCase):
                  if node.kind == "state"}
         stored = {node.code for node in graph.preconditions}
         self.assertEqual({"PRE", "RES"}, drawn)
-        # The stored codes survive in the graph for audit, and none is drawn.
         self.assertTrue(stored.isdisjoint(drawn))
         self.assertIn("MADE-UP", stored)
 
@@ -104,8 +103,6 @@ class StateVocabularyTests(unittest.TestCase):
                  "likelihood": 8.0, "parents": ["s0"], "join": "AND"}]})
         note = next(node for node in project_visual_nodes(graph)
                     if node.id == "n0")
-        # The dashed outline already says what it is; a badge would be the
-        # symbol overload the profile exists to prevent.
         self.assertIsNone(note.badge_code)
 
 
@@ -130,7 +127,6 @@ class AbsentObjectiveTests(unittest.TestCase):
 
     def test_terminal_outcomes_ignores_roots_and_annotations(self):
         graph = _graph(tied=False)
-        # "Service reachable" is where the attack began, not where it ended.
         self.assertNotIn("Service reachable", terminal_outcomes(graph))
         self.assertEqual(("Files encrypted",), terminal_outcomes(graph))
 

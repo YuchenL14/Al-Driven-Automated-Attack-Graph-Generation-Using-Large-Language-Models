@@ -324,15 +324,11 @@ def _partition_component(
         for bucket in ordered_buckets
     ]
 
-    # One event layer normally occupies an event rank and a resulting state
-    # rank. The leading input-state rank accounts for the "+1".
     max_event_layers = max(1, (max_ranks - 1) // 2)
     total_events = sum(bucket_events)
     if (
         total_events <= max_events_per_part
         and len(buckets) <= max_event_layers
-        # A divided level must reach the pagination below; keeping the whole
-        # component on one page would put it straight back together.
         and len(ordered_buckets) == len(buckets)
     ):
         return [set().union(*ordered_buckets)]
@@ -341,11 +337,6 @@ def _partition_component(
     for count in bucket_events:
         prefix_events.append(prefix_events[-1] + count)
 
-    # dp[end] = (score, segments). The score is lexicographic:
-    #   1. minimum page count;
-    #   2. minimum cuts inside a maximal causal module;
-    #   3. minimum number of crossed bridge states;
-    #   4. minimum unused capacity, favouring balanced readable pages.
     dp: list[
         tuple[tuple[int, int, int, int], list[tuple[int, int]]] | None
     ] = [
@@ -361,7 +352,6 @@ def _partition_component(
             if len(set(segment_levels)) != len(segment_levels):
                 continue
             layer_count = len(set(segment_levels))
-            # Width is allowed to grow with height, and only with height.
             if max(bucket_events[start:end]) > max_parallel_events_for(
                     layer_count, max_parallel_events):
                 continue
@@ -434,13 +424,10 @@ def _part_from_blocks(
     }
     precondition_ids: set[str] = set()
 
-    # Include every input state so AND/OR input logic remains intact.
     for event in model.events:
         if event.id in event_ids:
             precondition_ids.update(event.parents)
 
-    # Include every state established by this page's events. This is the
-    # indivisible event -> result-state visual block.
     for precondition in model.preconditions:
         if any(parent in event_ids for parent in precondition.parents):
             precondition_ids.add(precondition.id)
@@ -609,11 +596,6 @@ def terminal_actions(model: AttackGraph) -> tuple[str, ...]:
 def attack_objective(model: AttackGraph) -> str | None:
 
 
-    # The supervisor reference includes a legitimate action-terminated graph:
-    # the final rectangle is itself the attacker's objective. Prefer that
-    # explicit, evidence-backed declaration to the state-only heuristic below.
-    # The professional extraction gate rejects multiple declarations; keeping
-    # this defensive check makes legacy/manually-authored graphs fail closed.
     explicit_goals = [event.id for event in model.events if event.terminal_goal]
     if len(explicit_goals) == 1:
         return explicit_goals[0]
@@ -744,17 +726,11 @@ def plan_causal_split(
             candidate = attempt(budget)
             candidate_width, clean = measure_plan_pages(model, candidate)
         except LayoutPlanValidationError:
-            # A tighter budget can put a combination on the page that the
-            # planner refuses. That is a reason to skip this budget, not a
-            # reason to fail a run that already has a plan.
             continue
         if not clean or len(candidate.parts) > ceiling:
             continue
         if candidate_width <= good_enough:
             return candidate
-        # Nothing fits yet. Keep the narrowest affordable plan rather than the
-        # first one seen: two pages at 1650px beat two pages at 1994px for
-        # free.
         if best is None or candidate_width < best[1]:
             best = (candidate, candidate_width)
     return best[0] if best is not None else plan
@@ -857,8 +833,6 @@ def _plan_causal_split(
                 )
             )
 
-    # Preserve isolated state-only components as explicit pages rather than
-    # dropping them. They are unusual but valid under the shared schema.
     attached_preconditions = {
         precondition_id
         for part in raw_parts

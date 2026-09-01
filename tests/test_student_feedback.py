@@ -76,8 +76,6 @@ class ShortlistTests(unittest.TestCase):
         self.assertIn("no candidate", " ".join(lines))
 
     def test_it_reads_the_list_stage_b_was_given(self):
-        # Not a second list assembled for display: a different list would be a
-        # different answer wearing the same clothes.
         candidates = _tech_lines_for_tactic("IA")
         lines = technique_shortlist("Send a phishing email", "phishing", "IA",
                                     candidates)
@@ -109,7 +107,6 @@ CHAIN = AttackGraph.model_validate({
 class RestatementTests(unittest.TestCase):
     def test_one_sentence_per_action(self):
         lines = restate_graph(CHAIN)
-        # Two actions, plus the annotation note.
         self.assertEqual(3, len(lines))
 
     def test_it_names_what_enabled_the_step_and_what_it_produced(self):

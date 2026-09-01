@@ -60,10 +60,6 @@ class VisualSyntaxProfileTests(unittest.TestCase):
         self.assertEqual(7.0, event.likelihood)
 
     def test_state_projection_is_an_ellipse_in_a_separate_namespace(self):
-        # The state badge keeps its own namespace, so the renderer can give it
-        # its own fill, but the value is now derived rather than read from the
-        # stored code. A stored "R" is a kill-chain letter and would have been
-        # drawn verbatim before; it is kept in the graph and not drawn.
         state = {
             node.id: node
             for node in project_visual_nodes(_sample_graph(
@@ -77,22 +73,12 @@ class VisualSyntaxProfileTests(unittest.TestCase):
         self.assertEqual((), state.mitigations)
 
     def test_no_attack_tactic_is_displayed_on_a_prerequisite(self):
-        # A tactic classifies adversary behaviour, so a precondition cannot
-        # hold one. Drawing tactics on ellipses also loaded the purple circle
-        # with two concepts, which Lallie, Debattista and Bal (2020) treat as a
-        # failure of semiotic clarity. The canonical value is retained for
-        # audit; only its placement is suppressed.
         for tactic in ATTACK_TACTICS:
             with self.subTest(tactic=tactic):
                 graph = _sample_graph(precondition_code=tactic)
                 state = {
                     node.id: node for node in project_visual_nodes(graph)
                 }["p1"]
-                # The invariant is unchanged and now holds more strongly: the
-                # badge is derived from role and parentage, so a state cannot
-                # display an ATT&CK tactic whatever its stored code says. A
-                # root precondition badges PRE, and the tactic stays in the
-                # canonical graph for audit.
                 self.assertEqual(tactic, graph.preconditions[0].code)
                 self.assertEqual("PRE", state.badge_code)
                 self.assertNotIn(state.badge_code, ATTACK_TACTICS)
@@ -107,9 +93,6 @@ class VisualSyntaxProfileTests(unittest.TestCase):
         self.assertEqual(before, graph.model_dump())
 
     def test_png_renderer_consumes_the_versioned_projection(self):
-        # The renderer reads the projection, not the stored code: a state
-        # whose code says "IA" draws PRE, and the tactic reaches the rectangle
-        # only.
         nodes = _build_nodes(_sample_graph(precondition_code="IA"))
         self.assertEqual("ellipse", nodes["p1"].shape)
         self.assertEqual("PRE", nodes["p1"].code)

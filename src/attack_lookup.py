@@ -25,7 +25,6 @@ class AttackResolver:
     def resolve_tactic(abbr: str) -> str:
         return ATTACK_TACTICS.get(abbr, "Unknown tactic")
 
-    # ---- legend ------------------------------------------------------------
     def build_legend(self, graph: AttackGraph) -> Dict[str, Dict[str, str]]:
         """Collect every code used in the graph -> {code: name}, grouped."""
         tactics, techniques, mitigations = {}, {}, {}
@@ -35,7 +34,6 @@ class AttackResolver:
                 techniques[technique] = self.resolve_technique(technique)
             for m in e.mitigations:
                 mitigations[m] = self.resolve_mitigation(m)
-        # sort for stable, readable output
         return {
             "Tactics": dict(sorted(tactics.items())),
             "Techniques": dict(sorted(techniques.items())),

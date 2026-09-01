@@ -245,9 +245,6 @@ class LayoutStageBPlannerTests(unittest.TestCase):
     def test_topological_projection_repairs_conflicting_preferred_rows(self):
         layout_ir = build_layout_ir(_fork_merge_graph())
         blocks = list(layout_ir.atomic_blocks)
-        # Reproduce the class of conflict seen with a shared continuation
-        # state: a child block arrives carrying the same preferred macro rank
-        # as its parent. Geometry must still follow the canonical edge.
         child_index = next(
             index
             for index, block in enumerate(blocks)
@@ -385,10 +382,6 @@ class LayoutStageBPlannerTests(unittest.TestCase):
                 layout_ir = build_layout_ir(page)
                 plan = plan_layout(layout_ir)
                 validate_layout_plan(layout_ir, plan)
-                # Read from the renderer rather than restated here. The
-                # reserve was written as a literal 420 and stayed at 420 when
-                # the key column was narrowed, so this measured a canvas the
-                # renderer had stopped drawing.
                 final_canvas_width = max(1248,
                                          plan.width + LEGEND_RESERVE_WIDTH)
                 self.assertLessEqual(

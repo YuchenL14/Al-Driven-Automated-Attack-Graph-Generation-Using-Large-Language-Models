@@ -1,15 +1,10 @@
-# graph generation (Stage 4)
 pydantic>=2.0
 networkx>=3.0
 graphviz>=0.20
 Pillow>=10.0
 
-# ingestion (Stage 2): PDF and office docs to clean text
 markitdown[pdf]>=0.1
 
-# extraction (Stage 3): choose one provider
-#   local model, e.g. ollama pull qwen3:8b (nothing leaves the machine):
 ollama>=0.3
-#   or the Claude API, model claude-sonnet-5 (needs ANTHROPIC_API_KEY):
 anthropic>=0.103.0
 flask>=3.0

@@ -17,12 +17,8 @@ NODE_COLUMN_GAP = 52
 BLOCK_PADDING = 20
 BLOCK_GAP = 82
 SIDE_MARGIN = 24
-# Leave room for the page title and the top-left badge overhang.
 TOP_MARGIN = 56
 BOTTOM_MARGIN = 36
-# A report whose causal structure is a chain legitimately produces a narrow
-# graph. Padding it out to a fixed landscape width only created dead space to
-# the right of the drawing, so the planned width now follows the content.
 MIN_GRAPH_WIDTH = 300
 
 
@@ -318,12 +314,6 @@ def _visual_block_membership(
     members: dict[str, list[str]] = {
         block.id: [] for block in layout_ir.atomic_blocks
     }
-    # The IR has already decided which block owns each result state, and that
-    # decision is not always "the first parent's block": where producers depend
-    # on one another they sit in different blocks and the state belongs with
-    # the last. Reading the IR's answer instead of recomputing one keeps the
-    # two from disagreeing, which is what put a state in one block and its
-    # own block's result list in another.
     state_owner = {
         state_id: block.id
         for block in layout_ir.atomic_blocks
@@ -547,16 +537,8 @@ def _close_on_the_objective(
     if visual_rank[objective] == bottom and alone:
         return visual_rank
     if named is None:
-        # Page-local convergence: only tidy a page that already ends on it.
-        # Dragging a mid-page node to the foot would assert a shape the page
-        # does not have, and nothing names it, so nothing is contradicted.
         if visual_rank[objective] != bottom:
             return visual_rank
-    # The graph's objective goes below everything, annotations included. One
-    # page put "No evidence of data exfiltration observed" -- commentary, off
-    # the causal path -- lower than the objective, while the key said the
-    # objective stood at the foot of the figure. An annotation's row carries no
-    # causal meaning, so it is the one that gives way.
     return {**visual_rank, objective: bottom + 1}
 
 
@@ -671,9 +653,6 @@ def plan_layout(layout_ir: LayoutIR,
         block.id: index for index, block in enumerate(layout_ir.atomic_blocks)
     }
     component_index = _component_indices(graph, block_order)
-    # The trunk remains useful diagnostic metadata, but it no longer controls
-    # module placement. The old centre bias made a valid causal chain dominate
-    # the page and visually demoted its sibling branches.
     trunk_block_ids = _main_trunks(graph, block_order)
     trunk_ids = set(trunk_block_ids)
     ranks = _ordered_block_ranks(layout_ir, graph)
@@ -739,11 +718,6 @@ def plan_layout(layout_ir: LayoutIR,
     )
     visual_rank = _close_on_the_objective(layout_ir, visual_rank,
                                           objective_id)
-    # Closing a named terminal action below the other endings can move it past
-    # an annotation attached to that action.  An annotation is excluded from
-    # objective selection, but its dashed edge is still a real visual edge and
-    # must remain top-down.  Re-project after the objective adjustment so only
-    # such downstream commentary gives way; the canonical graph is unchanged.
     visual_rank = _enforce_strict_downward_ranks(
         layout_ir,
         visual_rank,
@@ -762,7 +736,6 @@ def plan_layout(layout_ir: LayoutIR,
         y_cursor += rank_height + NODE_ROW_GAP
 
     node_centres: dict[str, float] = {}
-    # Events establish the local columns used by roots and result states.
     for block in layout_ir.atomic_blocks:
         event_centres = _bounded_row_centres(
             _even_centres(centres[block.id], len(block.event_ids)),
@@ -772,10 +745,6 @@ def plan_layout(layout_ir: LayoutIR,
         for event_id, center in zip(block.event_ids, event_centres):
             node_centres[event_id] = center
 
-    # Place every page-local root exactly once. Shared prerequisites sit above
-    # the median of all consumer columns; single-consumer roots remain aligned
-    # with their atomic event block. Fitting is performed per visual rank so
-    # grouped prerequisite ellipses never overlap one another.
     roots_by_rank: dict[int, list[str]] = {}
     root_desired: dict[str, float] = {}
     for node in layout_ir.nodes:
@@ -816,14 +785,6 @@ def plan_layout(layout_ir: LayoutIR,
             )
             for state_id in result_ids
         ]
-        # _fit_centres spreads a row left to right in the order it is given,
-        # and result states arrive in declaration order. A state that several
-        # of the block's events converge on therefore landed wherever its id
-        # happened to appear -- for seven parallel credential thefts sharing
-        # one result, that was the far right of the row, 800px from the
-        # producers' median, and the seven edges crossed the page to reach it
-        # (52 bends on one page). Ordering the row by where each state wants
-        # to be puts a convergence node among the producers that feed it.
         order = sorted(range(len(result_ids)), key=lambda i: result_desired[i])
         ordered_centres = _bounded_row_centres(
             [result_desired[i] for i in order],
@@ -835,11 +796,6 @@ def plan_layout(layout_ir: LayoutIR,
 
     _separate_blocks_by_drawn_extent(ranks, members, node_centres)
 
-    # Disconnected unused roots remain visible but outside the causal lanes.
-    # Placed after the separation pass and measured against where the nodes
-    # actually ended up: the reserved block widths are an estimate, and putting
-    # these against the estimate risked dropping one on top of a block that
-    # had grown past it.
     unanchored = [
         node.visual_id for node in layout_ir.nodes
         if node.visual_id not in node_centres
@@ -853,8 +809,6 @@ def plan_layout(layout_ir: LayoutIR,
         node_centres[visual_id] = current_right
         current_right += NODE_WIDTH / 2
 
-    # A rigid translation, so nothing above is undone: the separation pass may
-    # have pushed the leftmost block past the margin.
     if node_centres:
         left_edge = min(node_centres.values()) - NODE_WIDTH / 2
         if left_edge != SIDE_MARGIN:
@@ -936,11 +890,6 @@ def plan_layout(layout_ir: LayoutIR,
         if group.logic == "AND":
             bus_y = round((max(node.bottom for node in inputs) + target.y) / 2)
             target_ports = ((target.cx, target.y),)
-            # The drop into the target leaves the bus at the target's centre, so
-            # the bus has to reach it. A target placed outside the span of its
-            # own inputs -- which happens whenever several events share one AND
-            # pair and fan out across the rank -- otherwise gets an arrowhead
-            # whose line begins in empty space.
             bus_x = [node.cx for node in inputs] + [target.cx]
             shared_bus = ((min(bus_x), bus_y), (max(bus_x), bus_y))
         else:

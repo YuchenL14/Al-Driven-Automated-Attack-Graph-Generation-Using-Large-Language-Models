@@ -169,10 +169,6 @@ class TestRuleDocument(unittest.TestCase):
         """
         v16 = (ROOT / "rules" / "ruleset_v1.6.md").read_text(encoding="utf-8")
 
-        # 1. The document called the graph a tree while Rule 3 required a node
-        #    to have several parents. It said so twice, in the preamble and in
-        #    Rule 4, and a case-sensitive check caught only the first. The one
-        #    permitted use is the sentence that explicitly denies it.
         body = v16.split("-->", 1)[1]
         for line in body.splitlines():
             if "tree" in line.lower():
@@ -180,42 +176,27 @@ class TestRuleDocument(unittest.TestCase):
                               f"stray tree wording survives: {line.strip()}")
         self.assertIn("directed acyclic AND-OR graph", body)
 
-        # 2. Rule 4 demanded every path converge on one objective. The
-        #    reference graph itself ends in five terminal states.
         self.assertNotIn("Every path converges", body)
 
-        # 3. Rule 3 required an AND outright while requiring an OR only where
-        #    the report supported one. A report with no simultaneous
-        #    dependency made Rule 3 and Rule 5 contradict each other.
         self.assertNotIn("A good graph contains at least one AND", body)
         self.assertIn("Both are conditional on the report", body)
         self.assertIn("an invented dependency", body)
 
-        # 4. Rule 2 stated "exactly one technique id" while Rule 7 allowed
-        #    several, and declared the supersede rather than removing it.
         self.assertNotIn("carries exactly one", body)
         self.assertNotIn("SUPERSEDES", body)
 
-        # 5. Rule 6.1 said an external resource never has a parent and then
-        #    described giving it one. schema.py rejects the latter.
         self.assertIn("it is always a root", body)
         self.assertNotIn("whose result is the external resource", body)
 
-        # 6. Rule 5 asked for mitigations the v1.6 Stage B cannot return.
         self.assertNotIn("Choose mitigations that specifically", body)
         self.assertIn("Mitigations are not yours to choose", body)
 
-        # 7. Rule 6.2 classified a missing control as commentary, which
-        #    removes it from the causal graph. The test is now causal.
         self.assertIn("Apply the CAUSAL test first", body)
         self.assertNotIn('"No egress filtering in place"; "Detected by SOC',
                          body)
 
-        # 8. Rule 2 required at least one precondition; Rule 4 allows a
-        #    preparation event to consume none.
         self.assertNotIn("It consumes one or more preconditions", body)
 
-        # Both changes are declared where a reader will look.
         changelog = v16.split("-->", 1)[0]
         self.assertIn("Every place where v1.6 CHANGES v1.4 text", changelog)
         self.assertIn("21.5%", changelog)
@@ -225,13 +206,6 @@ class TestRuleDocument(unittest.TestCase):
         v14 = (ROOT / "rules" / "ruleset_v1.4.md").read_text(encoding="utf-8")
         v16 = (ROOT / "rules" / "ruleset_v1.6.md").read_text(encoding="utf-8")
         body = v14.split("-->", 1)[1]
-        # Rule 3 is no longer verbatim: its unconditional "at least one AND"
-        # contradicted Rule 5's ban on inventing what the report does not
-        # state, and is now conditional like the OR beside it. The change is
-        # asserted in test_v16_records_every_place_it_changes_v14_text.
-        # Only Rule 1 survives verbatim now. Rules 2, 3, 4 and 5 each lost a
-        # claim that contradicted another rule or the mechanism; every removal
-        # is asserted in test_v16_records_every_place_it_changes_v14_text.
         for rule in ("## Rule 1",):
             start = body.index(rule)
             end = min((body.index(nxt) for nxt in
@@ -257,7 +231,6 @@ class TestRuleDocument(unittest.TestCase):
         prompt = STAGE_A_V16_USER
         self.assertIn("if the earlier step had NOT happened", prompt)
         self.assertIn("CONSUMES WHAT IT ACTUALLY NEEDS", prompt)
-        # Neither extreme may be asserted as the target.
         for shape_claim in ("THE GRAPH IS A CHAIN", "correct and expected",
                             "link each step to the one before"):
             self.assertNotIn(shape_claim, prompt)

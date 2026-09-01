@@ -1,10 +1,3 @@
-# Every push re-runs what the dissertation claims about this tool.
-#
-# The claim in Chapter 5 is that conformance to the visual syntax is verified
-# rather than asserted. Running the checks on a laptop supports "it passed
-# once"; running them on every commit supports the claim as written. None of
-# these steps needs an API key or a network call: the tests use the offline
-# provider and the conformance check reads graphs already saved in outputs/.
 name: checks
 
 on:
@@ -25,28 +18,16 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      # The lock file, not requirements.txt. requirements.txt asks for ">=",
-      # so CI would install whatever released this morning, and a change in
-      # the PDF converter changes the text extracted from the same report,
-      # which changes the graph. This project measures how much the graph
-      # varies between runs, so the dependency set has to be one of the things
-      # that does not vary.
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.lock
 
-      # Catches a file that cannot be imported before anything tries to run it,
-      # which is how an encoding accident once reached the test run as a
-      # confusing failure somewhere else.
       - name: Compile
         run: python -m compileall -q app.py student_app.py src scripts
 
       - name: Tests
         run: python -m unittest discover -s tests
 
-      # The tests assert things about the code. This asserts the same things
-      # about every graph the project has produced, which is where a rule set
-      # or renderer change shows up first.
       - name: Figure conformance
         run: python scripts/check_conformance.py

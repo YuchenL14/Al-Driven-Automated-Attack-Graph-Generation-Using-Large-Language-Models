@@ -97,8 +97,6 @@ class PageWidthTests(unittest.TestCase):
             path.unlink()
 
     def test_a_run_recorded_before_widths_existed_yields_none(self):
-        # Older sidecars in outputs/ have pages without `page_width_px`. They
-        # must report no width rather than a width of zero.
         path = _sidecar({"pages": [{"page": 1, "node_count": 12}]})
         try:
             self.assertEqual((), page_widths_px(path))
@@ -141,8 +139,6 @@ class RunMetricsTests(unittest.TestCase):
         self.assertEqual(0.0, metrics.cost_usd)
 
     def test_printed_size_has_one_definition(self):
-        # The front end and the quality record must not be able to disagree
-        # about whether a page is legible.
         quality = LayoutQuality(
             node_count=1, page_width_px=1738, canonical_duplicate_count=0,
             downward_edge_fraction=1.0, main_aspect_ratio=1.0,

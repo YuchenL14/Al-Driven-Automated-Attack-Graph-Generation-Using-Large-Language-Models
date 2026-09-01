@@ -34,7 +34,6 @@ from visual_aggregation import (aggregate_for_drawing,
                                 find_aggregatable_groups)
 
 
-# Real identifiers: the schema refuses invented ones, and rightly so.
 _TECHNIQUES = ("T1003.001", "T1555.003", "T1040")
 _MITIGATIONS = ("M1017", "M1027")
 
@@ -60,8 +59,6 @@ def _fan_sharing_a_result(n: int, tactic: str = "CA") -> dict:
         {"id": "p_all", "label": "Credentials held by actor", "code": "PX",
          "parents": [f"e{i}" for i in range(n)]},
     ]
-    # Something must consume the shared state, or it is a dead end rather than
-    # the convergence the group exists to produce.
     events.append({"id": "e_use", "label": "Move laterally with credentials",
                    "parents": ["p_all"], "tactic": "LM",
                    "techniques": ["T1021"], "mitigations": []})
@@ -84,7 +81,6 @@ class FindingGroupsTests(unittest.TestCase):
     def test_a_different_tactic_is_not_swept_in(self):
         """The keylogger was Collection, not Credential Access."""
         data = _fan_sharing_a_result(7)
-        # The schema checks technique against tactic, so both must move.
         data["events"][0]["tactic"] = "CL"
         data["events"][0]["techniques"] = ["T1185"]
         model = AttackGraph.model_validate(data)
@@ -148,7 +144,6 @@ class AggregatingTests(unittest.TestCase):
         self.assertEqual(list(expected), list(drawn.techniques))
 
     def test_the_label_states_the_rule_rather_than_a_summary(self):
-        # Nothing here is written by the tool about what the attack "means".
         self.assertEqual("7 grouped Credential Access actions",
                          self.groups[0].label)
 
@@ -164,7 +159,6 @@ class AggregatingTests(unittest.TestCase):
         self.assertEqual([self.groups[0].visual_id], list(shared.parents))
 
     def test_a_consumed_state_is_never_folded_away(self):
-        # p_all is consumed by e_use, so folding it would delete a dependency.
         self.assertNotIn("p_all", self.groups[0].folded_state_ids)
 
     def test_the_drawn_graph_still_paginates_losslessly(self):
@@ -209,9 +203,7 @@ class RealRunTests(unittest.TestCase):
         self.assertEqual(1, len(groups))
         self.assertEqual(7, len(groups[0].event_ids))
         self.assertEqual("CA", groups[0].tactic)
-        # The keylogger shares the tactic family but not the tactic or parents.
         self.assertNotIn("e_keylog", groups[0].event_ids)
-        # Fewer pages, and the pagination is still lossless over what is drawn.
         before = plan_causal_split(model)
         after = plan_causal_split(drawn)
         validate_lossless_split(drawn, after)
@@ -253,7 +245,6 @@ class OutcomeFoldingTests(unittest.TestCase):
         drawn, groups = aggregate_for_drawing(model, min_size=5)
         self.assertEqual(1, len(groups))
         self.assertEqual("6 recorded outcomes", groups[0].label)
-        # One root, one action, one aggregate.
         self.assertEqual(2, len(drawn.preconditions))
 
     def test_a_number_a_page_holds_is_left_alone(self):

@@ -136,10 +136,6 @@ class TestItRunsOnlyAsALastResort(unittest.TestCase):
 
     def test_the_correction_is_spent_before_anything_is_dropped(self):
         graph, stage_a = self._run("v1.6")
-        # Two of these are generate-then-correct; the third is the shape
-        # review, which now has its own call rather than sharing the retry.
-        # What matters here is that the correction happened at all before a
-        # node was dropped.
         self.assertEqual(3, len(stage_a),
                          "the model must get its chance to reconnect the node")
         self.assertEqual(("e1x", "p3f"), get_last_salvaged_nodes())

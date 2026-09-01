@@ -49,8 +49,6 @@ class TestBackwardCompatibility(unittest.TestCase):
                                 ).events[0].technique, "T1204.002")
 
     def test_a_null_technique_stays_an_abstention(self):
-        # No mitigations: the graph contract already forbids mitigating a
-        # technique the event does not claim.
         graph = _graph(_event(technique=None, mitigations=[]))
         self.assertEqual(graph.events[0].techniques, [])
         self.assertIsNone(graph.events[0].technique)
@@ -126,8 +124,6 @@ class TestPrecedenceWhenBothKeysArrive(unittest.TestCase):
     """
 
     def test_stage_b_reassignment_wins(self):
-        # Both ids are Execution techniques: the point under test is which
-        # key wins, not the separate tactic-consistency rule.
         event = Event.model_validate(_event(techniques=["T1204.002"],
                                             technique="T1059.001"))
         self.assertEqual(event.techniques, ["T1059.001"])
@@ -199,7 +195,6 @@ class TestPrimaryTechniqueCarriesTheTactic(unittest.TestCase):
 
     def test_a_secondary_technique_from_another_tactic_is_accepted(self):
         from extract import _technique_tactic_mismatches
-        # T1204.002 is Execution; T1056.001 is Collection/Credential Access.
         events = [{"id": "e1", "tactic": "EX",
                    "techniques": ["T1204.002", "T1056.001"]}]
         self.assertEqual({}, _technique_tactic_mismatches(events))

@@ -41,8 +41,6 @@ class StageAReferenceTests(unittest.TestCase):
         self.assertEqual([], _skeleton_graph_problems(_valid_skeleton()))
 
     def test_missing_events_are_reported_as_one_grouped_diagnosis(self):
-        # A truncated events array must read as "return the events you left
-        # out", not as one reference complaint per precondition.
         data = _valid_skeleton()
         data["preconditions"][1]["parents"] = ["e2"]
         data["preconditions"].append(
@@ -89,9 +87,6 @@ class StageAReferenceTests(unittest.TestCase):
         )
 
     def test_event_consuming_nothing_is_reported(self):
-        # Emptying every parents list is the cheapest way for a model to
-        # satisfy a "no invalid reference" correction, and it silently
-        # collapses the graph into isolated event/result pairs.
         data = _valid_skeleton()
         data["events"][0]["parents"] = []
         problems = _skeleton_graph_problems(data)
@@ -101,7 +96,6 @@ class StageAReferenceTests(unittest.TestCase):
 
     def test_cycle_is_reported(self):
         data = _valid_skeleton()
-        # p1 is now established by the event it also feeds, closing a loop.
         data["preconditions"][0]["parents"] = ["e1"]
         problems = _skeleton_graph_problems(data)
         self.assertEqual(1, len(problems))
@@ -119,8 +113,6 @@ class StageAReferenceTests(unittest.TestCase):
         self.assertEqual([], _skeleton_graph_problems(data))
 
     def test_private_root_per_event_is_reported_as_disconnected(self):
-        # Every event consumes something and every reference resolves, so this
-        # passes each earlier check, yet it lays out as one page per event.
         data = {
             "title": "One isolated pair per event",
             "preconditions": [], "events": [],
@@ -136,16 +128,12 @@ class StageAReferenceTests(unittest.TestCase):
                 {"id": f"e{index}", "label": f"Step {index}", "tactic": "IA",
                  "parents": [f"r{index}"], "join": "AND"})
         problems = _skeleton_graph_problems(data)
-        # Both diagnoses are true here: the pieces are disconnected and no
-        # step follows from another. Report them together.
         self.assertTrue(
             any("3 disconnected pieces" in problem for problem in problems),
             problems,
         )
 
     def test_flat_fan_on_one_root_is_reported(self):
-        # Connected, every reference resolves, every event consumes something,
-        # and still one page per event: nothing follows from anything else.
         data = {
             "title": "Flat fan",
             "preconditions": [P_ROOT := {"id": "r1", "label": "Exposure",
@@ -164,7 +152,6 @@ class StageAReferenceTests(unittest.TestCase):
         self.assertIn("no step follows from another", problems[0])
 
     def test_parallel_branches_that_reconverge_are_accepted(self):
-        # Genuine parallelism must not be mistaken for a flat fan.
         data = {
             "title": "Two branches then a merge",
             "preconditions": [
@@ -199,8 +186,6 @@ class StageAReferenceTests(unittest.TestCase):
         self.assertEqual([], _skeleton_graph_problems(data))
 
     def test_evidence_variant_allows_a_root_event(self):
-        # The evidence rule set declines to invent a precondition the report
-        # does not state, so a root event must not be rejected there.
         data = _valid_skeleton()
         data["events"][0]["parents"] = []
         data["preconditions"][0]["parents"] = ["e1"]
@@ -210,8 +195,6 @@ class StageAReferenceTests(unittest.TestCase):
         )
 
     def test_evidence_variant_still_rejects_isolated_pairs(self):
-        # Allowing a root event must not reopen the failure that produced one
-        # page per event: the connectivity and chaining checks still apply.
         data = {"title": "Isolated pairs", "preconditions": [], "events": []}
         for index in (1, 2, 3):
             data["events"].append(
@@ -263,7 +246,7 @@ class TestDisconnectedDiagnosis(unittest.TestCase):
             data, require_event_parents=False))
         self.assertIn("e_orphan", problems)
         self.assertIn("detached", problems)
-        self.assertNotIn("s4", problems)   # the healthy graph is not listed
+        self.assertNotIn("s4", problems)
 
     def test_the_stray_message_permits_a_root_event(self):
         data = self._chain(8)
@@ -339,8 +322,8 @@ class TestDisconnectedDiagnosis(unittest.TestCase):
             require_event_parents=False))
         self.assertIn("4 of your 4 events start from nothing", message)
         self.assertIn("change only the parents lists", message)
-        self.assertIn("e_click", message)      # one of its own ids
-        self.assertIn("p_build", message)      # a state it can link to
+        self.assertIn("e_click", message)
+        self.assertIn("p_build", message)
         self.assertLess(len(message), 900)
 
     def test_the_fan_correction_bounds_the_permitted_roots(self):

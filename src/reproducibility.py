@@ -23,8 +23,6 @@ from schema import AttackGraph
 
 CACHE_FORMAT_VERSION = 1
 DECODING_PROFILE = {
-    # Current Claude models reject an explicit ``temperature`` value. Record
-    # the omission honestly; exact repeatability comes from graph replay.
     "temperature": "provider_default",
     "thinking": "disabled",
 }
@@ -157,8 +155,6 @@ def load_validated_graph(
             return None
         return graph
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
-        # A partial, stale or manually edited cache entry must never bypass the
-        # normal validated extraction path.
         return None
 
 
@@ -193,9 +189,6 @@ def store_validated_graph(
             json.dump(payload, stream, ensure_ascii=False, indent=2)
             stream.write("\n")
         try:
-            # Linking is an atomic create-if-absent operation.  It preserves
-            # the first validated reference if two workers finish the same
-            # request concurrently; ``replace`` would silently overwrite it.
             os.link(temporary_name, destination)
         except FileExistsError:
             pass

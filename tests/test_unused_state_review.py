@@ -69,8 +69,6 @@ class UnusedStateMeasurementTests(unittest.TestCase):
         self.assertEqual(shape["unused_state_ids"], ("p_out",))
 
     def test_an_initial_condition_is_not_counted(self):
-        # p_in has no producing event, so it is an input, not an abandoned
-        # branch.
         shape = measure_skeleton_shape({
             "events": [{"id": "e0", "label": "Act", "parents": ["p_in"]}],
             "preconditions": [{"id": "p_in", "label": "Start", "parents": []}],
@@ -101,7 +99,6 @@ class UnusedStateMeasurementTests(unittest.TestCase):
         self.assertEqual(shape["unused_states"], 0)
 
     def test_a_broken_graph_still_reports_the_key(self):
-        # A cyclic graph short-circuits; the key must exist for the gate.
         shape = measure_skeleton_shape({
             "events": [{"id": "e0", "label": "A", "parents": ["p0"]}],
             "preconditions": [{"id": "p0", "label": "S", "parents": ["e0"]}],
@@ -127,8 +124,6 @@ class UnusedStateGateTests(unittest.TestCase):
         self.assertEqual(shape_revision_request(shape), "")
 
     def test_the_request_permits_leaving_an_ending_alone(self):
-        # Without this, a correct graph with several genuine outcomes would be
-        # pushed into inventing consumers for them.
         request = shape_revision_request(
             measure_skeleton_shape(_graph(_MAX_UNUSED_STATES + 3)))
         self.assertIn("leave it as it is", request)
@@ -150,14 +145,12 @@ class UnusedStateGateTests(unittest.TestCase):
                 "parents": ["p_root" if i == 0 else f"p{i - 1}"]})
             chain["preconditions"].append(
                 {"id": f"p{i}", "label": f"State {i}", "parents": [f"e{i}"]})
-        # A pure chain: high critical-path share, but only one loose end.
         shape = measure_skeleton_shape(chain)
         self.assertGreater(shape["critical_path_share"],
                            _MAX_CRITICAL_PATH_SHARE)
         request = shape_revision_request(shape)
         self.assertIn("single dependency path", request)
         self.assertNotIn("consumed by nothing", request)
-        # The closing instruction is emitted once, not once per observation.
         self.assertEqual(request.count("Change only parents lists"), 1)
 
     def test_width_is_measured_but_never_gated(self):
@@ -170,7 +163,6 @@ class UnusedStateGateTests(unittest.TestCase):
                 {"id": f"p{i}", "label": f"State {i}", "parents": [f"e{i}"]})
         shape = measure_skeleton_shape(wide)
         self.assertGreaterEqual(shape["widest"], 12)
-        # Width alone must not produce a request; the loose ends here do.
         self.assertNotIn("wide", shape_revision_request(shape).lower())
 
 

@@ -15,8 +15,6 @@ from visual_syntax import (
 )
 
 
-# ``state_proxy`` is retained in the type for compatibility with archived
-# layout fixtures, but new Stage-A projections never create same-page proxies.
 VisualRole = Literal["canonical", "state_proxy"]
 Logic = Literal["AND", "OR"]
 
@@ -42,8 +40,6 @@ class LayoutNode:
     role: VisualRole
     semantics: VisualNodeSemantics
     suggested_rank: int
-    # A root condition can be placed beside the event that consumes it.
-    # This is a placement hint only and never becomes a causal edge.
     anchor_event_id: str | None = None
 
 
@@ -164,15 +160,6 @@ def _build_atomic_blocks(
     event_order = {event_id: index for index, event_id in enumerate(event_ids)}
     union = _DisjointEvents(event_ids)
 
-    # If several events establish the same state, they are alternative
-    # producers of that result.  The state and all of its alternatives are
-    # one indivisible visual unit.
-    # Only events that cannot reach one another. Producers joined by a
-    # dependency path are stages of one route, not substitutes for it, and
-    # merging them puts that dependency inside a block, which closes a cycle
-    # in the block graph that the node graph never had. The rule and its
-    # reachability data are shared with causal_split, so the paginator and the
-    # layout cannot disagree about which events may share a block.
     dependencies = event_dependency_dag(model)
     descendants = {
         event_id: nx.descendants(dependencies, event_id)
@@ -229,9 +216,6 @@ def _build_atomic_blocks(
     for state in model.preconditions:
         if not state.parents:
             continue
-        # A state whose producers depend on one another has several producing
-        # blocks by design. It exists once the last of them has run, so it is
-        # attributed there and everything consuming it follows all producers.
         block_id = event_to_block[
             _last_producer(state.parents, event_order, descendants)]
         state_to_producer_block[state.id] = block_id
@@ -309,9 +293,6 @@ def build_layout_ir(
 
     nodes: list[LayoutNode] = []
     for semantics in projected:
-        # A root used by exactly one event can stay local to that event's
-        # atomic block. A shared prerequisite deliberately has no single
-        # anchor: the macro planner places its one ellipse above all consumers.
         root_consumers = consumers.get(semantics.id, [])
         anchor = root_consumers[0] if len(root_consumers) == 1 else None
         nodes.append(LayoutNode(
@@ -497,24 +478,6 @@ def validate_layout_ir(
         for block in layout_ir.atomic_blocks
         for event_id in block.event_ids
     }
-    # Producers of one state share a block only when they are genuine
-    # alternatives. Where one depends on another they are stages of a single
-    # route, and blocks are built to keep them apart: merging them would put a
-    # dependency inside a block and close a cycle in the block graph.
-    #
-    # What is checked here is the SAFETY property -- no block contains two
-    # events where one depends on the other. The completeness property, "every
-    # pair of independent producers shares a block", was checked instead, and
-    # it is not satisfiable. Independence does not compose. A real run produced
-    # a state with eight producers where seven were mutually independent but
-    # e_dump_lsass enabled e_run_mimikatz: dumping the process memory is what
-    # Mimikatz then reads. No partition puts all seven independent pairs
-    # together while keeping that one dependent pair apart, so the check
-    # rejected a graph the builder had assembled correctly.
-    #
-    # Keeping alternatives on one page is a layout preference, and the builder
-    # pursues it as far as the dependencies allow. It is not an invariant, and
-    # asserting it as one cost a valid graph and two paid calls.
     dependencies = event_dependency_dag(model)
     descendants = {
         event_id: nx.descendants(dependencies, event_id)

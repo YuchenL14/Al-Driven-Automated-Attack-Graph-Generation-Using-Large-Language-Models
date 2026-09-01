@@ -561,8 +561,6 @@ def generate():
     output_stem = f"{source_path.stem}__rules-{RULESET}"
     output_path = tagged_output_path(OUTPUTS_DIR, output_stem, PROVIDER, MODEL)
 
-    # Bound before the try so the failure path can still report the shape of a
-    # graph that validated and then failed to draw.
     graph = None
     try:
         graph = extract_attack_graph(scenario, provider=PROVIDER, model=MODEL,
@@ -571,8 +569,6 @@ def generate():
         usage = get_last_api_usage()
         paths = render_split(graph, str(output_path), dpi=170)
         images = [Path(path).name for path in paths]
-        # The same pages in vector form, for a student writing the figure into
-        # a report. Identical geometry, so it is the same drawing.
         vectors = [
             Path(path).name for path in
             render_split(graph, str(output_path.with_suffix(".svg")),

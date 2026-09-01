@@ -44,8 +44,6 @@ class LayoutSvgTests(unittest.TestCase):
             render_new_layout_svg(graph, str(output))
             document = minidom.parse(str(output))
 
-        # Ellipse states, rectangle events, orthogonal connectors and the
-        # badge circles must all be present as vector elements.
         self.assertGreater(len(document.getElementsByTagName("ellipse")), 0)
         self.assertGreater(len(document.getElementsByTagName("rect")), 1)
         self.assertGreater(len(document.getElementsByTagName("polyline")), 0)
@@ -61,8 +59,6 @@ class LayoutSvgTests(unittest.TestCase):
             written = render(graph, str(output), fmt="svg")
             self.assertEqual(str(output), written)
             text = Path(written).read_text(encoding="utf-8")
-        # Graphviz writes a DOCTYPE and a generator comment; the AGVS-SP
-        # backend writes neither and defines its own arrow marker.
         self.assertNotIn("<!DOCTYPE", text)
         self.assertIn("agvs-arrow", text)
 
@@ -72,7 +68,7 @@ class LayoutSvgTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "escaped.svg"
             render_new_layout_svg(graph, str(output))
-            minidom.parse(str(output))  # raises if the markup leaked
+            minidom.parse(str(output))
             text = Path(output).read_text(encoding="utf-8")
         self.assertNotIn("<b>", text)
         self.assertIn("&amp;", text)

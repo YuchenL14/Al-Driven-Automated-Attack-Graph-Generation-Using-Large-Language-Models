@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from attack_lookup import AttackResolver
 
 
-# Palette sampled from SampleCyberAttackGraph.png.
 WHITE = "#FFFFFF"
 TEXT = "#222222"
 BORDER = "#333333"
@@ -401,8 +400,6 @@ def _layout(draw, nodes: dict[str, _VisualNode], node_font,
                     if neighbours
                     else centres[node.id]
                 )
-                # A light pull towards the rank's original slots preserves a
-                # readable gap between sibling branches.
                 target = (
                     strength * relational
                     + (1.0 - strength) * initial_centres[node.id]
@@ -429,8 +426,6 @@ def _layout(draw, nodes: dict[str, _VisualNode], node_font,
             lambda node: children[node.id],
             0.62,
         )
-    # Finish in the causal direction. This prevents the upward aesthetic pass
-    # from pulling a merge away from the midpoint of the branches it joins.
     for _ in range(2):
         relax(
             levels[1:],
@@ -592,8 +587,6 @@ def _path_cost(
             shared, crossed = _segment_interaction(segment, occupied)
             overlap += shared
             crossings += crossed
-    # OR inputs must remain visually independent. A shared track is therefore
-    # much more expensive than a modest extra bend or a short detour.
     overlap_weight = 80 if separate else 16
     return length + turns * 10 + overlap * overlap_weight + crossings * 180
 
@@ -775,9 +768,6 @@ def _plan_connector(
             ((bus_left, bus_y), (bus_right, bus_y)),
         )
 
-    # OR inputs remain visually separate. Each path gets its own horizontal
-    # track and a distinct port on the target's upper edge, so no shared line
-    # can be mistaken for an AND requirement.
     max_bottom = max(parent.bottom for parent in parents)
     vertical_space = target.y - max_bottom
     lower = max_bottom + max(8, vertical_space // 5)
@@ -865,8 +855,6 @@ def render_reference_png(
         resolver = AttackResolver()
 
     fonts = _load_fonts()
-    # A temporary surface lets us measure wrapped text before knowing the final
-    # graph height and right-side legend width.
     measure = Image.new("RGBA", (8, 8), WHITE)
     measure_draw = ImageDraw.Draw(measure)
     nodes = _layout(
@@ -884,8 +872,6 @@ def render_reference_png(
          + node.mitigations),
         default=0,
     )
-    # Tags deliberately overhang the right border, so the legend begins after
-    # the widest possible sticker rather than after the nominal graph bounds.
     legend_x = max(860, graph_right + sticker_w + 20)
     legend = _legend_lines(model, resolver)
     legend_w = max(
@@ -910,8 +896,6 @@ def render_reference_png(
             fill=TEXT,
         )
 
-    # Edges are placed behind the nodes. AND inputs visibly share one bus,
-    # whereas OR inputs remain separate. Neither uses a text/diamond gate.
     occupied_segments: list[_Segment] = []
     for target in sorted(nodes.values(), key=lambda n: (n.level, n.index)):
         parents = [nodes[parent] for parent in target.parents if parent in nodes]
@@ -930,7 +914,6 @@ def render_reference_png(
         if plan.shared_bus:
             occupied_segments.append(plan.shared_bus)
 
-    # Nodes and their external badges/stickers.
     for node in sorted(nodes.values(), key=lambda n: (n.level, n.index)):
         bbox = (node.x, node.y, node.x + node.width, node.bottom)
         if node.shape == "ellipse":
@@ -982,7 +965,6 @@ def render_reference_png(
                                      mitigation, MITIGATION, fonts["tag"])
                 tag_y -= tag_h + 1
 
-    # Right-side legend starts around the first event/result row, as in sample.
     legend_y = 202
     for line in legend:
         if line:

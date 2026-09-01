@@ -33,9 +33,6 @@ from extract import (AttackGraph, AttackGraphSkeleton,  # noqa: E402
                      load_ruleset)
 
 
-# The evidence Stage B is requested through a wire model whose vocabulary the
-# provider can enforce, then validated locally against the strict model. A test
-# double must recognise the schema actually sent, not only the strict one.
 _STAGE_B_MODELS = {
     EvidenceTechniqueAssignments,
     EvidenceTechniqueAssignmentsWire,
@@ -45,16 +42,10 @@ _STAGE_B_MODELS = {
 class V15ContractTests(unittest.TestCase):
     def test_runtime_ruleset_is_discoverable(self):
         self.assertIn("Evidence threshold for an event", load_ruleset("v1.5"))
-        # v1.4 is still the frozen comparison baseline. It is no longer the
-        # version the page runs by default, which is v1.6, so the two are now
-        # pinned separately.
         self.assertEqual("v1.4", app.COMPARISON_BASELINE)
         self.assertEqual("v1.6", app.DEFAULT_RULESET)
 
     def test_student_app_uses_isolated_teaching_rules(self):
-        # The invariant is isolation: the teaching app must never run the
-        # research rule set. The version is pinned as well so a bump is a
-        # deliberate edit here rather than a silent change of what students see.
         self.assertTrue(student_app.RULESET.startswith("student-"))
         self.assertEqual("student-v1.4", student_app.RULESET)
         rules = load_ruleset(student_app.RULESET)
@@ -72,7 +63,6 @@ class V15ContractTests(unittest.TestCase):
         self.assertIn("Identifiers you supply", rules)
         self.assertIn("An identifier you supply is kept", rules)
         self.assertNotIn("Use only mitigation ids supplied by Stage B", rules)
-        # v1.2 stays available and unchanged as the comparison point.
         self.assertIn("Use only mitigation ids supplied by Stage B",
                       load_ruleset("student-v1.2"))
 
@@ -99,16 +89,9 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual(85, graph.events[0].evidence_confidence)
 
     def test_cost_ceiling_is_configurable_but_cannot_be_disabled(self):
-        # A longer report legitimately costs more, so the ceiling has to be
-        # raisable on purpose. A missing or nonsensical value must fall back to
-        # the default rather than removing the guard.
         import os
         from extract import _MAX_GENERATION_COST_USD, _configured_max_cost_usd
 
-        # The fallback cases name the constant rather than a literal. The
-        # default has been raised once already, and a test asserting the old
-        # number would have failed for the wrong reason: what matters is that
-        # a bad value falls back to whatever the default is, not what it is.
         default = _MAX_GENERATION_COST_USD
         cases = {
             "0.70": 0.70,
@@ -126,10 +109,7 @@ class V15ContractTests(unittest.TestCase):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("ATTACK_GRAPH_MAX_COST_USD", None)
             self.assertEqual(default, _configured_max_cost_usd())
-            # The default is what a budget built with no arguments uses, which
-            # is how both production call sites build it.
             self.assertEqual(default, _AnthropicCostBudget().max_usd)
-            # It remains a real ceiling, not a removed one.
             self.assertGreater(default, 0)
             self.assertLess(default, 5.0)
 
@@ -478,9 +458,6 @@ class V15ContractTests(unittest.TestCase):
             report, fake_call, "none", "student-v1.1")
         self.assertEqual(1, len(graph.events))
         self.assertIsNone(graph.events[0].technique)
-        # The wire model is what the provider is asked for; the strict
-        # StudentEvidenceGraph still validates the answer locally. Sending the
-        # strict model made every evidence field optional in the schema.
         self.assertEqual(
             [StudentEvidenceGraphWire, StudentEvidenceGraphWire,
              EvidenceTechniqueAssignmentsWire], calls)
@@ -693,10 +670,6 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual(3, len(calls))
 
     def test_v14_reconciles_a_changed_unambiguous_tactic_conflict(self):
-        # The Stage B correction prompt asks the model to change its answer, so
-        # the second attempt usually returns a different technique and a
-        # different mismatch. Reconciliation must not depend on the model
-        # repeating its first mistake exactly.
         calls = []
 
         def fake_call(system, user, model, response_model=AttackGraph):
@@ -716,8 +689,6 @@ class V15ContractTests(unittest.TestCase):
                          "parents": ["p1"], "join": "AND"},
                     ],
                 })
-            # Both are Discovery-only techniques, but they are not the same
-            # technique, so the two mismatches differ.
             technique = "T1083" if len(calls) == 2 else "T1082"
             return json.dumps({"assignments": [
                 {"id": "e1", "technique": technique, "mitigations": []},
@@ -732,9 +703,6 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual(3, len(calls))
 
     def test_v14_derives_mitigations_from_the_official_relationship(self):
-        # Rule 2 and Rule 5 ask for mitigations that specifically counter the
-        # event's technique. MITRE already records that as a "mitigates"
-        # relationship, so the catalogue decides, not the model.
         def fake_call(system, user, model, response_model=AttackGraph):
             if response_model is AttackGraphSkeleton:
                 return json.dumps({
@@ -750,8 +718,6 @@ class V15ContractTests(unittest.TestCase):
                          "likelihood": 8, "parents": ["p1"], "join": "AND"},
                     ],
                 })
-            # A real but unrelated mitigation, of the kind the model returned
-            # on the British Library incident review.
             return json.dumps({"assignments": [
                 {"id": "e1", "technique": "T1486", "mitigations": ["M1017"]},
             ]})
@@ -765,8 +731,6 @@ class V15ContractTests(unittest.TestCase):
         self.assertNotIn("M1017", graph.events[0].mitigations)
 
     def test_v14_leaves_mitigations_empty_when_mitre_lists_none(self):
-        # T1083 has no official mitigation. An empty badge is the correct
-        # outcome; the model previously invented two.
         def fake_call(system, user, model, response_model=AttackGraph):
             if response_model is AttackGraphSkeleton:
                 return json.dumps({
@@ -795,11 +759,6 @@ class V15ContractTests(unittest.TestCase):
         self.assertEqual([], graph.events[0].mitigations)
 
     def test_v14_settles_each_tactic_conflict_on_its_own(self):
-        # The Stolen Pencil run failed with three conflicts at once: two whose
-        # technique names exactly one tactic, and one whose technique spans
-        # four. Reconciliation used to require every conflict to be
-        # unambiguous, so the single ambiguous one discarded a whole graph the
-        # catalogue could otherwise have repaired.
         calls = []
 
         def fake_call(system, user, model, response_model=AttackGraph):
@@ -839,14 +798,11 @@ class V15ContractTests(unittest.TestCase):
             "A campaign report.", fake_call, "none", "v1.4")
         events = {event.id: event for event in graph.events}
 
-        # Unambiguous conflicts: the catalogue names one tactic, so adopt it.
         self.assertEqual("EX", events["e1"].tactic)
         self.assertEqual("T1204.002", events["e1"].technique)
         self.assertEqual("C2", events["e2"].tactic)
         self.assertEqual("T1105", events["e2"].technique)
 
-        # Ambiguous conflict: T1078 spans several tactics and none is the one
-        # Stage A chose, so the badge is withheld and the event survives.
         self.assertIsNone(events["e3"].technique)
         self.assertEqual([], events["e3"].mitigations)
         self.assertEqual("IM", events["e3"].tactic)
@@ -923,7 +879,6 @@ class V15ContractTests(unittest.TestCase):
         def fake_call(system, user, model, response_model=AttackGraph):
             calls.append(response_model)
             if response_model in _STAGE_B_MODELS:
-                # T1110 belongs to Credential Access, not Exfiltration.
                 return ('{"assignments":[{"id":"ev_exfil",'
                         '"technique":"T1110","mitigations":[]}]}')
             return (

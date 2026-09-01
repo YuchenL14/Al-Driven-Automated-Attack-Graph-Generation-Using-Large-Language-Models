@@ -262,9 +262,9 @@ class EndToEndTests(unittest.TestCase):
     def test_the_student_is_told_all_three_things(self):
         self._run()
         notes = " ".join(get_last_student_notes())
-        self.assertIn("M1053", notes)          # kept but not connected
-        self.assertIn("T9999", notes)          # not a real identifier
-        self.assertIn("Dumped credentials", notes)   # left for the tool
+        self.assertIn("M1053", notes)
+        self.assertIn("T9999", notes)
+        self.assertIn("Dumped credentials", notes)
 
     def test_an_evidence_abstention_does_not_erase_the_candidate(self):
         """A blank badge and a reviewable suggestion are different things."""
@@ -615,7 +615,6 @@ class TheTextWinsTests(unittest.TestCase):
         self.assertEqual("T1003.003", self._read()["stated_technique"])
 
     def test_a_full_stop_inside_a_filename_does_not_end_the_sentence(self):
-        # "NTDS.dit" sits inside the quotation itself.
         self.assertEqual(["M1026", "M1027", "M1041"],
                          self._read()["stated_mitigations"])
 
@@ -727,7 +726,6 @@ class StudentGatesTests(unittest.TestCase):
         from extract import _annotation_problems, _mixed_join_problems
         clean = self._skeleton()
         signed_in = clean["events"][2]
-        # The shape Rule 3 asks for: one shared state, consumer is AND.
         clean["preconditions"] = [
             node for node in clean["preconditions"]
             if node["id"] not in {"p_a", "p_b"}

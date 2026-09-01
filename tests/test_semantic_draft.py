@@ -378,7 +378,6 @@ class IncidentSemanticDraftTests(unittest.TestCase):
 
     def test_report_evidence_must_be_a_contiguous_quotation(self):
         data = _draft_from_gold()
-        # A compact synthetic report is enough to test deterministic grounding.
         report = "Alpha happened. " + " ".join(
             item["quote"] for item in data["evidence"]
             if item["status"] != "derived"
@@ -687,11 +686,6 @@ class IncidentSemanticDraftTests(unittest.TestCase):
                     data={
                         "provider": "mock",
                         "semantic_mode": "1",
-                        # Stated rather than left to the default. The semantic
-                        # pipeline refuses v1.6, and v1.6 is now what a request
-                        # that chooses nothing gets, so this test used to pass
-                        # only because the default happened to be a version the
-                        # pipeline accepts.
                         "ruleset": "v1.4",
                         "report": (
                             io.BytesIO(
@@ -703,13 +697,6 @@ class IncidentSemanticDraftTests(unittest.TestCase):
                     content_type="multipart/form-data",
                 )
             self.assertEqual(200, response.status_code)
-            # The pipeline still runs when the field is posted, which is what
-            # this test drives. What changed is that the page no longer offers
-            # a control for it: a figure from this pipeline takes no rule set,
-            # refuses v1.6, is not read by `measure_runs.py`, and is drawn by
-            # its own renderer without the visual-syntax key, the page-width
-            # budget or the vector output every other figure now carries, so it
-            # cannot be compared with anything the write-up reports.
             self.assertNotIn(b'name="semantic_mode"', response.data)
             self.assertEqual(1, len(list(outputs.glob("*.png"))))
             audits = list(outputs.glob("*.semantic.json"))

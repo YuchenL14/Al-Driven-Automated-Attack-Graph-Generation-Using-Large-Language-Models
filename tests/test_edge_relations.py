@@ -127,9 +127,6 @@ class TestRenderedOutput(unittest.TestCase):
 
         for connector in self.routed.connectors:
             _draw_connector(Recorder(), connector, 0, self.roles)
-        # A dashed/dotted line is traced as many short segments; a solid one is
-        # a single call. The annotation and context edges therefore produce
-        # more line calls than a two-point solid edge would.
         self.assertGreater(len(recorded), len(self.routed.connectors))
 
 

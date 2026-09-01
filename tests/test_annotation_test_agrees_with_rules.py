@@ -48,8 +48,6 @@ class AnnotationTestAgreesWithRulesTests(unittest.TestCase):
         self.assertIn("is a precondition of exfiltration", RULES)
 
     def test_neither_document_offers_an_absent_control_as_an_annotation(self):
-        # The failure this guards against is subtle: the phrase may legitimately
-        # appear, but never inside the annotation examples.
         for document in (PROMPT, RULES):
             annotation_examples = document[document.index("Examples of annotation")
                                            if "Examples of annotation" in document

@@ -231,7 +231,6 @@ def _route(
         column = sorted(point for point in points if point[0] == x)
         for upper, lower in zip(column, column[1:]):
             if _segment_clear((upper, lower), obstacles):
-                # Vertical movement is deliberately top-down only.
                 neighbours[upper].append(lower)
 
     start_state = (start, None)
@@ -269,9 +268,6 @@ def _route(
                 )
 
     if end_state is None:
-        # The grid search found nothing. Try detour lanes before giving up:
-        # the two page margins, and a lane just outside each obstacle that
-        # could be in the way. Nearest lane first, so the detour stays small.
         lanes = [8, plan.width - 8]
         for left, _, right, _ in obstacles:
             lanes.extend((left - ROUTE_CLEARANCE, right + ROUTE_CLEARANCE))
@@ -291,12 +287,6 @@ def _route(
             ):
                 return fallback
 
-        # Every lane is blocked. Draw the direct segment rather than refuse.
-        # A route that clips a node is a cosmetic fault in one edge; raising
-        # here discards the whole page, and with it a graph that two paid API
-        # calls produced and the schema already validated. The overlap is
-        # measurable afterwards -- layout_quality counts route detours and
-        # flags the page -- so the degradation is reported, not hidden.
         return _simplify((start, end))
 
     reversed_points: list[Point] = []
@@ -400,10 +390,6 @@ def route_layout(layout_ir: LayoutIR, plan: LayoutPlan) -> RoutedLayout:
             for index, (input_id, port) in enumerate(zip(input_ids, ports)):
                 source = nodes[input_id]
                 start = (source.cx, source.bottom)
-                # Force the final segment to enter the target from above.
-                # Without this short approach segment, an otherwise valid
-                # shortest path can finish horizontally along the top border,
-                # which makes the arrow direction visually ambiguous.
                 approach = (
                     port[0],
                     max(start[1], port[1] - TARGET_APPROACH),
@@ -436,10 +422,6 @@ def route_layout(layout_ir: LayoutIR, plan: LayoutPlan) -> RoutedLayout:
             output_arrow=output_arrow,
         ))
 
-    # Normalise every emitted path in one place. Most are simplified where
-    # they are built, but the AND drops are not, and a drop whose input already
-    # sits on the bus line came out as a zero-length segment: five of them
-    # across eighteen saved figures, drawn as nothing and counted as a bend.
     connectors = [
         replace(
             connector,
@@ -454,8 +436,6 @@ def route_layout(layout_ir: LayoutIR, plan: LayoutPlan) -> RoutedLayout:
         connectors=tuple(connectors),
         occupied_segments=tuple(occupied),
     )
-    # Imported here: layout_quality reaches the renderer, which imports this
-    # module, so a top-level import would close a cycle.
     from layout_quality import quality_mode
 
     overlaps = validate_routed_layout(layout_ir, plan, routed)
@@ -535,10 +515,6 @@ def validate_routed_layout(
                     f"path crosses a node: {input_id!r} -> {target_id!r}")
 
         if connector.shared_bus:
-            # The drop into the target leaves the bus at the target's centre.
-            # A bus that stops short of that centre leaves the arrowhead
-            # attached to a line that starts nowhere -- a defect that reads as
-            # an unexplained arrow rather than as a routing error.
             (bus_left, _), (bus_right, _) = connector.shared_bus
             target_cx = nodes[target_id].cx
             if not bus_left <= target_cx <= bus_right:

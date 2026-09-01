@@ -25,8 +25,6 @@ from extract import (AttackGraphSkeleton, ConstructAttackGraphSkeleton,
                      is_terminal_result_fault,
                      is_verbatim_evidence_fault)
 
-# Copied from the raise sites, so a reworded message fails this file rather
-# than silently disabling a correction in production.
 EMPTY_GRAPH_MESSAGES = [
     "the graph has no events: the report narrates an attack (entry, "
     "credential theft, impact) so the graph must contain those steps",

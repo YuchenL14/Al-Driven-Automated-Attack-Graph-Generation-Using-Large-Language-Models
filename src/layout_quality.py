@@ -13,10 +13,6 @@ from layout_renderer import (FIGURE_PLACEMENT_WIDTH_PT, GRAPH_RIGHT_PAD,
 from layout_router import RoutedLayout
 
 
-# The reader never sees the bare graph region. The rendered page also carries
-# the key in its left margin -- how to read the syntax, then the technique,
-# mitigation and tactic identifiers -- so page shape and page width are both
-# measured against the full drawing area rather than the causal lanes alone.
 LEGEND_RESERVE_WIDTH = LEGEND_MIN_WIDTH + LEGEND_GAP + GRAPH_RIGHT_PAD
 
 
@@ -113,8 +109,6 @@ def measure_layout_quality(
     canonical_ids = [node.canonical_id for node in layout_ir.nodes]
     return LayoutQuality(
         node_count=len(plan.nodes),
-        # The width the reader is actually given, key included: the same sum
-        # the renderer uses for its canvas.
         page_width_px=plan.width + LEGEND_RESERVE_WIDTH,
         canonical_duplicate_count=(
             len(canonical_ids) - len(set(canonical_ids))
@@ -161,17 +155,10 @@ def quality_warnings(quality: LayoutQuality) -> list[str]:
         warnings.append(
             "parallel graph structure uses too little of the main graph width"
         )
-    # The Stolen Pencil reference page is portrait (roughly 1.13 high per unit
-    # wide). A page is flagged only when it is markedly taller than that
-    # reference, not merely because the incident's causal structure is a chain.
     if quality.page_aspect_ratio > 1.65:
         warnings.append("one page is too tall for the agreed macro-layout budget")
     if quality.mean_route_detour > 2.5:
         warnings.append("orthogonal routes take excessive detours")
-    # Reported rather than fixed here. Pagination narrows a page by carrying
-    # fewer actions, and there are pages it cannot narrow: one action with a
-    # long label and several results is already indivisible. Saying so is worth
-    # more than a budget that quietly passes because nothing measured it.
     if quality.page_width_px > MAX_PAGE_WIDTH_PX:
         printed = quality.printed_label_pt
         warnings.append(

@@ -64,7 +64,6 @@ class AndBusReachesTargetTests(unittest.TestCase):
         return ir, plan, route_layout(ir, plan)
 
     def test_bus_spans_every_target_it_feeds(self):
-        # Four consumers fan out well past their two shared inputs.
         ir, plan, routed = self._route(_shared_and_inputs(4))
         centres = {node.visual_id: node.cx for node in plan.nodes}
         buses = [c for c in routed.connectors if c.shared_bus is not None]
@@ -80,7 +79,6 @@ class AndBusReachesTargetTests(unittest.TestCase):
                 f"bus ends left of {connector.target_visual_id}")
 
     def test_bus_still_covers_both_inputs(self):
-        # Widening the bus to reach the target must not drop an input.
         ir, plan, routed = self._route(_shared_and_inputs(4))
         centres = {node.visual_id: node.cx for node in plan.nodes}
         for connector in routed.connectors:
@@ -98,7 +96,6 @@ class AndBusReachesTargetTests(unittest.TestCase):
         for index, connector in enumerate(routed.connectors):
             if connector.shared_bus is not None:
                 (_, y), _ = connector.shared_bus
-                # Move the bus clear of the target's centre.
                 left = centres[connector.target_visual_id] + 10
                 broken = index, connector.__class__(
                     target_visual_id=connector.target_visual_id,
@@ -124,7 +121,6 @@ class AndBusReachesTargetTests(unittest.TestCase):
 
     def test_a_single_consumer_is_unaffected(self):
         ir, plan, routed = self._route(_shared_and_inputs(1))
-        # Nothing raised, and the one bus covers its target.
         self.assertEqual(validate_routed_layout(ir, plan, routed), [])
 
 

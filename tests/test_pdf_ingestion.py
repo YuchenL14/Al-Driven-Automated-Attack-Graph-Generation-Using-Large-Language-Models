@@ -43,9 +43,6 @@ def _blank_pdf(directory: Path) -> Path:
 
 class PdfIngestionTests(unittest.TestCase):
     def test_the_pdf_converter_is_installed(self):
-        # requirements.txt has asked for markitdown since the beginning. This
-        # asserts the environment running the tests is the environment that
-        # can run the application, which is the assumption that silently broke.
         try:
             import markitdown  # noqa: F401
         except ModuleNotFoundError as error:      # pragma: no cover
@@ -60,8 +57,6 @@ class PdfIngestionTests(unittest.TestCase):
             with self.assertRaises(ValueError) as caught:
                 ingest(path)
         message = str(caught.exception).lower()
-        # The reader has to be able to tell "this file carries pictures of
-        # words" from "this file is broken", and be told what to do next.
         self.assertIn("no readable text", message)
         self.assertIn("picture", message)
         self.assertIn(path.name.lower(), message)
@@ -71,8 +66,6 @@ class PdfIngestionTests(unittest.TestCase):
             ingest(Path("no-such-report.pdf"))
 
     def test_a_text_report_does_not_need_the_converter(self):
-        # The fast path stays available, so a machine without the PDF extras
-        # can still run the txt and md workflows.
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "report.txt"
             path.write_text("An attacker exploited an exposed service.\n",

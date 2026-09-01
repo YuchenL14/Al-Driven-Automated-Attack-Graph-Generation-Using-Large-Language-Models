@@ -57,8 +57,6 @@ def _fan(width: int) -> AttackGraph:
 
 class WidePageSplitTests(unittest.TestCase):
     def test_wide_fan_is_split_even_though_budgets_are_satisfied(self):
-        # Eleven events, one rank: under the 12-event budget and far under the
-        # 9-rank budget, so neither existing limit fires.
         model = _fan(11)
         self.assertLessEqual(len(model.events), DEFAULT_MAX_EVENTS_PER_PART)
 
@@ -78,7 +76,6 @@ class WidePageSplitTests(unittest.TestCase):
     def test_dividing_a_fan_loses_nothing(self):
         model = _fan(11)
         plan = plan_causal_split(model)
-        # Raises if any node or edge went missing or was invented.
         validate_lossless_split(model, plan)
 
     def test_narrow_graph_is_left_on_one_page(self):
@@ -127,7 +124,6 @@ class WidePageSplitTests(unittest.TestCase):
         self.assertGreater(widest_page_width_px(model, unbounded),
                            MAX_PAGE_WIDTH_PX)
 
-        # Affordable here: dividing costs one extra page, inside the ceiling.
         bounded = plan_causal_split(_fan(5))
         self.assertGreater(len(bounded.parts), 1)
         validate_lossless_split(_fan(5), bounded)
@@ -203,7 +199,6 @@ class WidePageSplitTests(unittest.TestCase):
         unsplittable rank.
         """
         model = _fan(9)
-        # Every branch also feeds one shared downstream state.
         model = AttackGraph.model_validate({
             "events": [e.model_dump() for e in model.events] + [{
                 "id": "e_use", "label": "Use everything gathered",
@@ -219,8 +214,6 @@ class WidePageSplitTests(unittest.TestCase):
                            "a shared result must not weld the fan together")
 
     def test_rank_and_event_budgets_still_apply(self):
-        # A long chain has width 1, so the width budget must not stop the
-        # existing height-based pagination from firing.
         events = []
         preconditions = [{"id": "p0", "label": "Start", "parents": [], "code": "P0"}]
         for i in range(12):

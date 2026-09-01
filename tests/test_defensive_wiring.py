@@ -34,14 +34,6 @@ import extract  # noqa: E402
 from schema import AttackGraph  # noqa: E402
 
 
-# Callables whose whole purpose is to reject or report a bad result during a
-# real run. If one of these stops being referenced from src, the defence has
-# been disconnected.
-#
-# ``validate_layout_quality`` is deliberately absent. It is the strict variant
-# that raises, and it exists to hold the frozen fixtures to the acceptance
-# limits inside the suite. Its production counterpart is ``quality_warnings``,
-# which reports without withholding the drawing, and which is guarded below.
 SAFETY_CRITICAL = (
     "validate_layout_ir",
     "validate_layout_plan",
@@ -53,14 +45,6 @@ SAFETY_CRITICAL = (
     "_skeleton_graph_problems",
     "_structure_problems",
     "_technique_tactic_mismatches",
-    # _repair_alternation was here. It is deliberately gone: it inserted a
-    # bridging EVENT wherever one precondition parented another, labelled
-    # "Transition from the previous state", and Stage B then assigned it a real
-    # ATT&CK technique. A run produced exactly that -- T1059.003 on a step the
-    # report never mentions. Repairing a graph by adding to it makes the figure
-    # assert something that did not happen, which no amount of correctness
-    # elsewhere makes acceptable. The same two faults are now reported by
-    # _skeleton_graph_problems and corrected by the model.
     "selected_png_renderer",
 )
 
@@ -133,9 +117,6 @@ class ApiEnforcedConstraintTests(unittest.TestCase):
     """
 
     def test_likelihood_is_required_in_the_api_schema(self):
-        # The reference sample scores 13 of its 14 action nodes. Left optional
-        # the field was simply skipped, and a whole run came back with no cyan
-        # badge anywhere.
         for model, key in (
             (extract.AttackGraphSkeleton, "SkeletonEvent"),
             (extract.EvidenceGraphWire, "EvidenceEventWire"),
@@ -145,10 +126,6 @@ class ApiEnforcedConstraintTests(unittest.TestCase):
                 self.assertIn("likelihood", event.get("required", []))
 
     def test_a_root_event_is_expressible(self):
-        # The reference sample opens with four attacker actions that consume
-        # nothing: creating the extension, building the lure PDF, gathering
-        # addresses, configuring the website. Those root events are what give
-        # it a wide top, so the contract must permit them.
         model = extract.AttackGraphSkeleton.model_validate({
             "title": "Root events",
             "preconditions": [
@@ -163,8 +140,6 @@ class ApiEnforcedConstraintTests(unittest.TestCase):
         self.assertEqual([], model.events[0].parents)
 
     def test_projected_contract_still_allows_a_root_event(self):
-        # The evidence-first pathway keeps a root event when the source gives
-        # no surrounding state, so its local check must stay permissive.
         model = extract.ProjectedAttackGraphSkeleton.model_validate({
             "title": "Root event",
             "preconditions": [
@@ -206,8 +181,6 @@ class ApiVisibleModelTests(unittest.TestCase):
     }
 
     def test_evidence_stage_a_wire_model_defers_referential_checks(self):
-        # Accepted here so the payload returns and the gate can name the
-        # missing node; the strict contract still rejects it afterwards.
         extract.EvidenceGraphWire.model_validate(self.DANGLING)
         with self.assertRaises(ValidationError):
             extract.AttackGraph.model_validate(self.DANGLING)

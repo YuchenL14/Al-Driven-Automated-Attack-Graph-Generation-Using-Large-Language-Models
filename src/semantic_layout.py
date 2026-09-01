@@ -129,7 +129,6 @@ def _component_ranks(
         for node_id in group[1:]:
             union.union(group[0], node_id)
 
-    # A context note without an explicit macro band sits beside its target.
     for source, target in annotation_edges:
         if source not in ranked_ids:
             union.union(source, target)
@@ -221,7 +220,6 @@ def _fit_rank_centres(
         desired: list[float],
         node_by_id: dict[str, SemanticNode],
         graph_width: int) -> dict[str, int]:
-    # Fit in stable order while guaranteeing non-overlap.
     centres: list[float] = []
     for index, node_id in enumerate(ordered_ids):
         half_width = _node_width(node_by_id[node_id]) / 2

@@ -148,9 +148,6 @@ class SemanticAnnotationNode(SemanticNodeBase):
     tactic: None = None
 
 
-# A discriminated union makes role/shape/tactic/evidence constraints part of
-# the JSON Schema sent to Claude. Unlike a model-level validator, these rules
-# are therefore enforced before the API response reaches local validation.
 SemanticNode = Annotated[
     Union[
         SemanticEventNode,
@@ -189,9 +186,6 @@ class SemanticAnnotationEdge(SemanticEdgeBase):
     logic: None = None
 
 
-# Relation and style are one discriminated choice in the API schema. This
-# prevents the hosted model from returning combinations that only fail in a
-# local model validator (for example, a dashed causal edge).
 SemanticEdge = Annotated[
     Union[SemanticCausalEdge, SemanticAnnotationEdge],
     Field(discriminator="relation"),
@@ -354,9 +348,6 @@ def validate_evidence_against_report(
     problems = []
     for claim in draft.evidence:
         if claim.status == "derived":
-            # Derived state wording is allowed only when another source-backed
-            # event mechanically establishes it.  It is not presented as a
-            # direct quotation.
             continue
         quote = _normalise_quote(claim.quote)
         if quote not in normalised_report:
@@ -424,9 +415,6 @@ def project_draft_to_skeleton(draft: IncidentSemanticDraft) -> dict:
             for edge in consumer_edges
             if node_by_id[edge.target].role == "event"
         ]
-        # ``code`` remains required by the frozen AttackGraph schema. It is an
-        # internal state namespace here; the AGVS-SP projection suppresses
-        # tactic badges on ellipses.
         code = next(
             (value for value in producer_tactics + consumer_tactics if value),
             "R",
@@ -536,7 +524,6 @@ def normalise_parallel_rank_groups(
         }
         candidates: list[tuple[str, list[str]]] = []
 
-        # Independently sufficient attack methods that establish one state.
         for node in draft.nodes:
             if node.page != page.page or node.role not in {
                     "state", "continuation_state"}:
@@ -551,7 +538,6 @@ def normalise_parallel_rank_groups(
             ):
                 candidates.append(("parallel_attack_methods", producers))
 
-        # Parallel consequences of the same established state.
         for node in draft.nodes:
             if node.page != page.page or node.role not in {
                     "state", "continuation_state"}:
@@ -570,9 +556,6 @@ def normalise_parallel_rank_groups(
             if set(candidate_ids).issubset(grouped_ids):
                 continue
 
-            # Place a related context note beside the band when it annotates a
-            # member or the immediate result of a member.  It remains dashed
-            # and never enters the causal topology.
             attached_annotations = []
             for edge in annotation_edges:
                 annotation = node_by_id[edge.source]

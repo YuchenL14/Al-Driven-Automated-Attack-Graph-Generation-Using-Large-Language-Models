@@ -1,4 +1,3 @@
-# --- environment and editor -------------------------------------------
 .venv/
 __pycache__/
 *.py[cod]
@@ -6,30 +5,16 @@ __pycache__/
 .vscode/
 .DS_Store
 
-# --- local working state ----------------------------------------------
-# 3.6 GB of timestamped snapshots of the whole tree. Local safety net,
-# not history worth publishing.
 backups/
 .last_backup
 tmp/
 .tmp/
 
-# --- source reports ----------------------------------------------------
-# The incident reports are third-party documents (British Library, NETSCOUT,
-# WannaCry and M&S case studies). They are cited in the dissertation and
-# linked in the README rather than redistributed here. Student submissions
-# are text typed into the teaching tool by the author, so they stay.
 reports/*
 !reports/student_submission_*.txt
 
-# --- generated figures -------------------------------------------------
-# The rendered PNG and SVG pages are reproducible from the JSON beside them
-# by re-running the renderer, and they are 14 MB. The validated graph JSON
-# and the per-page layout-quality sidecars are the evidence the dissertation
-# reports, so those are kept.
 outputs/*
 !outputs/*.json
 
-# --- misc --------------------------------------------------------------
 *.log
 smoke_test.png
